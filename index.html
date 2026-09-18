@@ -1,126 +1,372 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="my" lang="my">
+<!DOCTYPE html>
+<html lang="my">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Service Cost Calculator</title>
-    <style type="text/css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Pyidaungsu:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --primary-light: #eff6ff;
+            --success: #059669;
+            --danger: #dc2626;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -2px rgba(0,0,0,0.05);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            margin: 25px;
-            background-color: #f4f6f8;
-            color: #333;
+            font-family: 'Plus Jakarta Sans', 'Pyidaungsu', -apple-system, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            padding: 16px 14px 40px;
+            display: flex;
+            justify-content: center;
         }
+
         .container {
-            max-width: 600px;
-            margin: auto;
-            background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 480px;
         }
-        textarea {
-            width: 95%;
-            height: 180px;
-            padding: 10px;
+
+        /* Top Header Card */
+        .header-card {
+            background: linear-gradient(135deg, #1e40af, #2563eb);
+            color: #ffffff;
+            padding: 22px 20px;
+            border-radius: var(--radius-lg);
+            margin-bottom: 16px;
+            box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.25);
+        }
+
+        .header-card h1 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            letter-spacing: -0.02em;
+        }
+
+        .header-card p {
+            font-size: 13px;
+            color: #bfdbfe;
+            line-height: 1.4;
+        }
+
+        /* Input Card */
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 18px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 16px;
+        }
+
+        .card-label {
+            display: block;
             font-size: 14px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-family: monospace;
-            resize: vertical;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-main);
         }
-        button {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 10px 18px;
+
+        textarea {
+            width: 100%;
+            height: 160px;
+            padding: 14px;
             font-size: 15px;
-            border-radius: 4px;
+            line-height: 1.6;
+            color: var(--text-main);
+            background-color: #f8fafc;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-md);
+            outline: none;
+            resize: vertical;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        textarea:focus {
+            background-color: #ffffff;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        button {
+            flex: 1;
+            padding: 14px;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: var(--radius-md);
+            border: none;
             cursor: pointer;
-            margin-top: 10px;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
-        button:hover {
-            background-color: #0056b3;
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: #ffffff;
+            box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
         }
+
+        .btn-primary:active {
+            background-color: var(--primary-hover);
+            transform: scale(0.98);
+        }
+
+        .btn-outline {
+            background-color: #f1f5f9;
+            color: var(--text-muted);
+            max-width: 110px;
+        }
+
+        .btn-outline:active {
+            background-color: #e2e8f0;
+            color: var(--text-main);
+        }
+
+        /* Result Section */
+        .result-container {
+            display: none;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Stat Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 14px 16px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .stat-title {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-value.total {
+            color: var(--success);
+        }
+
+        /* Table Card */
+        .table-card {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+        }
+
+        .table-header {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border);
+            font-weight: 600;
+            font-size: 14px;
+            background-color: #f8fafc;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
+            font-size: 14px;
         }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px 12px;
-            text-align: left;
-        }
+
         th {
-            background-color: #f8f9fa;
+            background-color: #f8fafc;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 10px 14px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
         }
-        .num-col {
+
+        td {
+            padding: 12px 14px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .td-num {
+            color: var(--text-muted);
+            width: 36px;
+            font-size: 13px;
+        }
+
+        .td-name {
+            font-weight: 500;
+        }
+
+        .td-price {
             text-align: right;
-        }
-        .total-row {
-            font-weight: bold;
-            background-color: #e9ecef;
+            font-weight: 600;
+            color: var(--text-main);
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h3>ဖုန်းဝန်ဆောင်မှု စာရင်းတွက်စက်</h3>
-    <p style="font-size: 13px; color: #666;">စာရင်းများကို တစ်ကြောင်းချင်းစီ ရိုက်ထည့်ပါ (ဥပမာ - Model Name 15000)။</p>
-    
-    <textarea id="rawInput" placeholder="Note 11e global 15000&#10;Vivo y15 lock 10000"></textarea>
-    <br />
-    <button type="button" onclick="calculateTotal()">ပေါင်းမည်</button>
+    <!-- Header -->
+    <div class="header-card">
+        <h1>ဖုန်းဝန်ဆောင်မှု စာရင်းတွက်စက်</h1>
+        <p>စာရင်းများကို Copy ကူးထည့်ပြီး အလွယ်တကူ စုစုပေါင်း တွက်ချက်နိုင်ပါသည်</p>
+    </div>
 
-    <div id="outputArea"></div>
+    <!-- Input Card -->
+    <div class="card">
+        <label class="card-label" for="rawInput">စာရင်းထည့်သွင်းရန်</label>
+        <textarea id="rawInput" placeholder="Note 11e global 15000&#10;Vivo y15 lock 10000&#10;Oppo a5 2020 frp 15000"></textarea>
+        
+        <div class="btn-group">
+            <button class="btn-outline" type="button" onclick="clearAll()">ရှင်းမည်</button>
+            <button class="btn-primary" type="button" onclick="calculateTotal()">ပေါင်းမည်</button>
+        </div>
+    </div>
+
+    <!-- Output Section -->
+    <div id="outputContainer" class="result-container">
+        <!-- Stats Summary -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-title">စုစုပေါင်း အလုံးရေ</div>
+                <div id="itemCount" class="stat-value">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">ကျသင့်ငွေ စုစုပေါင်း</div>
+                <div id="grandTotalText" class="stat-value total">0 K</div>
+            </div>
+        </div>
+
+        <!-- Detail Table -->
+        <div class="table-card">
+            <div class="table-header">အသေးစိတ် စာရင်းဇယား</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th class="td-num">စဉ်</th>
+                        <th>အမျိုးအမည်</th>
+                        <th style="text-align: right;">ကျသင့်ငွေ</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
-<script type="text/javascript">
-//<![CDATA[
+<script>
 function calculateTotal() {
-    var text = document.getElementById("rawInput").value.trim();
+    const text = document.getElementById("rawInput").value.trim();
     if (!text) {
         alert("ကျေးဇူးပြု၍ စာရင်းအရင် ရိုက်ထည့်ပေးပါ။");
         return;
     }
 
-    var lines = text.split("\n");
-    var grandTotal = 0;
-    var rowsHtml = "";
-    var count = 1;
+    const lines = text.split("\n");
+    let grandTotal = 0;
+    let count = 0;
+    let rowsHtml = "";
 
-    for (var i = 0; i < lines.length; i++) {
-        var line = lines[i].trim();
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
         if (!line) continue;
 
-        // နောက်ဆုံးပါသော ဂဏန်း (ဈေးနှုန်း) ကို ခွဲထုတ်ခြင်း
-        var match = line.match(/^(.*?)[\s\t]+(\d+)$/);
+        // အနောက်ဆုံးပါသော ဂဏန်းကို စျေးနှုန်းအဖြစ် ယူခြင်း
+        const match = line.match(/^(.*?)[\s\t]+(\d+)$/);
 
         if (match) {
-            var itemName = match[1].trim();
-            var price = parseInt(match[2], 10);
+            count++;
+            const itemName = match[1].trim();
+            const price = parseInt(match[2], 10);
             grandTotal += price;
 
-            rowsHtml += "<tr>" +
-                "<td>" + count + "</td>" +
-                "<td>" + itemName + "</td>" +
-                "<td class='num-col'>" + price.toLocaleString() + "</td>" +
-                "</tr>";
-            count++;
+            rowsHtml += `
+                <tr>
+                    <td class="td-num">${count}</td>
+                    <td class="td-name">${escapeHtml(itemName)}</td>
+                    <td class="td-price">${price.toLocaleString()} K</td>
+                </tr>
+            `;
         }
     }
 
-    var tableHtml = "<table>" +
-        "<thead><tr><th>စဉ်</th><th>အမျိုးအမည်</th><th class='num-col'>ကျသင့်ငွေ (MMK)</th></tr></thead>" +
-        "<tbody>" + rowsHtml +
-        "<tr class='total-row'><td colspan='2' style='text-align:center;'>စုစုပေါင်း</td><td class='num-col'>" + grandTotal.toLocaleString() + "</td></tr>" +
-        "</tbody></table>";
+    if (count === 0) {
+        alert("စာရင်းပုံစံ မှန်ကန်မှုမရှိပါ။ နမူနာ - 'Model 15000' ပုံစံအတိုင်း ထည့်ပေးပါ။");
+        return;
+    }
 
-    document.getElementById("outputArea").innerHTML = tableHtml;
+    document.getElementById("itemCount").innerText = count + " လုံး";
+    document.getElementById("grandTotalText").innerText = grandTotal.toLocaleString() + " K";
+    document.getElementById("tableBody").innerHTML = rowsHtml;
+    document.getElementById("outputContainer").style.display = "block";
+
+    // Auto scroll to results smoothly
+    document.getElementById("outputContainer").scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
-//]]>
+
+function clearAll() {
+    document.getElementById("rawInput").value = "";
+    document.getElementById("outputContainer").style.display = "none";
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.innerText = text;
+    return div.innerHTML;
+}
 </script>
 
 </body>
