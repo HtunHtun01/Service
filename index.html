@@ -3,17 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Service Cost Calculator</title>
+    <title>Htun Htun Mobile Service</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Pyidaungsu:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- HTML to Canvas script for downloading image -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root {
             --primary: #2563eb;
             --primary-hover: #1d4ed8;
             --primary-light: #eff6ff;
             --success: #059669;
-            --danger: #dc2626;
             --bg: #f8fafc;
             --card-bg: #ffffff;
             --text-main: #0f172a;
@@ -21,8 +22,7 @@
             --border: #e2e8f0;
             --radius-md: 12px;
             --radius-lg: 16px;
-            --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -2px rgba(0,0,0,0.05);
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
         }
 
         * {
@@ -46,30 +46,27 @@
             max-width: 480px;
         }
 
-        /* Top Header Card */
         .header-card {
             background: linear-gradient(135deg, #1e40af, #2563eb);
             color: #ffffff;
-            padding: 22px 20px;
+            padding: 20px;
             border-radius: var(--radius-lg);
             margin-bottom: 16px;
             box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.25);
+            text-align: center;
         }
 
         .header-card h1 {
             font-size: 20px;
             font-weight: 700;
-            margin-bottom: 6px;
-            letter-spacing: -0.02em;
+            margin-bottom: 4px;
         }
 
         .header-card p {
             font-size: 13px;
             color: #bfdbfe;
-            line-height: 1.4;
         }
 
-        /* Input Card */
         .card {
             background: var(--card-bg);
             border-radius: var(--radius-lg);
@@ -84,14 +81,13 @@
             font-size: 14px;
             font-weight: 600;
             margin-bottom: 8px;
-            color: var(--text-main);
         }
 
         textarea {
             width: 100%;
-            height: 160px;
-            padding: 14px;
-            font-size: 15px;
+            height: 140px;
+            padding: 12px;
+            font-size: 14px;
             line-height: 1.6;
             color: var(--text-main);
             background-color: #f8fafc;
@@ -99,14 +95,12 @@
             border-radius: var(--radius-md);
             outline: none;
             resize: vertical;
-            transition: all 0.2s ease;
             font-family: inherit;
         }
 
         textarea:focus {
             background-color: #ffffff;
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
         }
 
         .btn-group {
@@ -117,38 +111,34 @@
 
         button {
             flex: 1;
-            padding: 14px;
-            font-size: 15px;
+            padding: 13px;
+            font-size: 14px;
             font-weight: 600;
             border-radius: var(--radius-md);
             border: none;
             cursor: pointer;
             transition: all 0.2s ease;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
         }
 
         .btn-primary {
             background-color: var(--primary);
             color: #ffffff;
-            box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
-        }
-
-        .btn-primary:active {
-            background-color: var(--primary-hover);
-            transform: scale(0.98);
         }
 
         .btn-outline {
             background-color: #f1f5f9;
             color: var(--text-muted);
-            max-width: 110px;
+            max-width: 100px;
         }
 
-        .btn-outline:active {
-            background-color: #e2e8f0;
-            color: var(--text-main);
+        .btn-save {
+            background-color: var(--success);
+            color: #ffffff;
+            margin-top: 14px;
+            width: 100%;
+            padding: 14px;
+            font-size: 15px;
+            box-shadow: 0 4px 6px -1px rgba(5, 150, 105, 0.2);
         }
 
         /* Result Section */
@@ -162,60 +152,39 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Stat Cards */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 16px;
-        }
-
-        .stat-card {
-            background: var(--card-bg);
-            padding: 14px 16px;
-            border-radius: var(--radius-md);
+        /* Voucher Box Styling (ဒီအကွက်ကို ပုံအဖြစ် သိမ်းဆည်းမည်) */
+        #voucherArea {
+            background: #ffffff;
             border: 1px solid var(--border);
-            box-shadow: var(--shadow-sm);
-        }
-
-        .stat-title {
-            font-size: 12px;
-            font-weight: 500;
-            color: var(--text-muted);
-            margin-bottom: 4px;
-        }
-
-        .stat-value {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--primary);
-        }
-
-        .stat-value.total {
-            color: var(--success);
-        }
-
-        /* Table Card */
-        .table-card {
-            background: var(--card-bg);
             border-radius: var(--radius-lg);
-            border: 1px solid var(--border);
+            padding: 22px 18px;
             box-shadow: var(--shadow-sm);
-            overflow: hidden;
         }
 
-        .table-header {
-            padding: 14px 16px;
-            border-bottom: 1px solid var(--border);
-            font-weight: 600;
-            font-size: 14px;
-            background-color: #f8fafc;
+        .voucher-header {
+            text-align: center;
+            border-bottom: 2px dashed #cbd5e1;
+            padding-bottom: 14px;
+            margin-bottom: 14px;
+        }
+
+        .voucher-shop-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-bottom: 3px;
+        }
+
+        .voucher-meta {
+            font-size: 12px;
+            color: var(--text-muted);
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             font-size: 14px;
+            margin-bottom: 12px;
         }
 
         th {
@@ -223,49 +192,100 @@
             color: var(--text-muted);
             font-weight: 600;
             font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            padding: 10px 14px;
+            padding: 8px 10px;
             text-align: left;
             border-bottom: 1px solid var(--border);
         }
 
         td {
-            padding: 12px 14px;
+            padding: 10px;
             border-bottom: 1px solid #f1f5f9;
-        }
-
-        tr:last-child td {
-            border-bottom: none;
         }
 
         .td-num {
             color: var(--text-muted);
-            width: 36px;
-            font-size: 13px;
-        }
-
-        .td-name {
-            font-weight: 500;
+            width: 30px;
+            font-size: 12px;
         }
 
         .td-price {
             text-align: right;
             font-weight: 600;
-            color: var(--text-main);
+        }
+
+        .voucher-summary {
+            border-top: 2px dashed #cbd5e1;
+            padding-top: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .voucher-summary .title {
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .voucher-summary .total-amt {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--success);
+        }
+
+        .voucher-footer {
+            text-align: center;
+            margin-top: 14px;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        /* Footer Ad Card */
+        .ad-footer-card {
+            margin-top: 20px;
+            background: #ffffff;
+            border: 1px dashed #cbd5e1;
+            border-radius: var(--radius-md);
+            padding: 14px;
+            text-align: center;
+        }
+
+        .ad-badge {
+            font-size: 10px;
+            color: #94a3b8;
+            background-color: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+
+        .ad-text {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin: 6px 0 10px;
+        }
+
+        .ad-btn {
+            display: inline-block;
+            background-color: #f8fafc;
+            color: var(--primary);
+            border: 1px solid #cbd5e1;
+            padding: 6px 14px;
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 6px;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <!-- Header -->
     <div class="header-card">
-        <h1>ဖုန်းဝန်ဆောင်မှု စာရင်းတွက်စက်</h1>
-        <p>စာရင်းများကို Copy ကူးထည့်ပြီး အလွယ်တကူ စုစုပေါင်း တွက်ချက်နိုင်ပါသည်</p>
+        <h1>Htun Htun Mobile Service</h1>
+        <p>ဖုန်းဝန်ဆောင်မှု စာရင်းတွက်စက်နှင့် ဘောက်ချာထုတ်ပေးစနစ်</p>
     </div>
 
-    <!-- Input Card -->
+    <!-- Input Section -->
     <div class="card">
         <label class="card-label" for="rawInput">စာရင်းထည့်သွင်းရန်</label>
         <textarea id="rawInput" placeholder="Note 11e global 15000&#10;Vivo y15 lock 10000&#10;Oppo a5 2020 frp 15000"></textarea>
@@ -278,21 +298,15 @@
 
     <!-- Output Section -->
     <div id="outputContainer" class="result-container">
-        <!-- Stats Summary -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-title">စုစုပေါင်း အလုံးရေ</div>
-                <div id="itemCount" class="stat-value">0</div>
+        
+        <!-- ဘောက်ချာ ဧရိယာ (ဒီနေရာတစ်ခုလုံးကို ပုံအဖြစ် သိမ်းဆည်းပေးမည်) -->
+        <div id="voucherArea">
+            <div class="voucher-header">
+                <div class="voucher-shop-name">Htun Htun Mobile Service</div>
+                <div class="voucher-meta">Service Receipt &amp; Voucher</div>
+                <div class="voucher-meta" id="currentDate"></div>
             </div>
-            <div class="stat-card">
-                <div class="stat-title">ကျသင့်ငွေ စုစုပေါင်း</div>
-                <div id="grandTotalText" class="stat-value total">0 K</div>
-            </div>
-        </div>
 
-        <!-- Detail Table -->
-        <div class="table-card">
-            <div class="table-header">အသေးစိတ် စာရင်းဇယား</div>
             <table>
                 <thead>
                     <tr>
@@ -303,7 +317,30 @@
                 </thead>
                 <tbody id="tableBody"></tbody>
             </table>
+
+            <div class="voucher-summary">
+                <div class="title">စုစုပေါင်း ကျသင့်ငွေ</div>
+                <div class="total-amt" id="grandTotalText">0 K</div>
+            </div>
+
+            <div class="voucher-footer">
+                အားပေးမှုကို အထူးကျေးဇူးတင်ရှိပါသည်
+            </div>
         </div>
+
+        <!-- ပုံအဖြစ် ဒေါင်းလုဒ်ဆွဲမည့် ခလုတ် -->
+        <button class="btn-save" type="button" onclick="downloadVoucher()">
+            📷 ဘောက်ချာအား ပုံအဖြစ် သိမ်းမည်
+        </button>
+    </div>
+
+    <!-- အောက်ခြေ ကြော်ငြာနေရာ -->
+    <div class="ad-footer-card">
+        <span class="ad-badge">Sponsored</span>
+        <p class="ad-text">အထူးပရိုမိုးရှင်းများနှင့် ဝန်ဆောင်မှုများကို ကြည့်ရှုရန်</p>
+        <a href="YOUR_SMARTLINK_URL_HERE" target="_blank" rel="noopener noreferrer" class="ad-btn">
+            ဆက်လက်ကြည့်ရှုမည် ➔
+        </a>
     </div>
 </div>
 
@@ -324,7 +361,6 @@ function calculateTotal() {
         const line = lines[i].trim();
         if (!line) continue;
 
-        // အနောက်ဆုံးပါသော ဂဏန်းကို စျေးနှုန်းအဖြစ် ယူခြင်း
         const match = line.match(/^(.*?)[\s\t]+(\d+)$/);
 
         if (match) {
@@ -336,7 +372,7 @@ function calculateTotal() {
             rowsHtml += `
                 <tr>
                     <td class="td-num">${count}</td>
-                    <td class="td-name">${escapeHtml(itemName)}</td>
+                    <td>${escapeHtml(itemName)}</td>
                     <td class="td-price">${price.toLocaleString()} K</td>
                 </tr>
             `;
@@ -348,18 +384,33 @@ function calculateTotal() {
         return;
     }
 
-    document.getElementById("itemCount").innerText = count + " လုံး";
+    // ရက်စွဲ ထည့်သွင်းခြင်း
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('en-GB') + " | " + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    document.getElementById("currentDate").innerText = "ရက်စွဲ - " + dateStr;
+
     document.getElementById("grandTotalText").innerText = grandTotal.toLocaleString() + " K";
     document.getElementById("tableBody").innerHTML = rowsHtml;
     document.getElementById("outputContainer").style.display = "block";
 
-    // Auto scroll to results smoothly
     document.getElementById("outputContainer").scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function clearAll() {
     document.getElementById("rawInput").value = "";
     document.getElementById("outputContainer").style.display = "none";
+}
+
+function downloadVoucher() {
+    const voucherElement = document.getElementById("voucherArea");
+
+    // html2canvas ဖြင့် ရှင်းလင်းပြတ်သားသော image ဖန်တီးခြင်း (scale 2 ဖြင့် ပုံထွက်ကြည်အောင် ထားရှိသည်)
+    html2canvas(voucherElement, { scale: 2, backgroundColor: "#ffffff" }).then(canvas => {
+        const link = document.createElement("a");
+        link.download = "HtunHtun_Service_Voucher_" + Date.now() + ".png";
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+    });
 }
 
 function escapeHtml(text) {
