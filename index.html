@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="my" lang="my">
+<head>
+    <title>Service Cost Calculator</title>
+    <style type="text/css">
+        body {
+            font-family: Arial, sans-serif;
+            margin: 25px;
+            background-color: #f4f6f8;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        textarea {
+            width: 95%;
+            height: 180px;
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-family: monospace;
+            resize: vertical;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            font-size: 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+        .num-col {
+            text-align: right;
+        }
+        .total-row {
+            font-weight: bold;
+            background-color: #e9ecef;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h3>ဖုန်းဝန်ဆောင်မှု စာရင်းတွက်စက်</h3>
+    <p style="font-size: 13px; color: #666;">စာရင်းများကို တစ်ကြောင်းချင်းစီ ရိုက်ထည့်ပါ (ဥပမာ - Model Name 15000)။</p>
+    
+    <textarea id="rawInput" placeholder="Note 11e global 15000&#10;Vivo y15 lock 10000"></textarea>
+    <br />
+    <button type="button" onclick="calculateTotal()">ပေါင်းမည်</button>
+
+    <div id="outputArea"></div>
+</div>
+
+<script type="text/javascript">
+//<![CDATA[
+function calculateTotal() {
+    var text = document.getElementById("rawInput").value.trim();
+    if (!text) {
+        alert("ကျေးဇူးပြု၍ စာရင်းအရင် ရိုက်ထည့်ပေးပါ။");
+        return;
+    }
+
+    var lines = text.split("\n");
+    var grandTotal = 0;
+    var rowsHtml = "";
+    var count = 1;
+
+    for (var i = 0; i < lines.length; i++) {
+        var line = lines[i].trim();
+        if (!line) continue;
+
+        // နောက်ဆုံးပါသော ဂဏန်း (ဈေးနှုန်း) ကို ခွဲထုတ်ခြင်း
+        var match = line.match(/^(.*?)[\s\t]+(\d+)$/);
+
+        if (match) {
+            var itemName = match[1].trim();
+            var price = parseInt(match[2], 10);
+            grandTotal += price;
+
+            rowsHtml += "<tr>" +
+                "<td>" + count + "</td>" +
+                "<td>" + itemName + "</td>" +
+                "<td class='num-col'>" + price.toLocaleString() + "</td>" +
+                "</tr>";
+            count++;
+        }
+    }
+
+    var tableHtml = "<table>" +
+        "<thead><tr><th>စဉ်</th><th>အမျိုးအမည်</th><th class='num-col'>ကျသင့်ငွေ (MMK)</th></tr></thead>" +
+        "<tbody>" + rowsHtml +
+        "<tr class='total-row'><td colspan='2' style='text-align:center;'>စုစုပေါင်း</td><td class='num-col'>" + grandTotal.toLocaleString() + "</td></tr>" +
+        "</tbody></table>";
+
+    document.getElementById("outputArea").innerHTML = tableHtml;
+}
+//]]>
+</script>
+
+</body>
+</html>
