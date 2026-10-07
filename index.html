@@ -88,6 +88,7 @@
         .btn-excel { background: #047857; color: #ffffff; }
         .btn-save-gh { background: #0f172a; color: #ffffff; font-weight: 700; }
         .btn-chg-pin { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; font-size: 11px; padding: 6px; border-radius: 6px; }
+        .btn-logout { background: #fee2e2; color: var(--danger); border: 1px solid #fecaca; font-size: 11px; padding: 6px; border-radius: 6px; }
 
         .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.65); z-index: 1000; justify-content: center; align-items: center; padding: 8px; }
         .modal.active { display: flex; }
@@ -175,7 +176,7 @@
     </div>
     <!-- TAB 2: PARTS -->
     <div id="partsTab" class="tab-section">
-        <div class="shop-selector-card">
+        <div class="shop-selector-card" id="publicShopSelector">
             <button class="shop-btn active" id="btnShop1" onclick="selectShop('Kyaw Mobile')">🏬 Kyaw Mobile</button>
             <button class="shop-btn" id="btnShop2" onclick="selectShop('ချမ်းသာစည်')">🏬 ချမ်းသာစည်</button>
         </div>
@@ -201,13 +202,17 @@
 
         <div class="item-list" id="itemList"></div>
 
-        <!-- အောက်ခြေ Admin Panel (ပုံမှန်တွင် ဝှက်ထားမည်) -->
+        <!-- အောက်ခြေ Admin Button -->
         <button class="admin-trigger-btn" id="btnAdminTrigger" onclick="openAdminLoginModal()">🔒 Admin Edit (ဆိုင်ပြင်ဆင်ခွင့်)</button>
         
+        <!-- Admin Logged-In Panel -->
         <div class="admin-panel" id="adminControlPanel">
             <div class="admin-panel-header">
                 <span>⚙️ <strong id="adminPanelShopName">Kyaw Mobile</strong> စီမံခန့်ခွဲမှု Panel</span>
-                <button class="btn-chg-pin" onclick="openChangePinModal()">🔑 PIN နံပါတ် ချိန်းမည်</button>
+                <div style="display: flex; gap: 4px;">
+                    <button class="btn-chg-pin" onclick="openChangePinModal()">🔑 PIN ချိန်းမည်</button>
+                    <button class="btn-logout" onclick="adminLogout()">ထွက်မည်</button>
+                </div>
             </div>
             <button class="btn-action btn-bulk" onclick="openBulkModal()">📋 အမြန်စာရင်းကူးထည့်မည် (Bulk Paste)</button>
             <button class="btn-action btn-add" onclick="openAddItemModal()">➕ ပစ္စည်းတစ်ခုချင်းစီ ထည့်မည်</button>
@@ -217,15 +222,15 @@
     </div>
 </div>
 
-<!-- Modal: Admin Unified Login (PIN & GitHub Key တစ်ခါတည်းတောင်းခြင်း) -->
+<!-- Modal: Admin Login (ဆိုင်ရွေးစရာမလိုဘဲ PIN အရ ဆိုင်ကို Auto ခွဲခြားခြင်း) -->
 <div class="modal" id="adminLoginModal">
     <div class="modal-content" style="max-width: 320px;">
         <h3 style="font-size: 14px; margin-bottom: 4px; text-align: center;">🔒 Admin ဝင်ရောက်ခြင်း</h3>
-        <p style="font-size: 11px; color: var(--text-sub); margin-bottom: 10px; text-align: center;">ဆိုင်၏ PIN နှင့် GitHub Token ကို ထည့်သွင်းပေးပါ</p>
+        <p style="font-size: 11px; color: var(--text-sub); margin-bottom: 10px; text-align: center;">ဆိုင်၏ PIN နံပါတ်နှင့် GitHub Token ကို ထည့်ပါ</p>
         
         <div class="form-group">
             <label>ဆိုင် PIN နံပါတ်</label>
-            <input type="password" id="loginPinInput" placeholder="PIN ရိုက်ပါ" maxlength="8" style="text-align: center; font-size: 16px; letter-spacing: 2px;">
+            <input type="password" id="loginPinInput" placeholder="PIN ရိုက်ပါ (eg. 1111 သို့မဟုတ် 2222)" maxlength="8" style="text-align: center; font-size: 16px; letter-spacing: 2px;">
         </div>
         <div class="form-group">
             <label>GitHub Personal Access Token</label>
@@ -244,8 +249,8 @@
     <div class="modal-content" style="max-width: 310px;">
         <h3 style="font-size: 14px; margin-bottom: 6px; text-align: center;">🔑 PIN နံပါတ် အသစ်ချိန်းမည်</h3>
         <div class="form-group">
-            <label>PIN အသစ် (ဂဏန်း ၄ လုံး)</label>
-            <input type="password" id="newPinInput" placeholder="ဥပမာ - 1111" maxlength="6" style="text-align: center; font-size: 16px;">
+            <label id="lblChangePinTarget">PIN အသစ် (ဂဏန်း ၄ လုံး)</label>
+            <input type="password" id="newPinInput" placeholder="PIN အသစ်" maxlength="6" style="text-align: center; font-size: 16px;">
         </div>
         <div class="form-group">
             <label>PIN အသစ် ပြန်ရိုက်ပါ</label>
@@ -276,7 +281,7 @@
 <!-- Modal: Bulk Paste Import -->
 <div class="modal" id="bulkModal">
     <div class="modal-content">
-        <h3 style="font-size: 14px; margin-bottom: 6px;">📋 အမြန်စာရင်းကူးထည့်ခြင်း</h3>
+        <h3 style="font-size: 14px; margin-bottom: 6px;">📋 အမြန်စာရင်းကူးထည့်ခြင်း (<span id="bulkShopTitle"></span>)</h3>
         <div class="form-group">
             <label>အမျိုးအစား ရွေးချယ်ပါ</label>
             <select id="bulkCat">
@@ -331,7 +336,7 @@
     </div>
 </div>
 
-<!-- Modal: Excel-Style Full Table Editor with Fixed Wide Columns -->
+<!-- Modal: Excel-Style Full Table Editor -->
 <div class="modal" id="excelModal">
     <div class="modal-content excel-mode">
         <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -373,7 +378,7 @@ let MASTER_PIN = localStorage.getItem('cfg_master_pin') || "1221";
 let SHOP_PINS = JSON.parse(localStorage.getItem('cfg_shop_pins')) || { "Kyaw Mobile": "1111", "ချမ်းသာစည်": "2222" };
 
 let currentSelectedShop = "Kyaw Mobile";
-let isAdminLoggedIn = false;
+let adminAuthorizedShop = null; // Login ဝင်ထားသော ဆိုင်အမည် (Kyaw Mobile သို့မဟုတ် ချမ်းသာစည် သို့မဟုတ် ALL)
 let currentExcelCat = "ALL";
 
 function switchMainTab(tabId, el) {
@@ -462,6 +467,10 @@ if (localStorage.getItem('htun_mobile_multishop_items')) {
 let selectedCategory = 'ALL';
 
 function selectShop(shopName) {
+    if (adminAuthorizedShop && adminAuthorizedShop !== "ALL" && adminAuthorizedShop !== shopName) {
+        alert(`သင်သည် ${adminAuthorizedShop} အဖြစ်သာ ဝင်ရောက်ထားသဖြင့် အခြားဆိုင်သို့ ပြောင်း၍မရပါ။`);
+        return;
+    }
     currentSelectedShop = shopName;
     document.getElementById('currentShopName').innerText = shopName;
     document.getElementById('adminPanelShopName').innerText = shopName;
@@ -484,15 +493,16 @@ function renderItems(data) {
     let html = '';
     data.forEach((item) => {
         const idx = itemsData.indexOf(item);
+        const canEdit = adminAuthorizedShop && (adminAuthorizedShop === "ALL" || adminAuthorizedShop === item.shop);
         html += `
             <div class="item-card">
-                <div style="max-width: ${isAdminLoggedIn ? '70%' : '75%'};">
+                <div style="max-width: ${canEdit ? '70%' : '75%'};">
                     <span class="category-tag ${getTagClass(item.cat)}">${item.cat}</span>
                     <div class="item-name">${escapeHtml(item.name)}</div>
                 </div>
                 <div style="text-align: right;">
                     <div class="item-price">${Number(item.price).toLocaleString()} K</div>
-                    ${isAdminLoggedIn ? `<button class="btn-edit-item" onclick="openEditItemModal(${idx})">ပြင်မည်</button>` : ''}
+                    ${canEdit ? `<button class="btn-edit-item" onclick="openEditItemModal(${idx})">ပြင်မည်</button>` : ''}
                 </div>
             </div>`;
     });
@@ -524,7 +534,7 @@ function setCategory(cat, el) {
     handleSearch();
 }
 
-// ADMIN UNIFIED LOGIN
+// ADMIN UNIFIED LOGIN - PIN အရ ဆိုင်ကို Auto ခွဲထုတ်ခြင်း
 function openAdminLoginModal() {
     document.getElementById('loginPinInput').value = "";
     document.getElementById('loginGhToken').value = localStorage.getItem('gh_token') || "";
@@ -535,32 +545,57 @@ function openAdminLoginModal() {
 function verifyAdminLogin() {
     const enteredPin = document.getElementById('loginPinInput').value.trim();
     const enteredToken = document.getElementById('loginGhToken').value.trim();
-    const targetShopPin = SHOP_PINS[currentSelectedShop];
 
-    if (enteredPin !== targetShopPin && enteredPin !== MASTER_PIN) {
+    if (!enteredToken) {
+        alert("GitHub Token Key ကို ထည့်သွင်းပေးရန် လိုအပ်ပါသည်။");
+        return;
+    }
+
+    // PIN စစ်ဆေးခြင်း
+    if (enteredPin === MASTER_PIN) {
+        adminAuthorizedShop = "ALL";
+    } else if (enteredPin === SHOP_PINS["Kyaw Mobile"]) {
+        adminAuthorizedShop = "Kyaw Mobile";
+    } else if (enteredPin === SHOP_PINS["ချမ်းသာစည်"]) {
+        adminAuthorizedShop = "ချမ်းသာစည်";
+    } else {
         alert("PIN နံပါတ် မှားယွင်းနေပါသည်။");
         document.getElementById('loginPinInput').value = "";
         return;
     }
-    if (!enteredToken) {
-        alert("GitHub Token Key ကိုလည်း ထည့်သွင်းပေးရန် လိုအပ်ပါသည်။");
-        return;
-    }
 
     localStorage.setItem('gh_token', enteredToken);
-    isAdminLoggedIn = true;
     closeModal('adminLoginModal');
-    
+
+    // သက်ဆိုင်ရာ ဆိုင် view သို့ အလိုအလျောက် သတ်မှတ်ခြင်း
+    if (adminAuthorizedShop !== "ALL") {
+        selectShop(adminAuthorizedShop);
+        // အခြားဆိုင်ကို ပြောင်းခွင့် မရှိအောင် ခလုတ်ကို ဝှက်ထားခြင်း
+        document.getElementById('btnShop1').style.display = (adminAuthorizedShop === 'Kyaw Mobile') ? 'block' : 'none';
+        document.getElementById('btnShop2').style.display = (adminAuthorizedShop === 'ချမ်းသာစည်') ? 'block' : 'none';
+    }
+
     document.getElementById('btnAdminTrigger').style.display = 'none';
     document.getElementById('adminControlPanel').classList.add('active');
     handleSearch();
-    alert(`Admin အဖြစ် အောင်မြင်စွာ Login ဝင်ရောက်ပြီးပါပြီ။`);
+    alert(`${adminAuthorizedShop === "ALL" ? "Master Admin" : adminAuthorizedShop} အဖြစ် အောင်မြင်စွာ Login ဝင်ရောက်ပြီးပါပြီ။`);
 }
 
-// CHANGE PIN LOGIC
+function adminLogout() {
+    adminAuthorizedShop = null;
+    document.getElementById('btnShop1').style.display = 'block';
+    document.getElementById('btnShop2').style.display = 'block';
+    document.getElementById('btnAdminTrigger').style.display = 'block';
+    document.getElementById('adminControlPanel').classList.remove('active');
+    handleSearch();
+    alert("Admin အကောင့်မှ ထွက်လိုက်ပါပြီ။");
+}
+
+// CHANGE PIN
 function openChangePinModal() {
     document.getElementById('newPinInput').value = "";
     document.getElementById('confirmPinInput').value = "";
+    document.getElementById('lblChangePinTarget').innerText = `${adminAuthorizedShop === 'ALL' ? 'Master' : adminAuthorizedShop} PIN အသစ်`;
     document.getElementById('changePinModal').classList.add('active');
 }
 
@@ -570,14 +605,20 @@ function saveNewPin() {
     if (!p1 || p1.length < 4) { alert("PIN သည် အနည်းဆုံး ဂဏန်း ၄ လုံး ရှိရပါမည်။"); return; }
     if (p1 !== p2) { alert("PIN နံပါတ် ၂ ကြိမ် ရိုက်ထည့်မှု မကိုက်ညီပါ။"); return; }
 
-    SHOP_PINS[currentSelectedShop] = p1;
-    localStorage.setItem('cfg_shop_pins', JSON.stringify(SHOP_PINS));
+    if (adminAuthorizedShop === "ALL") {
+        MASTER_PIN = p1;
+        localStorage.setItem('cfg_master_pin', p1);
+    } else {
+        SHOP_PINS[adminAuthorizedShop] = p1;
+        localStorage.setItem('cfg_shop_pins', JSON.stringify(SHOP_PINS));
+    }
     closeModal('changePinModal');
-    alert(`${currentSelectedShop} အတွက် PIN အသစ်ကို (${p1}) အဖြစ် ပြောင်းလဲသိမ်းဆည်းပြီးပါပြီ။`);
+    alert(`PIN အသစ်ကို (${p1}) အဖြစ် ပြောင်းလဲသိမ်းဆည်းပြီးပါပြီ။`);
 }
 
 // BULK IMPORT
 function openBulkModal() {
+    document.getElementById('bulkShopTitle').innerText = currentSelectedShop;
     document.getElementById('bulkInput').value = "";
     document.getElementById('bulkModal').classList.add('active');
 }
@@ -601,7 +642,7 @@ function saveBulkData() {
     localStorage.setItem('htun_mobile_multishop_items', JSON.stringify(itemsData));
     closeModal('bulkModal');
     handleSearch();
-    alert(`ပစ္စည်း (${addedCount}) ခု အောင်မြင်စွာ ထည့်သွင်းပြီးပါပြီ။`);
+    alert(`ပစ္စည်း (${addedCount}) ခု ထည့်သွင်းပြီးပါပြီ။ 'Save to GitHub' ကို နှိပ်၍ အပြီးသိမ်းပါ။`);
 }
 
 // SINGLE EDIT & ADD
@@ -617,9 +658,8 @@ function openAddItemModal() {
 
 function openEditItemModal(index) {
     const item = itemsData[index];
-    const shop = item.shop || "Kyaw Mobile";
-    document.getElementById('modalTitle').innerText = `${shop} - အချက်အလက်ပြင်မည်`;
-    document.getElementById('modalShop').value = shop;
+    document.getElementById('modalTitle').innerText = `${item.shop} - အချက်အလက်ပြင်မည်`;
+    document.getElementById('modalShop').value = item.shop;
     document.getElementById('editIndex').value = index;
     document.getElementById('modalCat').value = item.cat;
     document.getElementById('modalName').value = item.name;
@@ -654,7 +694,7 @@ function deleteCurrentItem() {
     }
 }
 
-// EXCEL TABLE EDITOR WITH CATEGORY TABS
+// EXCEL TABLE EDITOR
 function openExcelEditorModal() {
     document.getElementById('excelModalTitle').innerText = `📊 ${currentSelectedShop} - Excel Editor`;
     currentExcelCat = "ALL";
@@ -751,26 +791,21 @@ function deleteExcelRow(btn, origIdx) {
 }
 
 function saveExcelData() {
+    syncExcelInputsToData();
     const rows = document.querySelectorAll('#excelTableBody tr');
     for (let row of rows) {
         const origIdx = parseInt(row.dataset.index, 10);
         const cat = row.querySelector('.excel-select').value;
         const name = row.querySelector('.excel-name').value.trim();
         const price = parseInt(row.querySelector('.excel-price').value, 10);
-        if (name && !isNaN(price)) {
-            if (origIdx === -1) {
-                itemsData.unshift({ shop: currentSelectedShop, cat, name, price });
-            } else if (itemsData[origIdx]) {
-                itemsData[origIdx].cat = cat;
-                itemsData[origIdx].name = name;
-                itemsData[origIdx].price = price;
-            }
+        if (name && !isNaN(price) && origIdx === -1) {
+            itemsData.unshift({ shop: currentSelectedShop, cat, name, price });
         }
     }
     localStorage.setItem('htun_mobile_multishop_items', JSON.stringify(itemsData));
     handleSearch();
     closeModal('excelModal');
-    alert("စာရင်းများ အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီ။");
+    alert("စာရင်းများ အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီ။ 'Save to GitHub' ကို နှိပ်၍ အပြီးသတ် သိမ်းဆည်းပါ။");
 }
 
 // GITHUB SYNC
@@ -785,7 +820,7 @@ async function pushToGitHub() {
         return;
     }
 
-    if (!confirm("ယခု ပြင်ဆင်ထားသည့် အချက်အလက်များအားလုံးကို GitHub ပေါ်သို့ တိုက်ရိုက် Save လုပ်ရန် သေချာပါသလား?")) return;
+    if (!confirm("ယခု ပြင်ဆင်ထားသည့် အချက်အလက်များကို GitHub သို့ Save လုပ်ရန် သေချာပါသလား?")) return;
 
     try {
         const getFileUrl = `https://api.github.com/repos/${GITHUB_REPO}/contents/${FILE_PATH}`;
