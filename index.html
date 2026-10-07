@@ -82,28 +82,33 @@
         .btn-bulk { background: #2563eb; color: #ffffff; }
         .btn-excel { background: #047857; color: #ffffff; }
         .btn-fixed-github { background: #0f172a; color: #ffffff; border: none; width: 100%; padding: 12px; font-size: 13px; font-weight: 700; border-radius: var(--radius-md); margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.15); }
-        .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.65); z-index: 1000; justify-content: center; align-items: center; padding: 12px; }
+        .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.65); z-index: 1000; justify-content: center; align-items: center; padding: 8px; }
         .modal.active { display: flex; }
         .modal-content { background: #ffffff; width: 100%; max-width: 440px; border-radius: 12px; padding: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.25); max-height: 94vh; display: flex; flex-direction: column; }
-        .modal-content.excel-mode { max-width: 98vw; width: 680px; padding: 12px; }
+        .modal-content.excel-mode { max-width: 98vw; width: 680px; padding: 12px 10px; }
         .form-group { margin-bottom: 9px; }
         .form-group label { display: block; font-size: 11px; font-weight: 600; margin-bottom: 2px; color: var(--text-sub); }
         .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 8px 10px; font-size: 12px; border: 1.5px solid var(--border); border-radius: 7px; outline: none; font-family: inherit; }
-        .modal-actions { display: flex; gap: 6px; margin-top: 12px; }
+        .modal-actions { display: flex; gap: 6px; margin-top: 10px; }
         .btn-modal { flex: 1; padding: 9px; border: none; border-radius: 7px; font-weight: 600; font-size: 12px; cursor: pointer; }
         .btn-save-modal { background: var(--primary); color: white; }
         .btn-cancel-modal { background: #f1f5f9; color: var(--text-sub); }
         .btn-del-modal { background: #fee2e2; color: var(--danger); }
-        .excel-table-wrap { flex: 1; overflow: auto; border: 1px solid var(--border); border-radius: 6px; margin-top: 8px; }
-        .excel-table { width: 100%; border-collapse: collapse; min-width: 480px; font-size: 11px; }
-        .excel-table th, .excel-table td { border: 1px solid #cbd5e1; padding: 4px 6px; }
-        .excel-table th { background: #f1f5f9; position: sticky; top: 0; z-index: 2; font-weight: 600; }
-        .excel-input { width: 100%; border: none; outline: none; background: transparent; font-size: 11px; font-family: inherit; padding: 3px 0; }
-        .excel-input:focus { background: #eff6ff; }
-        .btn-row-del { color: var(--danger); background: none; border: none; font-weight: bold; cursor: pointer; font-size: 12px; }
-        .excel-category-tabs { display: flex; gap: 4px; overflow-x: auto; padding-bottom: 6px; border-bottom: 1px solid var(--border); margin-top: 4px; scrollbar-width: none; }
-        .excel-cat-tab { padding: 4px 10px; font-size: 11px; font-weight: 700; border-radius: 6px; border: 1px solid var(--border); background: #f8fafc; color: var(--text-sub); cursor: pointer; white-space: nowrap; }
+        
+        /* Excel Table & Category Tabs Styling */
+        .excel-category-tabs { display: flex; gap: 6px; overflow-x: auto; padding: 6px 2px; border-bottom: 1.5px solid var(--border); margin: 6px 0 8px; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+        .excel-category-tabs::-webkit-scrollbar { display: none; }
+        .excel-cat-tab { padding: 6px 12px; font-size: 12px; font-weight: 700; border-radius: 8px; border: 1.5px solid var(--border); background: #f8fafc; color: var(--text-sub); cursor: pointer; white-space: nowrap; flex-shrink: 0; }
         .excel-cat-tab.active { background: var(--primary); color: white; border-color: var(--primary); }
+        
+        .excel-table-wrap { flex: 1; overflow: auto; border: 1px solid var(--border); border-radius: 6px; margin-top: 4px; -webkit-overflow-scrolling: touch; }
+        .excel-table { width: 100%; border-collapse: collapse; min-width: 520px; font-size: 11px; }
+        .excel-table th, .excel-table td { border: 1px solid #cbd5e1; padding: 6px 8px; }
+        .excel-table th { background: #f1f5f9; position: sticky; top: 0; z-index: 2; font-weight: 600; white-space: nowrap; }
+        .excel-input { width: 100%; border: none; outline: none; background: transparent; font-size: 12px; font-family: inherit; padding: 2px 0; }
+        .excel-input:focus { background: #eff6ff; }
+        .excel-select { width: 100%; border: 1px solid #cbd5e1; border-radius: 4px; padding: 4px 6px; font-size: 11px; background: #ffffff; outline: none; font-family: inherit; }
+        .btn-row-del { color: var(--danger); background: none; border: none; font-weight: bold; cursor: pointer; font-size: 14px; width: 100%; text-align: center; }
     </style>
 </head>
 <body>
@@ -195,7 +200,6 @@
             <button class="btn-action btn-bulk" onclick="handleBulkImportClick()">📋 အမြန်စာရင်းကူးထည့်မည် (Bulk Paste)</button>
             <button class="btn-action btn-add" onclick="handleAddItemClick()">➕ ပစ္စည်းတစ်ခုချင်းစီ ထည့်မည်</button>
             <button class="btn-action btn-excel" onclick="handleExcelEditorClick()">📊 Excel ပုံစံဖြင့် အားလုံးပြင်/ဖြည့်မည်</button>
-            <!-- Web အောက်နားတွင် အမြဲရှိနေမည့် Save to GitHub Button -->
             <button class="btn-fixed-github" onclick="openSyncModal()">☁️ Save to GitHub (အပြီးသတ် သိမ်းဆည်းမည်)</button>
         </div>
     </div>
@@ -289,15 +293,15 @@
     </div>
 </div>
 
-<!-- Modal: Excel-Style Full Table Editor with Category Tabs -->
+<!-- Modal: Excel-Style Full Table Editor with Fixed Wide Columns -->
 <div class="modal" id="excelModal">
     <div class="modal-content excel-mode">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
             <h3 style="font-size: 14px;" id="excelModalTitle">📊 Excel Table Editor</h3>
-            <button type="button" style="background: #e2e8f0; border: none; padding: 4px 8px; border-radius: 4px; font-size: 11px; cursor: pointer;" onclick="addExcelRow()">➕ တန်းအသစ်ထည့်မည်</button>
+            <button type="button" style="background: #e2e8f0; border: none; padding: 5px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer;" onclick="addExcelRow()">➕ တန်းအသစ်ထည့်မည်</button>
         </div>
         
-        <!-- Excel Mode Category Tabs -->
+        <!-- Category Tabs -->
         <div class="excel-category-tabs">
             <button class="excel-cat-tab active" onclick="switchExcelCategory('ALL', this)">အားလုံး</button>
             <button class="excel-cat-tab" onclick="switchExcelCategory('LCD', this)">LCD</button>
@@ -310,11 +314,11 @@
             <table class="excel-table">
                 <thead>
                     <tr>
-                        <th style="width: 25px;">#</th>
-                        <th style="width: 75px;">Category</th>
-                        <th>Model Name / Description</th>
-                        <th style="width: 80px;">Price (K)</th>
-                        <th style="width: 30px;">ဖျက်</th>
+                        <th style="width: 32px; text-align: center;">#</th>
+                        <th style="width: 120px; text-align: left;">Category</th>
+                        <th style="min-width: 220px; text-align: left;">Model Name / Description</th>
+                        <th style="width: 95px; text-align: right;">Price (K)</th>
+                        <th style="width: 36px; text-align: center;">ဖျက်</th>
                     </tr>
                 </thead>
                 <tbody id="excelTableBody"></tbody>
@@ -654,7 +658,7 @@ function loadExcelTable() {
             <tr data-index="${origIdx}">
                 <td style="text-align: center; color: var(--text-sub);">${i + 1}</td>
                 <td>
-                    <select class="excel-input excel-cat">
+                    <select class="excel-select excel-cat">
                         <option value="LCD" ${item.cat === 'LCD' ? 'selected' : ''}>LCD</option>
                         <option value="Battery" ${item.cat === 'Battery' ? 'selected' : ''}>Battery</option>
                         <option value="Body Cover" ${item.cat === 'Body Cover' ? 'selected' : ''}>Body Cover</option>
@@ -677,7 +681,7 @@ function addExcelRow() {
     tr.innerHTML = `
         <td style="text-align: center; color: var(--text-sub);">*</td>
         <td>
-            <select class="excel-input excel-cat">
+            <select class="excel-select excel-cat">
                 <option value="LCD" ${defaultCat === 'LCD' ? 'selected' : ''}>LCD</option>
                 <option value="Battery" ${defaultCat === 'Battery' ? 'selected' : ''}>Battery</option>
                 <option value="Body Cover" ${defaultCat === 'Body Cover' ? 'selected' : ''}>Body Cover</option>
@@ -702,20 +706,15 @@ function deleteExcelRow(btn, origIdx) {
 }
 
 function saveExcelDataAndPromptSync() {
+    syncExcelInputsToData();
     const rows = document.querySelectorAll('#excelTableBody tr');
     for (let row of rows) {
         const origIdx = parseInt(row.dataset.index, 10);
         const cat = row.querySelector('.excel-cat').value;
         const name = row.querySelector('.excel-name').value.trim();
         const price = parseInt(row.querySelector('.excel-price').value, 10);
-        if (name && !isNaN(price)) {
-            if (origIdx === -1) {
-                itemsData.unshift({ shop: currentSelectedShop, cat, name, price });
-            } else if (itemsData[origIdx]) {
-                itemsData[origIdx].cat = cat;
-                itemsData[origIdx].name = name;
-                itemsData[origIdx].price = price;
-            }
+        if (name && !isNaN(price) && origIdx === -1) {
+            itemsData.unshift({ shop: currentSelectedShop, cat, name, price });
         }
     }
     localStorage.setItem('htun_mobile_multishop_items', JSON.stringify(itemsData));
@@ -755,7 +754,7 @@ async function pushToGitHub() {
         const putRes = await fetch(getFileUrl, {
             method: 'PUT',
             headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: "Update multi-shop items data", content: encodedUpdatedContent, sha: fileData.sha })
+            body: JSON.stringify({ message: "Update multi-shop items data via Admin", content: encodedUpdatedContent, sha: fileData.sha })
         });
         if (!putRes.ok) throw new Error("GitHub ပေါ်သို့ သိမ်းဆည်းမအောင်မြင်ပါ။");
         alert("GitHub ပေါ်သို့ အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီ။ ၁ မိနစ်အတွင်း Update ဖြစ်ပါမည်။");
