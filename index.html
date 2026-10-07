@@ -5,19 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Htun Htun Mobile Service & Parts</title>
     
-    <!-- PWA Settings (Installable App Support) -->
     <meta name="theme-color" content="#1e40af">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="HtunMobile">
     
-    <!-- Dynamic Manifest for Install Prompt -->
     <link rel="manifest" href="data:application/manifest+json;charset=utf-8,%7B%22name%22%3A%22Htun%20Htun%20Mobile%22%2C%22short_name%22%3A%22HtunMobile%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%231e40af%22%2C%22theme_color%22%3A%22%231e40af%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22https%3A%2F%2Fcdn-icons-png.flaticon.com%2F512%2F2920%2F2920349.png%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fpng%22%7D%5D%7D">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Pyidaungsu:wght@400;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
 
     <style>
         :root {
@@ -37,7 +35,6 @@
         body { font-family: 'Plus Jakarta Sans', 'Pyidaungsu', sans-serif; background-color: var(--bg); color: var(--text-main); padding: 12px 10px 80px; display: flex; justify-content: center; }
         .container { width: 100%; max-width: 520px; }
         
-        /* PWA Install Banner */
         #pwaInstallBanner {
             display: none;
             background: linear-gradient(135deg, #0f172a, #1e293b);
@@ -47,7 +44,6 @@
             margin-bottom: 12px;
             align-items: center;
             justify-content: space-between;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
         }
         #pwaInstallBanner span { font-size: 12px; font-weight: 600; }
         #btnInstallApp { background: #2563eb; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; }
@@ -153,7 +149,6 @@
 <body>
 
 <div class="container">
-    <!-- PWA Install Popup Bar -->
     <div id="pwaInstallBanner">
         <span>📲 ဖုန်းထဲမှာ App အဖြစ် Install လုပ်မလား?</span>
         <button id="btnInstallApp" onclick="triggerPwaInstall()">Install</button>
@@ -222,7 +217,7 @@
 
         <div class="search-box">
             <div class="search-input-wrap">
-                <input type="text" id="searchInput" class="search-input" placeholder="မော်ဒယ် သို့မဟုတ် ကုဒ် ရိုက်ရှာပါ..." oninput="handleSearch()">
+                <input type="text" id="searchInput" class="search-input" placeholder="မော်ဒယ် သို့မဟုတ် ကုဒ် ရိုက်ရှာပါ..." oninput="handleSearchDebounced()">
                 <button class="clear-btn" id="clearBtn" onclick="clearSearch()">✕</button>
             </div>
             <div class="category-tabs">
@@ -241,10 +236,8 @@
 
         <div class="item-list" id="itemList"></div>
 
-        <!-- အောက်ခြေ Admin Button -->
         <button class="admin-trigger-btn" id="btnAdminTrigger" onclick="openAdminLoginModal()">🔒 Admin Edit (ဆိုင်ပြင်ဆင်ခွင့်)</button>
         
-        <!-- Admin Logged-In Panel -->
         <div class="admin-panel" id="adminControlPanel">
             <div class="admin-panel-header">
                 <span>⚙️ <strong id="adminPanelShopName">Kyaw Mobile</strong> စီမံခန့်ခွဲမှု Panel</span>
@@ -434,13 +427,49 @@ function triggerPwaInstall() {
     }
 }
 
-// System PINs & State
-let MASTER_PIN = localStorage.getItem('cfg_master_pin') || "1221"; 
-let SHOP_PINS = JSON.parse(localStorage.getItem('cfg_shop_pins')) || { "Kyaw Mobile": "1111", "ချမ်းသာစည်": "2222" };
+// 1. Safe Configuration & State
+const DEFAULT_SHOP_PINS = { "Kyaw Mobile": "1111", "ချမ်းသာစည်": "2222" };
+let MASTER_PIN = "1221";
+try {
+    const savedMaster = localStorage.getItem('cfg_master_pin');
+    if (savedMaster) MASTER_PIN = savedMaster;
+} catch (e) {
+    console.warn("Could not read master pin from storage.", e);
+}
+
+let SHOP_PINS = DEFAULT_SHOP_PINS;
+try {
+    const savedPins = localStorage.getItem('cfg_shop_pins');
+    if (savedPins) {
+        const parsedPins = JSON.parse(savedPins);
+        if (parsedPins && typeof parsedPins === 'object') SHOP_PINS = parsedPins;
+    }
+} catch (e) {
+    console.warn("Invalid shop PIN data in storage. Using defaults.", e);
+}
+
+// Session Token (localStorage တွင် မသိမ်းဆည်းပါ)
+let sessionGhToken = "";
 
 let currentSelectedShop = "Kyaw Mobile";
 let adminAuthorizedShop = null; 
 let currentExcelCat = "ALL";
+
+// HTML & Attribute Escaping
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.innerText = String(text ?? '');
+    return div.innerHTML;
+}
+
+function escapeAttribute(value) {
+    return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+}
 
 function switchMainTab(tabId, el) {
     document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
@@ -496,7 +525,12 @@ function clearVoucherInput() {
 }
 
 function downloadVoucher() {
-    html2canvas(document.getElementById("voucherArea"), { scale: 2, backgroundColor: "#ffffff" }).then(canvas => {
+    if (typeof html2canvas === "undefined") {
+        alert("ပုံထုတ်ပေးသည့်စနစ် ဆွဲတင်နေဆဲဖြစ်ပါသည်။ ခေတ္တစောင့်ပြီး ပြန်လည်နှိပ်ပေးပါ။");
+        return;
+    }
+    const voucherElement = document.getElementById("voucherArea");
+    html2canvas(voucherElement, { scale: 2, backgroundColor: "#ffffff" }).then(canvas => {
         const link = document.createElement("a");
         link.download = "HtunHtun_Service_" + Date.now() + ".png";
         link.href = canvas.toDataURL("image/png");
@@ -504,7 +538,7 @@ function downloadVoucher() {
     });
 }
 
-// TAB 2: MULTI-SHOP DATA
+// TAB 2: DATA & MULTI-SHOP
 /*DATA_START*/
 let itemsData = [
     { shop: "Kyaw Mobile", cat: "LCD", name: "Huawei Y6P", price: 45000 },
@@ -521,8 +555,18 @@ let itemsData = [
 ];
 /*DATA_END*/
 
-if (localStorage.getItem('htun_mobile_multishop_items')) {
-    itemsData = JSON.parse(localStorage.getItem('htun_mobile_multishop_items'));
+// Safe LocalStorage Load
+try {
+    const savedItems = localStorage.getItem('htun_mobile_multishop_items');
+    if (savedItems) {
+        const parsedItems = JSON.parse(savedItems);
+        if (Array.isArray(parsedItems)) {
+            itemsData = parsedItems;
+        }
+    }
+} catch (e) {
+    console.warn("Saved item data is invalid. Using default data.", e);
+    try { localStorage.removeItem('htun_mobile_multishop_items'); } catch (_) {}
 }
 
 let selectedCategory = 'ALL';
@@ -544,21 +588,21 @@ function getTagClass(cat) {
     return { 'LCD': 'tag-lcd', 'Battery': 'tag-battery', 'Body Cover': 'tag-body', 'Back Glass': 'tag-back' }[cat] || '';
 }
 
-function renderItems(data) {
+// Optimized renderItems with pre-mapped index (No O(N^2) indexOf)
+function renderItems(dataWithIdx) {
     const listEl = document.getElementById('itemList');
-    document.getElementById('matchCount').innerText = data.length + " ခု";
-    if (data.length === 0) {
-        listEl.innerHTML = `<div class="empty-state">${currentSelectedShop} တွင် ပစ္စည်းမရှိပါ။</div>`;
+    document.getElementById('matchCount').innerText = dataWithIdx.length + " ခု";
+    if (dataWithIdx.length === 0) {
+        listEl.innerHTML = `<div class="empty-state">${escapeHtml(currentSelectedShop)} တွင် ပစ္စည်းမရှိပါ။</div>`;
         return;
     }
     let html = '';
-    data.forEach((item) => {
-        const idx = itemsData.indexOf(item);
+    dataWithIdx.forEach(({ item, idx }) => {
         const canEdit = adminAuthorizedShop && (adminAuthorizedShop === "ALL" || adminAuthorizedShop === item.shop);
         html += `
             <div class="item-card">
                 <div style="max-width: ${canEdit ? '70%' : '75%'};">
-                    <span class="category-tag ${getTagClass(item.cat)}">${item.cat}</span>
+                    <span class="category-tag ${getTagClass(item.cat)}">${escapeHtml(item.cat)}</span>
                     <div class="item-name">${escapeHtml(item.name)}</div>
                 </div>
                 <div style="text-align: right;">
@@ -570,16 +614,29 @@ function renderItems(data) {
     listEl.innerHTML = html;
 }
 
+// Search with Debounce
+let searchTimer = null;
+function handleSearchDebounced() {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(() => {
+        handleSearch();
+    }, 150);
+}
+
 function handleSearch() {
     const query = document.getElementById('searchInput').value.trim().toLowerCase();
     document.getElementById('clearBtn').style.display = query.length > 0 ? 'block' : 'none';
-    const filtered = itemsData.filter(item => {
-        const matchShop = (item.shop || "Kyaw Mobile") === currentSelectedShop;
-        const matchCat = (selectedCategory === 'ALL' || item.cat === selectedCategory);
-        const matchName = item.name.toLowerCase().includes(query) || item.cat.toLowerCase().includes(query);
-        return matchShop && matchCat && matchName;
-    });
-    renderItems(filtered);
+
+    const filteredWithIdx = itemsData
+        .map((item, idx) => ({ item, idx }))
+        .filter(({ item }) => {
+            const matchShop = (item.shop || "Kyaw Mobile") === currentSelectedShop;
+            const matchCat = (selectedCategory === 'ALL' || item.cat === selectedCategory);
+            const matchName = item.name.toLowerCase().includes(query) || item.cat.toLowerCase().includes(query);
+            return matchShop && matchCat && matchName;
+        });
+
+    renderItems(filteredWithIdx);
 }
 
 function clearSearch() {
@@ -595,10 +652,10 @@ function setCategory(cat, el) {
     handleSearch();
 }
 
-// ADMIN UNIFIED LOGIN
+// ADMIN LOGIN - Token is stored in session memory only
 function openAdminLoginModal() {
     document.getElementById('loginPinInput').value = "";
-    document.getElementById('loginGhToken').value = localStorage.getItem('gh_token') || "";
+    document.getElementById('loginGhToken').value = "";
     document.getElementById('adminLoginModal').classList.add('active');
     setTimeout(() => document.getElementById('loginPinInput').focus(), 150);
 }
@@ -607,7 +664,10 @@ function verifyAdminLogin() {
     const enteredPin = document.getElementById('loginPinInput').value.trim();
     const enteredToken = document.getElementById('loginGhToken').value.trim();
 
-    if (!enteredToken) { alert("GitHub Token Key ကို ထည့်သွင်းပေးရန် လိုအပ်ပါသည်။"); return; }
+    if (!enteredToken) {
+        alert("GitHub Token Key ကို ထည့်သွင်းပေးရန် လိုအပ်ပါသည်။");
+        return;
+    }
 
     if (enteredPin === MASTER_PIN) {
         adminAuthorizedShop = "ALL";
@@ -621,7 +681,7 @@ function verifyAdminLogin() {
         return;
     }
 
-    localStorage.setItem('gh_token', enteredToken);
+    sessionGhToken = enteredToken;
     closeModal('adminLoginModal');
 
     if (adminAuthorizedShop !== "ALL") {
@@ -638,13 +698,16 @@ function verifyAdminLogin() {
 
 function adminLogout() {
     adminAuthorizedShop = null;
+    sessionGhToken = "";
     document.getElementById('btnShop1').style.display = 'block';
     document.getElementById('btnShop2').style.display = 'block';
     document.getElementById('btnAdminTrigger').style.display = 'block';
     document.getElementById('adminControlPanel').classList.remove('active');
     handleSearch();
+    alert("Admin အကောင့်မှ ထွက်လိုက်ပါပြီ။");
 }
 
+// CHANGE PIN
 function openChangePinModal() {
     document.getElementById('newPinInput').value = "";
     document.getElementById('confirmPinInput').value = "";
@@ -658,15 +721,19 @@ function saveNewPin() {
     if (!p1 || p1.length < 4) { alert("PIN သည် အနည်းဆုံး ဂဏန်း ၄ လုံး ရှိရပါမည်။"); return; }
     if (p1 !== p2) { alert("PIN ၂ ကြိမ် ရိုက်ထည့်မှု မကိုက်ညီပါ။"); return; }
 
-    if (adminAuthorizedShop === "ALL") {
-        MASTER_PIN = p1;
-        localStorage.setItem('cfg_master_pin', p1);
-    } else {
-        SHOP_PINS[adminAuthorizedShop] = p1;
-        localStorage.setItem('cfg_shop_pins', JSON.stringify(SHOP_PINS));
+    try {
+        if (adminAuthorizedShop === "ALL") {
+            MASTER_PIN = p1;
+            localStorage.setItem('cfg_master_pin', p1);
+        } else {
+            SHOP_PINS[adminAuthorizedShop] = p1;
+            localStorage.setItem('cfg_shop_pins', JSON.stringify(SHOP_PINS));
+        }
+        closeModal('changePinModal');
+        alert(`PIN အသစ်ကို (${p1}) အဖြစ် ပြောင်းလဲသိမ်းဆည်းပြီးပါပြီ။`);
+    } catch (e) {
+        alert("PIN အသစ် သိမ်းဆည်းရာတွင် အမှားဖြစ်ပေါ်ပါသည်: " + e.message);
     }
-    closeModal('changePinModal');
-    alert(`PIN အသစ်ကို (${p1}) အဖြစ် ပြောင်းလဲသိမ်းဆည်းပြီးပါပြီ။`);
 }
 
 // BULK IMPORT
@@ -692,13 +759,13 @@ function saveBulkData() {
         }
     }
     if (addedCount === 0) { alert("စာရင်းပုံစံ မမှန်ကန်ပါ။"); return; }
-    localStorage.setItem('htun_mobile_multishop_items', JSON.stringify(itemsData));
+    try { localStorage.setItem('htun_mobile_multishop_items', JSON.stringify(itemsData)); } catch (_) {}
     closeModal('bulkModal');
     handleSearch();
-    alert(`ပစ္စည်း (${addedCount}) ခု ထည့်သွင်းပြီးပါပြီ။`);
+    alert(`ပစ္စည်း (${addedCount}) ခု ထည့်သွင်းပြီးပါပြီ။ 'Save to GitHub' ကို နှိပ်၍ အပြီးသိမ်းပါ။`);
 }
 
-// SINGLE EDIT
+// SINGLE EDIT & ADD
 function openAddItemModal() {
     document.getElementById('modalTitle').innerText = `${currentSelectedShop} - ပစ္စည်းအသစ်ထည့်မည်`;
     document.getElementById('modalShop').value = currentSelectedShop;
@@ -711,6 +778,7 @@ function openAddItemModal() {
 
 function openEditItemModal(index) {
     const item = itemsData[index];
+    if (!item) return;
     document.getElementById('modalTitle').innerText = `${item.shop} - အချက်အလက်ပြင်မည်`;
     document.getElementById('modalShop').value = item.shop;
     document.getElementById('editIndex').value = index;
@@ -729,10 +797,10 @@ function saveItemData() {
     const cat = document.getElementById('modalCat').value;
     const name = document.getElementById('modalName').value.trim();
     const price = parseInt(document.getElementById('modalPrice').value, 10);
-    if (!name || isNaN(price)) { alert("မော်ဒယ်အမည်နှင့် ဈေးနှုန်း ဖြည့်ပါ။"); return; }
+    if (!name || isNaN(price)) { alert("မော်ဒယ်အမည်နှင့် ဈေးနှုန်း ပြည့်စုံစွာ ဖြည့်ပါ။"); return; }
     if (index === -1) { itemsData.unshift({ shop, cat, name, price }); }
-    else { itemsData[index] = { shop, cat, name, price }; }
-    localStorage.setItem('htun_mobile_multishop_items', JSON.stringify(itemsData));
+    else if (itemsData[index]) { itemsData[index] = { shop, cat, name, price }; }
+    try { localStorage.setItem('htun_mobile_multishop_items', JSON.stringify(itemsData)); } catch (_) {}
     closeModal('itemModal');
     handleSearch();
 }
@@ -741,7 +809,7 @@ function deleteCurrentItem() {
     const index = parseInt(document.getElementById('editIndex').value, 10);
     if (index > -1 && confirm("ဖျက်ပစ်ရန် သေချာပါသလား?")) {
         itemsData.splice(index, 1);
-        localStorage.setItem('htun_mobile_multishop_items', JSON.stringify(itemsData));
+        try { localStorage.setItem('htun_mobile_multishop_items', JSON.stringify(itemsData)); } catch (_) {}
         closeModal('itemModal');
         handleSearch();
     }
@@ -768,9 +836,13 @@ function syncExcelInputsToData() {
     const rows = document.querySelectorAll('#excelTableBody tr');
     for (let row of rows) {
         const origIdx = parseInt(row.dataset.index, 10);
-        const cat = row.querySelector('.excel-select').value;
-        const name = row.querySelector('.excel-name').value.trim();
-        const price = parseInt(row.querySelector('.excel-price').value, 10);
+        const catSelect = row.querySelector('.excel-select');
+        const nameInput = row.querySelector('.excel-name');
+        const priceInput = row.querySelector('.excel-price');
+        if (!catSelect || !nameInput || !priceInput) continue;
+        const cat = catSelect.value;
+        const name = nameInput.value.trim();
+        const price = parseInt(priceInput.value, 10);
         if (origIdx >= 0 && itemsData[origIdx]) {
             if (name && !isNaN(price)) {
                 itemsData[origIdx].cat = cat;
@@ -784,14 +856,15 @@ function syncExcelInputsToData() {
 function loadExcelTable() {
     const tbody = document.getElementById('excelTableBody');
     let html = '';
-    let filtered = itemsData.filter(item => {
-        const matchShop = (item.shop || "Kyaw Mobile") === currentSelectedShop;
-        const matchCat = (currentExcelCat === 'ALL' || item.cat === currentExcelCat);
-        return matchShop && matchCat;
-    });
+    const filteredWithIdx = itemsData
+        .map((item, origIdx) => ({ item, origIdx }))
+        .filter(({ item }) => {
+            const matchShop = (item.shop || "Kyaw Mobile") === currentSelectedShop;
+            const matchCat = (currentExcelCat === 'ALL' || item.cat === currentExcelCat);
+            return matchShop && matchCat;
+        });
 
-    filtered.forEach((item, i) => {
-        const origIdx = itemsData.indexOf(item);
+    filteredWithIdx.forEach(({ item, origIdx }, i) => {
         html += `
             <tr data-index="${origIdx}">
                 <td style="text-align: center; color: var(--text-sub);">${i + 1}</td>
@@ -803,7 +876,7 @@ function loadExcelTable() {
                         <option value="Back Glass" ${item.cat === 'Back Glass' ? 'selected' : ''}>Back Glass</option>
                     </select>
                 </td>
-                <td><input type="text" class="excel-input excel-name" value="${escapeHtml(item.name)}"></td>
+                <td><input type="text" class="excel-input excel-name" value="${escapeAttribute(item.name)}"></td>
                 <td><input type="number" class="excel-input excel-price" value="${item.price}" style="text-align: right;"></td>
                 <td style="text-align: center;"><button class="btn-row-del" onclick="deleteExcelRow(this, ${origIdx})">✕</button></td>
             </tr>`;
@@ -835,9 +908,9 @@ function addExcelRow() {
 
 function deleteExcelRow(btn, origIdx) {
     if (confirm("ဖျက်ပစ်ရန် သေချာပါသလား?")) {
-        if (origIdx >= 0) {
+        if (origIdx >= 0 && itemsData[origIdx]) {
             itemsData.splice(origIdx, 1);
-            localStorage.setItem('htun_mobile_multishop_items', JSON.stringify(itemsData));
+            try { localStorage.setItem('htun_mobile_multishop_items', JSON.stringify(itemsData)); } catch (_) {}
         }
         btn.closest('tr').remove();
     }
@@ -848,36 +921,41 @@ function saveExcelData() {
     const rows = document.querySelectorAll('#excelTableBody tr');
     for (let row of rows) {
         const origIdx = parseInt(row.dataset.index, 10);
-        const cat = row.querySelector('.excel-select').value;
-        const name = row.querySelector('.excel-name').value.trim();
-        const price = parseInt(row.querySelector('.excel-price').value, 10);
+        const catSelect = row.querySelector('.excel-select');
+        const nameInput = row.querySelector('.excel-name');
+        const priceInput = row.querySelector('.excel-price');
+        if (!catSelect || !nameInput || !priceInput) continue;
+        const cat = catSelect.value;
+        const name = nameInput.value.trim();
+        const price = parseInt(priceInput.value, 10);
         if (name && !isNaN(price) && origIdx === -1) {
             itemsData.unshift({ shop: currentSelectedShop, cat, name, price });
         }
     }
-    localStorage.setItem('htun_mobile_multishop_items', JSON.stringify(itemsData));
+    try { localStorage.setItem('htun_mobile_multishop_items', JSON.stringify(itemsData)); } catch (_) {}
     handleSearch();
     closeModal('excelModal');
-    alert("စာရင်းများ သိမ်းဆည်းပြီးပါပြီ။");
+    alert("စာရင်းများ အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီ။ 'Save to GitHub' ကို နှိပ်၍ အပြီးသတ် သိမ်းဆည်းပါ။");
 }
-// GITHUB SYNC
+
+// GITHUB SYNC (Token is retrieved from session memory only)
 const GITHUB_REPO = "HtunHtun01/Service";
 const FILE_PATH = "index.html";
 
 async function pushToGitHub() {
-    const token = localStorage.getItem('gh_token') || "";
+    const token = sessionGhToken;
     if (!token) {
-        alert("GitHub Token မရှိပါ။ Admin Login ပြန်လည်ဝင်ရောက်ပေးပါ။");
+        alert("GitHub Token မရှိပါ။ ကျေးဇူးပြု၍ Admin Login ပြန်လည်ဝင်ရောက်ပေးပါ။");
         openAdminLoginModal();
         return;
     }
 
-    if (!confirm("အချက်အလက်များကို GitHub သို့ အပြီးသတ် Save လုပ်ရန် သေချာပါသလား?")) return;
+    if (!confirm("ယခု ပြင်ဆင်ထားသည့် အချက်အလက်များကို GitHub သို့ Save လုပ်ရန် သေချာပါသလား?")) return;
 
     try {
         const getFileUrl = `https://api.github.com/repos/${GITHUB_REPO}/contents/${FILE_PATH}`;
         const res = await fetch(getFileUrl, { headers: { 'Authorization': `Bearer ${token}` } });
-        if (!res.ok) throw new Error("GitHub Token မှားယွင်းနေပါသည် သို့မဟုတ် File မတွေ့ပါ။");
+        if (!res.ok) throw new Error("GitHub Token မှားယွင်းနေပါသည် သို့မဟုတ် File ရှာမတွေ့ပါ။");
         const fileData = await res.json();
         const decodedContent = decodeURIComponent(escape(atob(fileData.content)));
         const newItemsJson = JSON.stringify(itemsData, null, 4);
@@ -888,7 +966,7 @@ async function pushToGitHub() {
         const putRes = await fetch(getFileUrl, {
             method: 'PUT',
             headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: "Update multi-shop items data", content: encodedUpdatedContent, sha: fileData.sha })
+            body: JSON.stringify({ message: "Update multi-shop items data via Admin Panel", content: encodedUpdatedContent, sha: fileData.sha })
         });
         if (!putRes.ok) throw new Error("GitHub ပေါ်သို့ သိမ်းဆည်းမအောင်မြင်ပါ။");
         alert("GitHub ပေါ်သို့ အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီ။ ၁ မိနစ်အတွင်း Update ဖြစ်ပါမည်။");
@@ -897,12 +975,7 @@ async function pushToGitHub() {
     }
 }
 
-function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.innerText = text;
-    return div.innerHTML;
-}
-
+// Initial run
 handleSearch();
 </script>
 </body>
