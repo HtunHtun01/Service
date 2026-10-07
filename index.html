@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Htun Htun Mobile Service</title>
+    <title>Htun Htun Mobile Service & Parts</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Pyidaungsu:wght@400;600;700&display=swap" rel="stylesheet">
@@ -12,11 +12,13 @@
         :root {
             --primary: #2563eb;
             --primary-hover: #1d4ed8;
+            --primary-light: #eff6ff;
             --success: #059669;
+            --danger: #dc2626;
             --bg: #f8fafc;
-            --card-bg: #ffffff;
+            --card: #ffffff;
             --text-main: #0f172a;
-            --text-muted: #64748b;
+            --text-sub: #64748b;
             --border: #e2e8f0;
             --radius-md: 12px;
             --radius-lg: 16px;
@@ -31,44 +33,80 @@
         }
 
         body {
-            font-family: 'Plus Jakarta Sans', 'Pyidaungsu', -apple-system, sans-serif;
+            font-family: 'Plus Jakarta Sans', 'Pyidaungsu', sans-serif;
             background-color: var(--bg);
             color: var(--text-main);
-            padding: 16px 14px 40px;
+            padding: 14px 12px 60px;
             display: flex;
             justify-content: center;
         }
 
         .container {
             width: 100%;
-            max-width: 480px;
+            max-width: 500px;
         }
 
-        .header-card {
+        .header {
             background: linear-gradient(135deg, #1e40af, #2563eb);
-            color: #ffffff;
-            padding: 20px;
+            color: white;
+            padding: 16px 18px;
             border-radius: var(--radius-lg);
-            margin-bottom: 16px;
-            box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.25);
+            margin-bottom: 12px;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
             text-align: center;
         }
 
-        .header-card h1 {
-            font-size: 20px;
+        .header h1 {
+            font-size: 19px;
             font-weight: 700;
-            margin-bottom: 4px;
+            margin-bottom: 2px;
         }
 
-        .header-card p {
-            font-size: 13px;
+        .header p {
+            font-size: 12px;
             color: #bfdbfe;
         }
 
+        .nav-tabs {
+            display: flex;
+            background: #e2e8f0;
+            border-radius: var(--radius-md);
+            padding: 4px;
+            margin-bottom: 16px;
+            gap: 4px;
+        }
+
+        .nav-tab-btn {
+            flex: 1;
+            padding: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            border: none;
+            background: none;
+            border-radius: 8px;
+            color: var(--text-sub);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .nav-tab-btn.active {
+            background: #ffffff;
+            color: var(--primary);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .tab-section {
+            display: none;
+        }
+        .tab-section.active {
+            display: block;
+        }
+
         .card {
-            background: var(--card-bg);
+            background: var(--card);
             border-radius: var(--radius-lg);
-            padding: 18px;
+            padding: 16px;
             border: 1px solid var(--border);
             box-shadow: var(--shadow-sm);
             margin-bottom: 16px;
@@ -76,17 +114,17 @@
 
         .card-label {
             display: block;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             margin-bottom: 8px;
         }
 
         textarea {
             width: 100%;
-            height: 140px;
+            height: 130px;
             padding: 12px;
             font-size: 14px;
-            line-height: 1.6;
+            line-height: 1.5;
             color: var(--text-main);
             background-color: #f8fafc;
             border: 1.5px solid var(--border);
@@ -104,12 +142,11 @@
         .btn-group {
             display: flex;
             gap: 10px;
-            margin-top: 14px;
+            margin-top: 12px;
         }
 
         button {
-            flex: 1;
-            padding: 13px;
+            padding: 12px;
             font-size: 14px;
             font-weight: 600;
             border-radius: var(--radius-md);
@@ -121,12 +158,13 @@
         .btn-primary {
             background-color: var(--primary);
             color: #ffffff;
+            flex: 1;
         }
 
         .btn-outline {
             background-color: #f1f5f9;
-            color: var(--text-muted);
-            max-width: 100px;
+            color: var(--text-sub);
+            width: 90px;
         }
 
         .btn-save {
@@ -134,60 +172,48 @@
             color: #ffffff;
             margin-top: 14px;
             width: 100%;
-            padding: 14px;
-            font-size: 15px;
-            box-shadow: 0 4px 6px -1px rgba(5, 150, 105, 0.2);
+            padding: 13px;
+            font-size: 14px;
         }
 
-        .result-container {
-            display: none;
-            animation: fadeIn 0.3s ease-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Voucher Area */
         #voucherArea {
             background: #ffffff;
             border: 1px solid var(--border);
             border-radius: var(--radius-lg);
-            padding: 22px 18px;
+            padding: 20px 16px;
             box-shadow: var(--shadow-sm);
         }
 
         .voucher-header {
             text-align: center;
             border-bottom: 2px dashed #cbd5e1;
-            padding-bottom: 14px;
-            margin-bottom: 14px;
+            padding-bottom: 12px;
+            margin-bottom: 12px;
         }
 
         .voucher-shop-name {
-            font-size: 19px;
+            font-size: 18px;
             font-weight: 700;
             color: #1e3a8a;
-            margin-bottom: 4px;
+            margin-bottom: 3px;
         }
 
         .voucher-meta {
             font-size: 12px;
-            color: var(--text-muted);
-            line-height: 1.5;
+            color: var(--text-sub);
+            line-height: 1.4;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 14px;
+            font-size: 13px;
             margin-bottom: 12px;
         }
 
         th {
             background-color: #f8fafc;
-            color: var(--text-muted);
+            color: var(--text-sub);
             font-weight: 600;
             font-size: 12px;
             padding: 8px 10px;
@@ -196,13 +222,13 @@
         }
 
         td {
-            padding: 10px;
+            padding: 9px 10px;
             border-bottom: 1px solid #f1f5f9;
         }
 
         .td-num {
-            color: var(--text-muted);
-            width: 30px;
+            color: var(--text-sub);
+            width: 28px;
             font-size: 12px;
         }
 
@@ -220,117 +246,453 @@
         }
 
         .voucher-summary .title {
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 700;
         }
 
         .voucher-summary .total-amt {
-            font-size: 19px;
+            font-size: 18px;
             font-weight: 700;
             color: var(--success);
         }
 
-        /* Payment Info Box */
         .payment-box {
-            margin-top: 14px;
-            padding: 12px;
+            margin-top: 12px;
+            padding: 10px 12px;
             background-color: #eff6ff;
             border: 1px solid #bfdbfe;
             border-radius: var(--radius-md);
-            font-size: 13px;
+            font-size: 12px;
         }
 
         .payment-title {
             font-weight: 700;
             color: #1e40af;
             margin-bottom: 4px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .payment-detail {
-            color: #334155;
-            line-height: 1.5;
         }
 
         .voucher-footer {
             text-align: center;
-            margin-top: 14px;
-            font-size: 12px;
-            color: var(--text-muted);
+            margin-top: 12px;
+            font-size: 11px;
+            color: var(--text-sub);
         }
+
+        .search-box {
+            position: sticky;
+            top: 10px;
+            z-index: 100;
+            background: var(--card);
+            border-radius: var(--radius-lg);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            padding: 12px;
+            margin-bottom: 14px;
+            border: 1.5px solid var(--border);
+        }
+
+        .search-input-wrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 11px 14px;
+            padding-right: 36px;
+            font-size: 14px;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .search-input:focus {
+            border-color: var(--primary);
+        }
+
+        .clear-btn {
+            position: absolute;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 18px;
+            color: var(--text-sub);
+            cursor: pointer;
+            display: none;
+        }
+
+        .category-tabs {
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            padding-top: 10px;
+            scrollbar-width: none;
+        }
+        .category-tabs::-webkit-scrollbar { display: none; }
+
+        .cat-btn {
+            padding: 5px 11px;
+            font-size: 11px;
+            font-weight: 600;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            background: #f1f5f9;
+            color: var(--text-sub);
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        .cat-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .result-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: var(--text-sub);
+            margin: 0 4px 8px;
+        }
+
+        .item-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .item-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 10px 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .item-left { max-width: 70%; }
+
+        .category-tag {
+            display: inline-block;
+            font-size: 9px;
+            font-weight: 700;
+            padding: 2px 5px;
+            border-radius: 4px;
+            margin-bottom: 3px;
+            text-transform: uppercase;
+        }
+
+        .tag-lcd { background: #e0f2fe; color: #0284c7; }
+        .tag-battery { background: #fef3c7; color: #d97706; }
+        .tag-body { background: #f3e8ff; color: #9333ea; }
+        .tag-back { background: #dcfce7; color: #16a34a; }
+
+        .item-name {
+            font-size: 13px;
+            font-weight: 600;
+            line-height: 1.4;
+            color: var(--text-main);
+        }
+
+        .item-right {
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 3px;
+        }
+
+        .item-price {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--success);
+            white-space: nowrap;
+        }
+
+        .btn-edit-item {
+            font-size: 11px;
+            color: var(--primary);
+            background: none;
+            border: none;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 30px 10px;
+            color: var(--text-sub);
+            font-size: 13px;
+            background: white;
+            border-radius: var(--radius-md);
+            border: 1px dashed var(--border);
+        }
+
+        .admin-box {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 14px;
+        }
+
+        .btn-action {
+            width: 100%;
+            padding: 11px;
+            border-radius: var(--radius-md);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-add {
+            background: #ffffff;
+            color: var(--text-main);
+            border: 1.5px dashed #cbd5e1;
+        }
+
+        .btn-sync {
+            background: #0f172a;
+            color: #ffffff;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(15, 23, 42, 0.6);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+        }
+
+        .modal.active { display: flex; }
+
+        .modal-content {
+            background: #ffffff;
+            width: 100%;
+            max-width: 420px;
+            border-radius: 14px;
+            padding: 18px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .modal-content h3 {
+            font-size: 15px;
+            margin-bottom: 12px;
+        }
+
+        .form-group {
+            margin-bottom: 10px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 3px;
+            color: var(--text-sub);
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 9px 11px;
+            font-size: 13px;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .btn-modal {
+            flex: 1;
+            padding: 9px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .btn-save-modal { background: var(--primary); color: white; }
+        .btn-cancel-modal { background: #f1f5f9; color: var(--text-sub); }
+        .btn-del-modal { background: #fee2e2; color: var(--danger); }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="header-card">
+    <div class="header">
         <h1>Htun Htun Mobile Service</h1>
-        <p>ဖုန်းဝန်ဆောင်မှု စာရင်းတွက်စက်နှင့် ဘောက်ချာထုတ်ပေးစနစ်</p>
+        <p>ဖုန်းဝန်ဆောင်မှု ဘောက်ချာ &amp; ပစ္စည်းဈေးနှုန်းစာရင်း</p>
     </div>
 
-    <!-- Input Box -->
-    <div class="card">
-        <label class="card-label" for="rawInput">စာရင်းထည့်သွင်းရန်</label>
-        <textarea id="rawInput" placeholder="Note 11e global 15000&#10;Vivo y15 lock 10000&#10;Oppo a5 2020 frp 15000"></textarea>
-        
-        <div class="btn-group">
-            <button class="btn-outline" type="button" onclick="clearAll()">ရှင်းမည်</button>
-            <button class="btn-primary" type="button" onclick="calculateTotal()">ပေါင်းမည်</button>
-        </div>
+    <div class="nav-tabs">
+        <button class="nav-tab-btn active" onclick="switchMainTab('voucherTab', this)">🧾 ဘောက်ချာတွက်စက်</button>
+        <button class="nav-tab-btn" onclick="switchMainTab('partsTab', this)">🔍 ပစ္စည်းဈေးနှုန်းရှာရန်</button>
     </div>
 
-    <!-- Voucher Result -->
-    <div id="outputContainer" class="result-container">
-        
-        <div id="voucherArea">
-            <div class="voucher-header">
-                <div class="voucher-shop-name">Htun Htun Mobile Service</div>
-                <div class="voucher-meta">Service Receipt &amp; Voucher</div>
-                <div class="voucher-meta" id="currentDate"></div>
-                <div class="voucher-meta" style="font-weight: 600; color: #1e40af; margin-top: 2px;">
-                    📞 ဆက်သွယ်ရန်: 09400084212
-                </div>
-            </div>
-
-            <table>
-                <thead>
-                    <tr>
-                        <th class="td-num">စဉ်</th>
-                        <th>အမျိုးအမည်</th>
-                        <th style="text-align: right;">ကျသင့်ငွေ</th>
-                    </tr>
-                </thead>
-                <tbody id="tableBody"></tbody>
-            </table>
-
-            <div class="voucher-summary">
-                <div class="title">စုစုပေါင်း ကျသင့်ငွေ</div>
-                <div class="total-amt" id="grandTotalText">0 K</div>
-            </div>
-
-            <!-- Payment Box -->
-            <div class="payment-box">
-                <div class="payment-title">💳 ငွေပေးချေရန် အကောင့်</div>
-                <div class="payment-detail">
-                    <strong>KBZPay:</strong> 09400084212<br>
-                    <strong>Name:</strong> Htun Htun
-                </div>
-            </div>
-
-            <div class="voucher-footer">
-                အားပေးမှုကို အထူးကျေးဇူးတင်ရှိပါသည်
+    <!-- TAB 1: VOUCHER -->
+    <div id="voucherTab" class="tab-section active">
+        <div class="card">
+            <label class="card-label" for="rawInput">စာရင်းထည့်သွင်းရန် (တစ်ကြောင်းလျှင် ပစ္စည်းတစ်ခု)</label>
+            <textarea id="rawInput" placeholder="Note 11e global 15000&#10;Vivo y15 lock 10000&#10;Oppo a5 2020 frp 15000"></textarea>
+            
+            <div class="btn-group">
+                <button class="btn-outline" type="button" onclick="clearVoucherInput()">ရှင်းမည်</button>
+                <button class="btn-primary" type="button" onclick="calculateTotal()">ပေါင်းမည်</button>
             </div>
         </div>
 
-        <button class="btn-save" type="button" onclick="downloadVoucher()">
-            📷 ဘောက်ချာအား ပုံအဖြစ် သိမ်းမည်
-        </button>
+        <div id="outputContainer" style="display: none;">
+            <div id="voucherArea">
+                <div class="voucher-header">
+                    <div class="voucher-shop-name">Htun Htun Mobile Service</div>
+                    <div class="voucher-meta">Service Receipt &amp; Voucher</div>
+                    <div class="voucher-meta" id="currentDate"></div>
+                    <div class="voucher-meta" style="font-weight: 600; color: #1e40af; margin-top: 2px;">
+                        📞 ဆက်သွယ်ရန်: 09400084212
+                    </div>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="td-num">စဉ်</th>
+                            <th>အမျိုးအမည်</th>
+                            <th style="text-align: right;">ကျသင့်ငွေ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+
+                <div class="voucher-summary">
+                    <div class="title">စုစုပေါင်း ကျသင့်ငွေ</div>
+                    <div class="total-amt" id="grandTotalText">0 K</div>
+                </div>
+
+                <div class="payment-box">
+                    <div class="payment-title">💳 ငွေပေးချေရန် အကောင့်</div>
+                    <div style="color: #334155; line-height: 1.5;">
+                        <strong>KBZPay:</strong> 09400084212<br>
+                        <strong>Name:</strong> Htun Htun
+                    </div>
+                </div>
+
+                <div class="voucher-footer">
+                    အားပေးမှုကို အထူးကျေးဇူးတင်ရှိပါသည်
+                </div>
+            </div>
+
+            <button class="btn-save" type="button" onclick="downloadVoucher()">
+                📷 ဘောက်ချာအား ပုံအဖြစ် သိမ်းမည်
+            </button>
+        </div>
+    </div>
+
+    <!-- TAB 2: PARTS -->
+    <div id="partsTab" class="tab-section">
+        <div class="search-box">
+            <div class="search-input-wrap">
+                <input type="text" id="searchInput" class="search-input" placeholder="မော်ဒယ် သို့မဟုတ် ကုဒ် ရိုက်ရှာပါ (eg. y15, 9a, bn50)..." oninput="handleSearch()">
+                <button class="clear-btn" id="clearBtn" onclick="clearSearch()">✕</button>
+            </div>
+            
+            <div class="category-tabs">
+                <button class="cat-btn active" onclick="setCategory('ALL', this)">အားလုံး</button>
+                <button class="cat-btn" onclick="setCategory('LCD', this)">LCD</button>
+                <button class="cat-btn" onclick="setCategory('Battery', this)">Battery</button>
+                <button class="cat-btn" onclick="setCategory('Body Cover', this)">Body Cover</button>
+                <button class="cat-btn" onclick="setCategory('Back Glass', this)">Back Glass</button>
+            </div>
+        </div>
+
+        <div class="result-info">
+            <span>တွေ့ရှိသော စာရင်း</span>
+            <strong id="matchCount">0 ခု</strong>
+        </div>
+
+        <div class="item-list" id="itemList"></div>
+
+        <div class="admin-box">
+            <button class="btn-action btn-add" onclick="openAddModal()">➕ ပစ္စည်းအသစ် ထည့်သွင်းမည်</button>
+            <button class="btn-action btn-sync" onclick="openSyncModal()">☁️ GitHub သို့ တိုက်ရိုက် Save မည် (Commit)</button>
+        </div>
     </div>
 </div>
 
+<!-- Modal 1 -->
+<div class="modal" id="itemModal">
+    <div class="modal-content">
+        <h3 id="modalTitle">ပစ္စည်းအသစ် ထည့်သွင်းခြင်း</h3>
+        <input type="hidden" id="editIndex" value="-1">
+
+        <div class="form-group">
+            <label>အမျိုးအစား</label>
+            <select id="modalCat">
+                <option value="LCD">LCD</option>
+                <option value="Battery">Battery</option>
+                <option value="Body Cover">Body Cover</option>
+                <option value="Back Glass">Back Glass</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>ပစ္စည်း / မော်ဒယ်အမည်</label>
+            <input type="text" id="modalName" placeholder="ဥပမာ - Redmi 9A / Poco C3">
+        </div>
+
+        <div class="form-group">
+            <label>ဈေးနှုန်း (ကျပ်)</label>
+            <input type="number" id="modalPrice" placeholder="ဥပမာ - 30000">
+        </div>
+
+        <div class="modal-actions">
+            <button type="button" class="btn-modal btn-cancel-modal" onclick="closeModal('itemModal')">ပိတ်မည်</button>
+            <button type="button" class="btn-modal btn-del-modal" id="btnDelete" onclick="deleteCurrentItem()" style="display: none;">ဖျက်မည်</button>
+            <button type="button" class="btn-modal btn-save-modal" onclick="saveItemData()">မှတ်မည်</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal 2 -->
+<div class="modal" id="syncModal">
+    <div class="modal-content">
+        <h3>GitHub သို့ ဒေတာများ သိမ်းဆည်းမည်</h3>
+        <p style="font-size: 11px; color: var(--text-sub); margin-bottom: 12px;">Token ထည့်ပြီး သိမ်းဆည်းလိုက်ပါက GitHub Repository ထဲရှိ မူလကုဒ်တွင်ပါ အလိုအလျောက် ပြင်ဆင်သွားပါမည်။</p>
+
+        <div class="form-group">
+            <label>GitHub Personal Access Token</label>
+            <input type="password" id="ghToken" placeholder="ghp_xxxxxxxxxxxx">
+        </div>
+
+        <div class="modal-actions">
+            <button type="button" class="btn-modal btn-cancel-modal" onclick="closeModal('syncModal')">ပိတ်မည်</button>
+            <button type="button" class="btn-modal btn-save-modal" id="btnSyncSubmit" onclick="pushToGitHub()">GitHub သို့ Save မည်</button>
+        </div>
+    </div>
+</div>
 <script>
+function switchMainTab(tabId, el) {
+    document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    el.classList.add('active');
+}
+
+// VOUCHER FUNCTIONS
 function calculateTotal() {
     const text = document.getElementById("rawInput").value.trim();
     if (!text) {
@@ -348,7 +710,6 @@ function calculateTotal() {
         if (!line) continue;
 
         const match = line.match(/^(.*?)[\s\t]+(\d+)$/);
-
         if (match) {
             count++;
             const itemName = match[1].trim();
@@ -373,15 +734,13 @@ function calculateTotal() {
     const now = new Date();
     const dateStr = now.toLocaleDateString('en-GB') + " | " + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     document.getElementById("currentDate").innerText = "ရက်စွဲ - " + dateStr;
-
     document.getElementById("grandTotalText").innerText = grandTotal.toLocaleString() + " K";
     document.getElementById("tableBody").innerHTML = rowsHtml;
     document.getElementById("outputContainer").style.display = "block";
-
     document.getElementById("outputContainer").scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-function clearAll() {
+function clearVoucherInput() {
     document.getElementById("rawInput").value = "";
     document.getElementById("outputContainer").style.display = "none";
 }
@@ -396,11 +755,329 @@ function downloadVoucher() {
     });
 }
 
+// PARTS DATABASE
+/*DATA_START*/
+let itemsData = [
+    { cat: "LCD", name: "Hu Y6P / Y6-2020 / Honor Play 9A / Honor 9A", price: 45000 },
+    { cat: "LCD", name: "In Hot 30 / note 30 / spark 10 Pro / spark 20 Pro / Pova 5 / Pova 5 Pro / Hot 40 / Hot 40 Pro", price: 43000 },
+    { cat: "LCD", name: "Itel P40 / A60 / A60s / A70 / spark 10 / spark 10c / spark Go-2023 / pop 7 Pro / smart 7 / smart 7 HD", price: 42000 },
+    { cat: "LCD", name: "Rm 10c / Poco c40", price: 42000 },
+    { cat: "LCD", name: "Rm 10x-4G / Rmnt 9", price: 42000 },
+    { cat: "LCD", name: "Rm 12c / Rm 11A / Poco c55", price: 40000 },
+    { cat: "LCD", name: "Rm 13-4G / Rm 13R / Poco c65", price: 42000 },
+    { cat: "LCD", name: "Rm 14c / Rm 14r / c75", price: 43000 },
+    { cat: "LCD", name: "Rm 15c-4G / Rm 15c-5G / Poco C85", price: 45000 },
+    { cat: "LCD", name: "Rm 7", price: 38000 },
+    { cat: "LCD", name: "Rm 8 / 8A", price: 40000 },
+    { cat: "LCD", name: "Rm 9 / Poco m2", price: 42000 },
+    { cat: "LCD", name: "Rm 9A / Rm 9c / Rm 9i", price: 40000 },
+    { cat: "LCD", name: "Rm 10A", price: 40000 },
+    { cat: "LCD", name: "Rm A3", price: 42000 },
+    { cat: "LCD", name: "Rm K30-4G/5G / Rm K30i / Poco X2 / Poco F2", price: 52000 },
+    { cat: "LCD", name: "Rm nt 10 Pro-5G", price: 50000 },
+    { cat: "LCD", name: "Rm nt 11-4G / Rm 10-4G", price: 45000 },
+    { cat: "LCD", name: "Rm nt 11F / Rm nt 11R / Rm 10-5G / Poco m5", price: 45000 },
+    { cat: "LCD", name: "Rm nt 7 / Rmnt 7 Pro", price: 50000 },
+    { cat: "LCD", name: "Rm nt 8", price: 48000 },
+    { cat: "LCD", name: "Rm nt 9-4G / Rm 9T / Rm 9 Power / Poco m3", price: 43000 },
+    { cat: "LCD", name: "Rm nt 9 Pro-5G / X3 / X3 Pro", price: 52000 },
+    { cat: "LCD", name: "Rm nt 8 Pro", price: 50000 },
+    { cat: "LCD", name: "OP A17 / A17k / A18 / A38 / A57-2020 / A58 / A58-5G / A58x-5G / A78-5G / A77 / k10-5x", price: 42000 },
+    { cat: "LCD", name: "OP A3 / A5 / A12E / Rel / Re 2", price: 40000 },
+    { cat: "LCD", name: "OP A52 / A72 / A92", price: 43000 },
+    { cat: "LCD", name: "OP A5-20 / A9-20 / A31-2020 / A8 / A11 / A11x / Re 5 / 5i / c3 / 6i / 5s", price: 40000 },
+    { cat: "LCD", name: "OP A53-20 / A53s / A54-4G / A55-4G", price: 42000 },
+    { cat: "LCD", name: "A32 / A33-20 / Re 7i / c17", price: 40000 },
+    { cat: "LCD", name: "OP A5s / A7 / A11k / A12 / A12s / Re 3 / 3i", price: 42000 },
+    { cat: "LCD", name: "OP F11 / A9 / A9x", price: 42000 },
+    { cat: "LCD", name: "Re c11 / c12 / OP A15 / A16k / A15s / A35", price: 40000 },
+    { cat: "LCD", name: "Samsung A02s / A03s / A03 / A04e / M02s / M04", price: 42000 },
+    { cat: "LCD", name: "Samsung J7 Prime", price: 38000 },
+    { cat: "LCD", name: "Te spark 6 Go / spark Go-2022 / Go-2021", price: 42000 },
+    { cat: "LCD", name: "Te spark 8c / 9 / 9T", price: 42000 },
+    { cat: "LCD", name: "Te spark Go-2024 / spark Go-2025 / smart 8 / pop 8 / Hot 40i", price: 42000 },
+    { cat: "LCD", name: "Vi Y31-20 / Y31 / Y36-4G / Y51-20 / Y51-5G / Y51A / Y52-5G / Y53s / Y55 / Y56 / Y72 / Y72T", price: 42000 },
+    { cat: "LCD", name: "Vi Y02 / Y02A / Y02T / Y11-2023", price: 42000 },
+    { cat: "LCD", name: "Vi Y03 / Y03T / Y18 / Y18i / Y18E / Y18s / Y19E / Y28s-5G / Y36T / Y36c / Y37 / Y37m", price: 42000 },
+    { cat: "LCD", name: "Vi Y15-2019 / Y17-19 / Y3 / Y12 / Y11", price: 40000 },
+    { cat: "LCD", name: "Vi Y20 / Y20A / Y20i / Y12s / Y01 / Y15c / Y15s", price: 40000 },
+    { cat: "LCD", name: "Vi Y50", price: 45000 },
+    { cat: "LCD", name: "Vi Y81 / Y81i / Y83", price: 40000 },
+    { cat: "LCD", name: "Vi Y90 / Y91 / Y91i / Y91c / Y93 / Y95 / Y1s", price: 38000 },
+    { cat: "LCD", name: "Rm nt 6-5G / M3 Pro-5G / M3 Pro / nt 11se / nt 10t", price: 45000 },
+    { cat: "LCD", name: "Vi Y51s / Y70s / Y50t / Y70T / iQOO U1", price: 40000 },
+    { cat: "LCD", name: "Rm 10 / Rmnt 11-4G / 10 Pro", price: 42000 },
+    { cat: "LCD", name: "Rm nt 12R / 12-5G / 13 / nt 13r / Poco M6 Pro", price: 45000 },
+    { cat: "LCD", name: "Vi Y22", price: 40000 },
+    { cat: "LCD", name: "Hw 48P / Play 4t Pro", price: 42000 },
+    { cat: "LCD", name: "Hw nova 7i / 5i / P40 lite / nova 6se / nova 6", price: 53000 },
+    { cat: "LCD", name: "Ifn hot 30 / 30-5G / nt 30 / Pova 5 Pro", price: 43000 },
+    { cat: "LCD", name: "Tn spark 6 Go / smart 5 / 5a / hot 10 lite / spark 6 Go (2020) / itel S16 / P36 / P36 Pro / P37", price: 40000 },
+    { cat: "LCD", name: "OP A15 / A15s / c11 / A16k / A35 / c12 / c15 / c15e", price: 42000 },
+    { cat: "LCD", name: "itel A58 / Pop 5 lite / spark Go-22 / smart 6 / Pop 5 Pro / spark 8 / A58 Pro", price: 42000 },
+    { cat: "LCD", name: "Rm nt 11s / Rm nt 11-4G / Rm nt 12s", price: 50000 },
+    { cat: "LCD", name: "Vi Y16 / Y02s", price: 48000 },
+    { cat: "LCD", name: "Vi Y31(20) / Y51(20) / Y31s / Y52s", price: 50000 },
+    { cat: "LCD", name: "Tn spark 70 / spark 20", price: 48000 },
+    { cat: "Battery", name: "Mi Poco X3 / X3 Pro (BN57)", price: 35000 },
+    { cat: "Battery", name: "Rm 13c (BN5Q)", price: 30000 },
+    { cat: "Battery", name: "Rm 14 / Rm 14C / Rm 14R (BN5X)", price: 35000 },
+    { cat: "Battery", name: "Rm 7 / Rm nt 8 (BN46)", price: 28000 },
+    { cat: "Battery", name: "Rm K20 (BP41)", price: 30000 },
+    { cat: "Battery", name: "Rm K30-4G / 5G (BM4P)", price: 33000 },
+    { cat: "Battery", name: "Rm nt 10 Pro-5G (BM57)", price: 40000 },
+    { cat: "Battery", name: "Rm nt 11 Pro-4G (BM5A)", price: 42000 },
+    { cat: "Battery", name: "Rm nt 11 Pro-5G / Rm nt 11E Pro (BN5E)", price: 42000 },
+    { cat: "Battery", name: "Rm nt 11E / Poco M4-5G / Rm nt 11 Prime-5G (BN5H)", price: 30000 },
+    { cat: "Battery", name: "Rm nt 11S-4G (BN5D)", price: 38000 },
+    { cat: "Battery", name: "Rm nt 7 (BN4A)", price: 28000 },
+    { cat: "Battery", name: "Rm nt 8 Pro (BM4J)", price: 30000 },
+    { cat: "Battery", name: "Rm nt 9 Pro-5G / Mi 10T Lite (BM4W)", price: 32000 },
+    { cat: "Battery", name: "Rm nt 9-5G (BM54)", price: 32000 },
+    { cat: "Battery", name: "OP A15 / A15s / A16K (BLP817)", price: 30000 },
+    { cat: "Battery", name: "OP A3s / A7 / A12 / A5s / A31-2020 / C1 (BLP673)", price: 28000 },
+    { cat: "Battery", name: "OP A9-2020 / A5-2020 (BLP727)", price: 30000 },
+    { cat: "Battery", name: "OP F1s (BLP601)", price: 25000 },
+    { cat: "Battery", name: "OP F3 / F5 Youth / A77-4G / A73 (BLP631)", price: 25000 },
+    { cat: "Battery", name: "Samsung A02s / A03s / A2 Core (HQ-50s)", price: 30000 },
+    { cat: "Battery", name: "Te spark 2 (BL-34BT)", price: 25000 },
+    { cat: "Battery", name: "Te spark 6 Go / spark 5 / spark 5 Pro / spark 5 Air / spark 6-90 / SP 6T / pop 5 Lite / pop 4 (BL-49FT)", price: 30000 },
+    { cat: "Battery", name: "Vi Y15-2019 / Y17-2019 / Y11 / Y12 / Z1 Pro / Z5x (B-G7)", price: 30000 },
+    { cat: "Battery", name: "Vi Y20 / Y20i / Y20s (B-O5)", price: 30000 },
+    { cat: "Battery", name: "Vi Y33s (B-S2)", price: 29000 },
+    { cat: "Battery", name: "Rm 10c (BN5G / BN5G-OR)", price: 28000 },
+    { cat: "Battery", name: "Rm 12 / nt 12r (BM5R)", price: 28000 },
+    { cat: "Battery", name: "Rm 9A / 9C / 10A / M2 Pro / A1 / A1 Plus (BN56)", price: 28000 },
+    { cat: "Battery", name: "Rm nt 10-5G / 11-4G / 11 Pro / 10t 5G / Rm 10c Tablet (BN5A)", price: 28000 },
+    { cat: "Battery", name: "Rm 7 / nt 6 / nt 8 (BN46)", price: 25000 },
+    { cat: "Battery", name: "Rm 9 / nt 9 / 10x-4G (BN54)", price: 28000 },
+    { cat: "Battery", name: "Vi Y02s / Y02 / Y35-5G / T2x 5G (B-W1)", price: 28000 },
+    { cat: "Body Cover", name: "Rm 7 (Pink/Black)", price: 27000 },
+    { cat: "Body Cover", name: "Rm 8 (Gray/Blue)", price: 21000 },
+    { cat: "Body Cover", name: "Rm 9 (Green/Pink/Blue)", price: 21000 },
+    { cat: "Body Cover", name: "Rm 9A (Black/Blue)", price: 21000 },
+    { cat: "Body Cover", name: "Rm 9T / Rm nt 9-4G (Black/Blue)", price: 22000 },
+    { cat: "Body Cover", name: "Rm K30-4G/5G (Pink/Grey)", price: 37000 },
+    { cat: "Body Cover", name: "Rm nt 7 / Rm nt 7 Pro (Black/Blue)", price: 25000 },
+    { cat: "Body Cover", name: "Rm nt 8 (Black/Blue)", price: 28000 },
+    { cat: "Body Cover", name: "OP A3s (Red/Black)", price: 22000 },
+    { cat: "Body Cover", name: "OP A5s (Black/Blue)", price: 25000 },
+    { cat: "Body Cover", name: "Vi Y20 (Black/Blue)", price: 28000 },
+    { cat: "Body Cover", name: "Vi Y81 (Black/Gold)", price: 18000 },
+    { cat: "Body Cover", name: "Vi Y91 (Blue/Pink)", price: 21000 },
+    { cat: "Back Glass", name: "Rm 10A (Black/Blue)", price: 14000 },
+    { cat: "Back Glass", name: "Rm 12-4G / Rm 12-5G (Purple)", price: 12000 },
+    { cat: "Back Glass", name: "Rm 14C (Black/Green)", price: 13000 },
+    { cat: "Back Glass", name: "Rm 9A (Black/Blue)", price: 14000 },
+    { cat: "Back Glass", name: "Rm nt 11 Pro-4G / Rmnt 11E Pro (White)", price: 13000 },
+    { cat: "Back Glass", name: "Rm nt 13 Pro-4G (Black/Green)", price: 13000 },
+    { cat: "Back Glass", name: "Rm nt 13-4G (Black/Blue)", price: 12000 },
+    { cat: "Back Glass", name: "Rm nt 13-5G (Black/Green)", price: 13000 },
+    { cat: "Back Glass", name: "Rm nt 8 Pro (Gray/Green)", price: 12000 },
+    { cat: "Back Glass", name: "OP A15 / A15s / A35 (Green)", price: 12000 }
+];
+/*DATA_END*/
+
+if (localStorage.getItem('htun_mobile_items')) {
+    itemsData = JSON.parse(localStorage.getItem('htun_mobile_items'));
+}
+
+let selectedCategory = 'ALL';
+
+function getTagClass(cat) {
+    switch(cat) {
+        case 'LCD': return 'tag-lcd';
+        case 'Battery': return 'tag-battery';
+        case 'Body Cover': return 'tag-body';
+        case 'Back Glass': return 'tag-back';
+        default: return '';
+    }
+}
+
+function renderItems(data) {
+    const listEl = document.getElementById('itemList');
+    const countEl = document.getElementById('matchCount');
+    countEl.innerText = data.length + " ခု";
+
+    if (data.length === 0) {
+        listEl.innerHTML = `<div class="empty-state">ရှာဖွေမှုနှင့် ကိုက်ညီသော ပစ္စည်းမရှိပါ။</div>`;
+        return;
+    }
+
+    let html = '';
+    data.forEach((item) => {
+        const originalIndex = itemsData.indexOf(item);
+        html += `
+            <div class="item-card">
+                <div class="item-left">
+                    <span class="category-tag ${getTagClass(item.cat)}">${item.cat}</span>
+                    <div class="item-name">${item.name}</div>
+                </div>
+                <div class="item-right">
+                    <div class="item-price">${Number(item.price).toLocaleString()} K</div>
+                    <button class="btn-edit-item" onclick="openEditModal(${originalIndex})">ပြင်မည်</button>
+                </div>
+            </div>
+        `;
+    });
+    listEl.innerHTML = html;
+}
+
+function handleSearch() {
+    const query = document.getElementById('searchInput').value.trim().toLowerCase();
+    const clearBtn = document.getElementById('clearBtn');
+    clearBtn.style.display = query.length > 0 ? 'block' : 'none';
+
+    const filtered = itemsData.filter(item => {
+        const matchCat = (selectedCategory === 'ALL' || item.cat === selectedCategory);
+        const matchName = item.name.toLowerCase().includes(query) || item.cat.toLowerCase().includes(query);
+        return matchCat && matchName;
+    });
+
+    renderItems(filtered);
+}
+
+function clearSearch() {
+    document.getElementById('searchInput').value = '';
+    handleSearch();
+    document.getElementById('searchInput').focus();
+}
+
+function setCategory(cat, el) {
+    selectedCategory = cat;
+    document.querySelectorAll('.cat-btn').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    handleSearch();
+}
+
+function openAddModal() {
+    document.getElementById('modalTitle').innerText = "ပစ္စည်းအသစ် ထည့်သွင်းခြင်း";
+    document.getElementById('editIndex').value = "-1";
+    document.getElementById('modalName').value = "";
+    document.getElementById('modalPrice').value = "";
+    document.getElementById('btnDelete').style.display = "none";
+    document.getElementById('itemModal').classList.add('active');
+}
+
+function openEditModal(index) {
+    const item = itemsData[index];
+    document.getElementById('modalTitle').innerText = "ဈေးနှုန်း/အချက်အလက် ပြင်ဆင်ခြင်း";
+    document.getElementById('editIndex').value = index;
+    document.getElementById('modalCat').value = item.cat;
+    document.getElementById('modalName').value = item.name;
+    document.getElementById('modalPrice').value = item.price;
+    document.getElementById('btnDelete').style.display = "block";
+    document.getElementById('itemModal').classList.add('active');
+}
+
+function closeModal(id) {
+    document.getElementById(id).classList.remove('active');
+}
+
+function saveItemData() {
+    const index = parseInt(document.getElementById('editIndex').value, 10);
+    const cat = document.getElementById('modalCat').value;
+    const name = document.getElementById('modalName').value.trim();
+    const price = parseInt(document.getElementById('modalPrice').value, 10);
+
+    if (!name || isNaN(price)) {
+        alert("ပစ္စည်းအမည်နှင့် ဈေးနှုန်းကို ပြည့်စုံစွာ ဖြည့်ပေးပါ။");
+        return;
+    }
+
+    if (index === -1) {
+        itemsData.unshift({ cat, name, price });
+    } else {
+        itemsData[index] = { cat, name, price };
+    }
+
+    localStorage.setItem('htun_mobile_items', JSON.stringify(itemsData));
+    closeModal('itemModal');
+    handleSearch();
+}
+
+function deleteCurrentItem() {
+    const index = parseInt(document.getElementById('editIndex').value, 10);
+    if (index > -1 && confirm("ဤပစ္စည်းအား စာရင်းထဲမှ ဖျက်ပစ်ရန် သေချာပါသလား?")) {
+        itemsData.splice(index, 1);
+        localStorage.setItem('htun_mobile_items', JSON.stringify(itemsData));
+        closeModal('itemModal');
+        handleSearch();
+    }
+}
+
+// GITHUB SYNC
+const GITHUB_REPO = "HtunHtun01/Service";
+const FILE_PATH = "index.html";
+
+function openSyncModal() {
+    const savedToken = localStorage.getItem('gh_token') || '';
+    document.getElementById('ghToken').value = savedToken;
+    document.getElementById('syncModal').classList.add('active');
+}
+
+async function pushToGitHub() {
+    const token = document.getElementById('ghToken').value.trim();
+    if (!token) {
+        alert("GitHub Token ထည့်သွင်းပေးပါ။");
+        return;
+    }
+
+    const btn = document.getElementById('btnSyncSubmit');
+    btn.innerText = "သိမ်းဆည်းနေပါသည်...";
+    btn.disabled = true;
+
+    try {
+        localStorage.setItem('gh_token', token);
+
+        const getFileUrl = `https://api.github.com/repos/${GITHUB_REPO}/contents/${FILE_PATH}`;
+        const res = await fetch(getFileUrl, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (!res.ok) throw new Error("GitHub File ရှာမတွေ့ပါ သို့မဟုတ် Token မှားယွင်းနေပါသည်။");
+        const fileData = await res.json();
+        const decodedContent = decodeURIComponent(escape(atob(fileData.content)));
+
+        const newItemsJson = JSON.stringify(itemsData, null, 4);
+        const replacement = `/*DATA_START*/\nlet itemsData = ${newItemsJson};\n/*DATA_END*/`;
+        const updatedFileContent = decodedContent.replace(/\/\*DATA_START\*\/[\s\S]*?\/\*DATA_END\*\//, replacement);
+
+        const encodedUpdatedContent = btoa(unescape(encodeURIComponent(updatedFileContent)));
+
+        const putRes = await fetch(getFileUrl, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                message: "Update items price via Web Admin",
+                content: encodedUpdatedContent,
+                sha: fileData.sha
+            })
+        });
+
+        if (!putRes.ok) throw new Error("GitHub ပေါ်သို့ သိမ်းဆည်းမအောင်မြင်ပါ။");
+
+        alert("GitHub ပေါ်သို့ အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီ။");
+        closeModal('syncModal');
+    } catch (err) {
+        alert("Error: " + err.message);
+    } finally {
+        btn.innerText = "GitHub သို့ Save မည်";
+        btn.disabled = false;
+    }
+}
+
 function escapeHtml(text) {
     const div = document.createElement('div');
     div.innerText = text;
     return div.innerHTML;
 }
+
+// Initial Run
+renderItems(itemsData);
 </script>
 
 </body>
