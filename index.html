@@ -79,6 +79,7 @@
         .admin-box { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
         .btn-action { width: 100%; padding: 11px; border-radius: var(--radius-md); font-size: 13px; font-weight: 600; cursor: pointer; border: none; }
         .btn-add { background: #ffffff; color: var(--text-main); border: 1.5px dashed var(--border); }
+        .btn-bulk { background: #2563eb; color: #ffffff; }
         .btn-excel { background: #047857; color: #ffffff; }
         .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.65); z-index: 1000; justify-content: center; align-items: center; padding: 12px; }
         .modal.active { display: flex; }
@@ -158,7 +159,7 @@
             <button class="btn-save" type="button" onclick="downloadVoucher()">📷 ဘောက်ချာအား ပုံအဖြစ် သိမ်းမည်</button>
         </div>
     </div>
-        <!-- TAB 2: PARTS -->
+    <!-- TAB 2: PARTS -->
     <div id="partsTab" class="tab-section">
         <div class="shop-selector-card">
             <button class="shop-btn active" id="btnShop1" onclick="selectShop('Kyaw Mobile')">🏬 Kyaw Mobile</button>
@@ -187,7 +188,8 @@
         <div class="item-list" id="itemList"></div>
 
         <div class="admin-box">
-            <button class="btn-action btn-add" onclick="handleAddItemClick()">➕ ပစ္စည်းအသစ် တစ်ခုချင်းထည့်မည်</button>
+            <button class="btn-action btn-bulk" onclick="handleBulkImportClick()">📋 အမြန်စာရင်းကူးထည့်မည် (Bulk Paste)</button>
+            <button class="btn-action btn-add" onclick="handleAddItemClick()">➕ ပစ္စည်းတစ်ခုချင်းစီ ထည့်မည်</button>
             <button class="btn-action btn-excel" onclick="handleExcelEditorClick()">📊 Excel ပုံစံဖြင့် အားလုံးပြင်/ဖြည့်မည်</button>
         </div>
     </div>
@@ -219,6 +221,30 @@
         <div class="modal-actions">
             <button type="button" class="btn-modal btn-cancel-modal" onclick="closeModal('shopLoginModal')">ပိတ်မည်</button>
             <button type="button" class="btn-modal btn-save-modal" onclick="verifyShopPin()">Login</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Bulk Paste Import (စာရင်းများစွာ တစ်ခါတည်းထည့်ရန်) -->
+<div class="modal" id="bulkModal">
+    <div class="modal-content">
+        <h3 id="bulkModalTitle" style="font-size: 14px; margin-bottom: 6px;">📋 အမြန်စာရင်းကူးထည့်ခြင်း</h3>
+        <div class="form-group">
+            <label>အမျိုးအစား ရွေးချယ်ပါ</label>
+            <select id="bulkCat">
+                <option value="LCD">LCD</option>
+                <option value="Battery">Battery</option>
+                <option value="Body Cover">Body Cover</option>
+                <option value="Back Glass">Back Glass</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>စာရင်းများ ကူးထည့်ပါ (တစ်ကြောင်းလျှင် မော်ဒယ် ၁ ခုနှင့် ဈေးနှုန်း)</label>
+            <textarea id="bulkInput" style="height: 160px;" placeholder="Huawei Y6P 45000&#10;Huawei Y6-2020 45000&#10;Honor Play 9A 45000&#10;Infinix Hot 30 43000"></textarea>
+        </div>
+        <div class="modal-actions">
+            <button type="button" class="btn-modal btn-cancel-modal" onclick="closeModal('bulkModal')">ပိတ်မည်</button>
+            <button type="button" class="btn-modal btn-save-modal" onclick="saveBulkDataAndPromptSync()">သိမ်းမည် &amp; Sync</button>
         </div>
     </div>
 </div>
@@ -373,102 +399,20 @@ function downloadVoucher() {
 // TAB 2: DATA & MULTI-SHOP
 /*DATA_START*/
 let itemsData = [
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Hu Y6P / Y6-2020 / Honor Play 9A / Honor 9A",
-        "price": 45000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "In Hot 30 / note 30 / spark 10 Pro / spark 20 Pro / Pova 5 / Hot 40 Pro",
-        "price": 43000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Itel P40 / A60 / A60s / A70 / spark 10 / smart 7",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Rm 10c / Poco c40",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Rm 14c / Rm 14r / c75",
-        "price": 43000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "OP A17 / A17k / A18 / A38 / A57-2020 / A58 / A78-5G",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vi Y31-20 / Y36-4G / Y51-20 / Y53s / Y55",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vi Y15-2019 / Y17-19 / Y3 / Y12 / Y11",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Mi Poco X3 / X3 Pro (BN57)",
-        "price": 35000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Rm 13c (BN5Q)",
-        "price": 30000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Rm 7 / Rm nt 8 (BN46)",
-        "price": 28000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "OP A15 / A15s / A16K (BLP817)",
-        "price": 30000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Body Cover",
-        "name": "Rm 7 (Pink/Black)",
-        "price": 27000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Body Cover",
-        "name": "Rm 8 (Gray/Blue)",
-        "price": 21000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Back Glass",
-        "name": "Rm 10A (Black/Blue)",
-        "price": 14000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Back Glass",
-        "name": "Rm 12-4G / Rm 12-5G (Purple)",
-        "price": 12000
-    }
+    { shop: "Kyaw Mobile", cat: "LCD", name: "Huawei Y6P", price: 45000 },
+    { shop: "Kyaw Mobile", cat: "LCD", name: "Huawei Y6-2020", price: 45000 },
+    { shop: "Kyaw Mobile", cat: "LCD", name: "Honor Play 9A", price: 45000 },
+    { shop: "Kyaw Mobile", cat: "LCD", name: "Infinix Hot 30", price: 43000 },
+    { shop: "Kyaw Mobile", cat: "LCD", name: "Tecno Spark 10 Pro", price: 43000 },
+    { shop: "Kyaw Mobile", cat: "LCD", name: "Itel P40", price: 42000 },
+    { shop: "Kyaw Mobile", cat: "LCD", name: "Redmi 10c", price: 42000 },
+    { shop: "Kyaw Mobile", cat: "Battery", name: "Mi Poco X3 (BN57)", price: 35000 },
+    { shop: "Kyaw Mobile", cat: "Battery", name: "Redmi 13c (BN5Q)", price: 30000 },
+    { shop: "Kyaw Mobile", cat: "Body Cover", name: "Redmi 7 (Pink/Black)", price: 27000 },
+    { shop: "Kyaw Mobile", cat: "Back Glass", name: "Redmi 10A (Black/Blue)", price: 14000 },
+    { shop: "ချမ်းသာစည်", cat: "LCD", name: "Redmi Note 10 Pro 5G", price: 50000 },
+    { shop: "ချမ်းသာစည်", cat: "LCD", name: "Oppo A52", price: 43000 },
+    { shop: "ချမ်းသာစည်", cat: "Battery", name: "Redmi Note 11 Pro 4G (BM5A)", price: 42000 }
 ];
 /*DATA_END*/
 
@@ -560,6 +504,48 @@ function setCategory(cat, el) {
     handleSearch();
 }
 
+// BULK IMPORT LOGIC
+function handleBulkImportClick() {
+    requireShopAuth(currentSelectedShop, () => {
+        document.getElementById('bulkModalTitle').innerText = `📋 ${currentSelectedShop} သို့ အမြန်စာရင်းသွင်းမည်`;
+        document.getElementById('bulkInput').value = "";
+        document.getElementById('bulkModal').classList.add('active');
+    });
+}
+
+function saveBulkDataAndPromptSync() {
+    const text = document.getElementById('bulkInput').value.trim();
+    const cat = document.getElementById('bulkCat').value;
+    if (!text) { alert("စာရင်းများ ရိုက်ထည့်ပေးပါ။"); return; }
+
+    const lines = text.split("\n");
+    let addedCount = 0;
+
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (!line) continue;
+        const match = line.match(/^(.*?)[\s\t]+(\d+)$/);
+        if (match) {
+            const name = match[1].trim();
+            const price = parseInt(match[2], 10);
+            itemsData.unshift({ shop: currentSelectedShop, cat, name, price });
+            addedCount++;
+        }
+    }
+
+    if (addedCount === 0) {
+        alert("စာရင်းပုံစံ မမှန်ကန်ပါ။ ဥပမာ - 'Huawei Y6P 45000' ပုံစံအတိုင်း ထည့်ပေးပါ။");
+        return;
+    }
+
+    localStorage.setItem('htun_mobile_multishop_items', JSON.stringify(itemsData));
+    closeModal('bulkModal');
+    handleSearch();
+    alert(`ပစ္စည်း (${addedCount}) ခု အောင်မြင်စွာ ထည့်သွင်းပြီးပါပြီ။`);
+    openSyncModal();
+}
+
+// SINGLE EDIT & ADD
 function handleAddItemClick() {
     requireShopAuth(currentSelectedShop, () => {
         document.getElementById('modalTitle').innerText = `${currentSelectedShop} - ပစ္စည်းအသစ်ထည့်မည်`;
@@ -685,8 +671,6 @@ function saveExcelDataAndPromptSync() {
     localStorage.setItem('htun_mobile_multishop_items', JSON.stringify(itemsData));
     handleSearch();
     closeModal('excelModal');
-
-    // Prompt for GitHub Token to Commit
     openSyncModal();
 }
 
@@ -721,7 +705,7 @@ async function pushToGitHub() {
         const putRes = await fetch(getFileUrl, {
             method: 'PUT',
             headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: "Update multi-shop items data via Excel Admin", content: encodedUpdatedContent, sha: fileData.sha })
+            body: JSON.stringify({ message: "Update multi-shop items data via Admin", content: encodedUpdatedContent, sha: fileData.sha })
         });
         if (!putRes.ok) throw new Error("GitHub ပေါ်သို့ သိမ်းဆည်းမအောင်မြင်ပါ။");
         alert("GitHub ပေါ်သို့ အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီ။ ၁ မိနစ်အတွင်း Update ဖြစ်ပါမည်။");
