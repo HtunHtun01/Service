@@ -758,123 +758,591 @@ function downloadVoucher() {
 // PARTS DATABASE
 /*DATA_START*/
 let itemsData = [
-    { cat: "LCD", name: "Hu Y6P / Y6-2020 / Honor Play 9A / Honor 9A", price: 45000 },
-    { cat: "LCD", name: "In Hot 30 / note 30 / spark 10 Pro / spark 20 Pro / Pova 5 / Pova 5 Pro / Hot 40 / Hot 40 Pro", price: 43000 },
-    { cat: "LCD", name: "Itel P40 / A60 / A60s / A70 / spark 10 / spark 10c / spark Go-2023 / pop 7 Pro / smart 7 / smart 7 HD", price: 42000 },
-    { cat: "LCD", name: "Rm 10c / Poco c40", price: 42000 },
-    { cat: "LCD", name: "Rm 10x-4G / Rmnt 9", price: 42000 },
-    { cat: "LCD", name: "Rm 12c / Rm 11A / Poco c55", price: 40000 },
-    { cat: "LCD", name: "Rm 13-4G / Rm 13R / Poco c65", price: 42000 },
-    { cat: "LCD", name: "Rm 14c / Rm 14r / c75", price: 43000 },
-    { cat: "LCD", name: "Rm 15c-4G / Rm 15c-5G / Poco C85", price: 45000 },
-    { cat: "LCD", name: "Rm 7", price: 38000 },
-    { cat: "LCD", name: "Rm 8 / 8A", price: 40000 },
-    { cat: "LCD", name: "Rm 9 / Poco m2", price: 42000 },
-    { cat: "LCD", name: "Rm 9A / Rm 9c / Rm 9i", price: 40000 },
-    { cat: "LCD", name: "Rm 10A", price: 40000 },
-    { cat: "LCD", name: "Rm A3", price: 42000 },
-    { cat: "LCD", name: "Rm K30-4G/5G / Rm K30i / Poco X2 / Poco F2", price: 52000 },
-    { cat: "LCD", name: "Rm nt 10 Pro-5G", price: 50000 },
-    { cat: "LCD", name: "Rm nt 11-4G / Rm 10-4G", price: 45000 },
-    { cat: "LCD", name: "Rm nt 11F / Rm nt 11R / Rm 10-5G / Poco m5", price: 45000 },
-    { cat: "LCD", name: "Rm nt 7 / Rmnt 7 Pro", price: 50000 },
-    { cat: "LCD", name: "Rm nt 8", price: 48000 },
-    { cat: "LCD", name: "Rm nt 9-4G / Rm 9T / Rm 9 Power / Poco m3", price: 43000 },
-    { cat: "LCD", name: "Rm nt 9 Pro-5G / X3 / X3 Pro", price: 52000 },
-    { cat: "LCD", name: "Rm nt 8 Pro", price: 50000 },
-    { cat: "LCD", name: "OP A17 / A17k / A18 / A38 / A57-2020 / A58 / A58-5G / A58x-5G / A78-5G / A77 / k10-5x", price: 42000 },
-    { cat: "LCD", name: "OP A3 / A5 / A12E / Rel / Re 2", price: 40000 },
-    { cat: "LCD", name: "OP A52 / A72 / A92", price: 43000 },
-    { cat: "LCD", name: "OP A5-20 / A9-20 / A31-2020 / A8 / A11 / A11x / Re 5 / 5i / c3 / 6i / 5s", price: 40000 },
-    { cat: "LCD", name: "OP A53-20 / A53s / A54-4G / A55-4G", price: 42000 },
-    { cat: "LCD", name: "A32 / A33-20 / Re 7i / c17", price: 40000 },
-    { cat: "LCD", name: "OP A5s / A7 / A11k / A12 / A12s / Re 3 / 3i", price: 42000 },
-    { cat: "LCD", name: "OP F11 / A9 / A9x", price: 42000 },
-    { cat: "LCD", name: "Re c11 / c12 / OP A15 / A16k / A15s / A35", price: 40000 },
-    { cat: "LCD", name: "Samsung A02s / A03s / A03 / A04e / M02s / M04", price: 42000 },
-    { cat: "LCD", name: "Samsung J7 Prime", price: 38000 },
-    { cat: "LCD", name: "Te spark 6 Go / spark Go-2022 / Go-2021", price: 42000 },
-    { cat: "LCD", name: "Te spark 8c / 9 / 9T", price: 42000 },
-    { cat: "LCD", name: "Te spark Go-2024 / spark Go-2025 / smart 8 / pop 8 / Hot 40i", price: 42000 },
-    { cat: "LCD", name: "Vi Y31-20 / Y31 / Y36-4G / Y51-20 / Y51-5G / Y51A / Y52-5G / Y53s / Y55 / Y56 / Y72 / Y72T", price: 42000 },
-    { cat: "LCD", name: "Vi Y02 / Y02A / Y02T / Y11-2023", price: 42000 },
-    { cat: "LCD", name: "Vi Y03 / Y03T / Y18 / Y18i / Y18E / Y18s / Y19E / Y28s-5G / Y36T / Y36c / Y37 / Y37m", price: 42000 },
-    { cat: "LCD", name: "Vi Y15-2019 / Y17-19 / Y3 / Y12 / Y11", price: 40000 },
-    { cat: "LCD", name: "Vi Y20 / Y20A / Y20i / Y12s / Y01 / Y15c / Y15s", price: 40000 },
-    { cat: "LCD", name: "Vi Y50", price: 45000 },
-    { cat: "LCD", name: "Vi Y81 / Y81i / Y83", price: 40000 },
-    { cat: "LCD", name: "Vi Y90 / Y91 / Y91i / Y91c / Y93 / Y95 / Y1s", price: 38000 },
-    { cat: "LCD", name: "Rm nt 6-5G / M3 Pro-5G / M3 Pro / nt 11se / nt 10t", price: 45000 },
-    { cat: "LCD", name: "Vi Y51s / Y70s / Y50t / Y70T / iQOO U1", price: 40000 },
-    { cat: "LCD", name: "Rm 10 / Rmnt 11-4G / 10 Pro", price: 42000 },
-    { cat: "LCD", name: "Rm nt 12R / 12-5G / 13 / nt 13r / Poco M6 Pro", price: 45000 },
-    { cat: "LCD", name: "Vi Y22", price: 40000 },
-    { cat: "LCD", name: "Hw 48P / Play 4t Pro", price: 42000 },
-    { cat: "LCD", name: "Hw nova 7i / 5i / P40 lite / nova 6se / nova 6", price: 53000 },
-    { cat: "LCD", name: "Ifn hot 30 / 30-5G / nt 30 / Pova 5 Pro", price: 43000 },
-    { cat: "LCD", name: "Tn spark 6 Go / smart 5 / 5a / hot 10 lite / spark 6 Go (2020) / itel S16 / P36 / P36 Pro / P37", price: 40000 },
-    { cat: "LCD", name: "OP A15 / A15s / c11 / A16k / A35 / c12 / c15 / c15e", price: 42000 },
-    { cat: "LCD", name: "itel A58 / Pop 5 lite / spark Go-22 / smart 6 / Pop 5 Pro / spark 8 / A58 Pro", price: 42000 },
-    { cat: "LCD", name: "Rm nt 11s / Rm nt 11-4G / Rm nt 12s", price: 50000 },
-    { cat: "LCD", name: "Vi Y16 / Y02s", price: 48000 },
-    { cat: "LCD", name: "Vi Y31(20) / Y51(20) / Y31s / Y52s", price: 50000 },
-    { cat: "LCD", name: "Tn spark 70 / spark 20", price: 48000 },
-    { cat: "Battery", name: "Mi Poco X3 / X3 Pro (BN57)", price: 35000 },
-    { cat: "Battery", name: "Rm 13c (BN5Q)", price: 30000 },
-    { cat: "Battery", name: "Rm 14 / Rm 14C / Rm 14R (BN5X)", price: 35000 },
-    { cat: "Battery", name: "Rm 7 / Rm nt 8 (BN46)", price: 28000 },
-    { cat: "Battery", name: "Rm K20 (BP41)", price: 30000 },
-    { cat: "Battery", name: "Rm K30-4G / 5G (BM4P)", price: 33000 },
-    { cat: "Battery", name: "Rm nt 10 Pro-5G (BM57)", price: 40000 },
-    { cat: "Battery", name: "Rm nt 11 Pro-4G (BM5A)", price: 42000 },
-    { cat: "Battery", name: "Rm nt 11 Pro-5G / Rm nt 11E Pro (BN5E)", price: 42000 },
-    { cat: "Battery", name: "Rm nt 11E / Poco M4-5G / Rm nt 11 Prime-5G (BN5H)", price: 30000 },
-    { cat: "Battery", name: "Rm nt 11S-4G (BN5D)", price: 38000 },
-    { cat: "Battery", name: "Rm nt 7 (BN4A)", price: 28000 },
-    { cat: "Battery", name: "Rm nt 8 Pro (BM4J)", price: 30000 },
-    { cat: "Battery", name: "Rm nt 9 Pro-5G / Mi 10T Lite (BM4W)", price: 32000 },
-    { cat: "Battery", name: "Rm nt 9-5G (BM54)", price: 32000 },
-    { cat: "Battery", name: "OP A15 / A15s / A16K (BLP817)", price: 30000 },
-    { cat: "Battery", name: "OP A3s / A7 / A12 / A5s / A31-2020 / C1 (BLP673)", price: 28000 },
-    { cat: "Battery", name: "OP A9-2020 / A5-2020 (BLP727)", price: 30000 },
-    { cat: "Battery", name: "OP F1s (BLP601)", price: 25000 },
-    { cat: "Battery", name: "OP F3 / F5 Youth / A77-4G / A73 (BLP631)", price: 25000 },
-    { cat: "Battery", name: "Samsung A02s / A03s / A2 Core (HQ-50s)", price: 30000 },
-    { cat: "Battery", name: "Te spark 2 (BL-34BT)", price: 25000 },
-    { cat: "Battery", name: "Te spark 6 Go / spark 5 / spark 5 Pro / spark 5 Air / spark 6-90 / SP 6T / pop 5 Lite / pop 4 (BL-49FT)", price: 30000 },
-    { cat: "Battery", name: "Vi Y15-2019 / Y17-2019 / Y11 / Y12 / Z1 Pro / Z5x (B-G7)", price: 30000 },
-    { cat: "Battery", name: "Vi Y20 / Y20i / Y20s (B-O5)", price: 30000 },
-    { cat: "Battery", name: "Vi Y33s (B-S2)", price: 29000 },
-    { cat: "Battery", name: "Rm 10c (BN5G / BN5G-OR)", price: 28000 },
-    { cat: "Battery", name: "Rm 12 / nt 12r (BM5R)", price: 28000 },
-    { cat: "Battery", name: "Rm 9A / 9C / 10A / M2 Pro / A1 / A1 Plus (BN56)", price: 28000 },
-    { cat: "Battery", name: "Rm nt 10-5G / 11-4G / 11 Pro / 10t 5G / Rm 10c Tablet (BN5A)", price: 28000 },
-    { cat: "Battery", name: "Rm 7 / nt 6 / nt 8 (BN46)", price: 25000 },
-    { cat: "Battery", name: "Rm 9 / nt 9 / 10x-4G (BN54)", price: 28000 },
-    { cat: "Battery", name: "Vi Y02s / Y02 / Y35-5G / T2x 5G (B-W1)", price: 28000 },
-    { cat: "Body Cover", name: "Rm 7 (Pink/Black)", price: 27000 },
-    { cat: "Body Cover", name: "Rm 8 (Gray/Blue)", price: 21000 },
-    { cat: "Body Cover", name: "Rm 9 (Green/Pink/Blue)", price: 21000 },
-    { cat: "Body Cover", name: "Rm 9A (Black/Blue)", price: 21000 },
-    { cat: "Body Cover", name: "Rm 9T / Rm nt 9-4G (Black/Blue)", price: 22000 },
-    { cat: "Body Cover", name: "Rm K30-4G/5G (Pink/Grey)", price: 37000 },
-    { cat: "Body Cover", name: "Rm nt 7 / Rm nt 7 Pro (Black/Blue)", price: 25000 },
-    { cat: "Body Cover", name: "Rm nt 8 (Black/Blue)", price: 28000 },
-    { cat: "Body Cover", name: "OP A3s (Red/Black)", price: 22000 },
-    { cat: "Body Cover", name: "OP A5s (Black/Blue)", price: 25000 },
-    { cat: "Body Cover", name: "Vi Y20 (Black/Blue)", price: 28000 },
-    { cat: "Body Cover", name: "Vi Y81 (Black/Gold)", price: 18000 },
-    { cat: "Body Cover", name: "Vi Y91 (Blue/Pink)", price: 21000 },
-    { cat: "Back Glass", name: "Rm 10A (Black/Blue)", price: 14000 },
-    { cat: "Back Glass", name: "Rm 12-4G / Rm 12-5G (Purple)", price: 12000 },
-    { cat: "Back Glass", name: "Rm 14C (Black/Green)", price: 13000 },
-    { cat: "Back Glass", name: "Rm 9A (Black/Blue)", price: 14000 },
-    { cat: "Back Glass", name: "Rm nt 11 Pro-4G / Rmnt 11E Pro (White)", price: 13000 },
-    { cat: "Back Glass", name: "Rm nt 13 Pro-4G (Black/Green)", price: 13000 },
-    { cat: "Back Glass", name: "Rm nt 13-4G (Black/Blue)", price: 12000 },
-    { cat: "Back Glass", name: "Rm nt 13-5G (Black/Green)", price: 13000 },
-    { cat: "Back Glass", name: "Rm nt 8 Pro (Gray/Green)", price: 12000 },
-    { cat: "Back Glass", name: "OP A15 / A15s / A35 (Green)", price: 12000 }
+    {
+        "cat": "LCD",
+        "name": "Hu Y6P / Y6-2020 / Honor Play 9A / Honor 9A",
+        "price": 45000
+    },
+    {
+        "cat": "LCD",
+        "name": "In Hot 30 / note 30 / spark 10 Pro / spark 20 Pro / Pova 5 / Pova 5 Pro / Hot 40 / Hot 40 Pro",
+        "price": 43000
+    },
+    {
+        "cat": "LCD",
+        "name": "Itel P40 / A60 / A60s / A70 / spark 10 / spark 10c / spark Go-2023 / pop 7 Pro / smart 7 / smart 7 HD",
+        "price": 4200
+    },
+    {
+        "cat": "LCD",
+        "name": "Rm 10c / Poco c40",
+        "price": 42000
+    },
+    {
+        "cat": "LCD",
+        "name": "Rm 10x-4G / Rmnt 9",
+        "price": 42000
+    },
+    {
+        "cat": "LCD",
+        "name": "Rm 12c / Rm 11A / Poco c55",
+        "price": 40000
+    },
+    {
+        "cat": "LCD",
+        "name": "Rm 13-4G / Rm 13R / Poco c65",
+        "price": 42000
+    },
+    {
+        "cat": "LCD",
+        "name": "Rm 14c / Rm 14r / c75",
+        "price": 43000
+    },
+    {
+        "cat": "LCD",
+        "name": "Rm 15c-4G / Rm 15c-5G / Poco C85",
+        "price": 45000
+    },
+    {
+        "cat": "LCD",
+        "name": "Rm 7",
+        "price": 38000
+    },
+    {
+        "cat": "LCD",
+        "name": "Rm 8 / 8A",
+        "price": 40000
+    },
+    {
+        "cat": "LCD",
+        "name": "Rm 9 / Poco m2",
+        "price": 42000
+    },
+    {
+        "cat": "LCD",
+        "name": "Rm 9A / Rm 9c / Rm 9i",
+        "price": 40000
+    },
+    {
+        "cat": "LCD",
+        "name": "Rm 10A",
+        "price": 40000
+    },
+    {
+        "cat": "LCD",
+        "name": "Rm A3",
+        "price": 42000
+    },
+    {
+        "cat": "LCD",
+        "name": "Rm K30-4G/5G / Rm K30i / Poco X2 / Poco F2",
+        "price": 52000
+    },
+    {
+        "cat": "LCD",
+        "name": "Rm nt 10 Pro-5G",
+        "price": 50000
+    },
+    {
+        "cat": "LCD",
+        "name": "Rm nt 11-4G / Rm 10-4G",
+        "price": 45000
+    },
+    {
+        "cat": "LCD",
+        "name": "Rm nt 11F / Rm nt 11R / Rm 10-5G / Poco m5",
+        "price": 45000
+    },
+    {
+        "cat": "LCD",
+        "name": "Rm nt 7 / Rmnt 7 Pro",
+        "price": 50000
+    },
+    {
+        "cat": "LCD",
+        "name": "Rm nt 8",
+        "price": 48000
+    },
+    {
+        "cat": "LCD",
+        "name": "Rm nt 9-4G / Rm 9T / Rm 9 Power / Poco m3",
+        "price": 43000
+    },
+    {
+        "cat": "LCD",
+        "name": "Rm nt 9 Pro-5G / X3 / X3 Pro",
+        "price": 52000
+    },
+    {
+        "cat": "LCD",
+        "name": "Rm nt 8 Pro",
+        "price": 50000
+    },
+    {
+        "cat": "LCD",
+        "name": "OP A17 / A17k / A18 / A38 / A57-2020 / A58 / A58-5G / A58x-5G / A78-5G / A77 / k10-5x",
+        "price": 42000
+    },
+    {
+        "cat": "LCD",
+        "name": "OP A3 / A5 / A12E / Rel / Re 2",
+        "price": 40000
+    },
+    {
+        "cat": "LCD",
+        "name": "OP A52 / A72 / A92",
+        "price": 43000
+    },
+    {
+        "cat": "LCD",
+        "name": "OP A5-20 / A9-20 / A31-2020 / A8 / A11 / A11x / Re 5 / 5i / c3 / 6i / 5s",
+        "price": 40000
+    },
+    {
+        "cat": "LCD",
+        "name": "OP A53-20 / A53s / A54-4G / A55-4G",
+        "price": 42000
+    },
+    {
+        "cat": "LCD",
+        "name": "A32 / A33-20 / Re 7i / c17",
+        "price": 40000
+    },
+    {
+        "cat": "LCD",
+        "name": "OP A5s / A7 / A11k / A12 / A12s / Re 3 / 3i",
+        "price": 42000
+    },
+    {
+        "cat": "LCD",
+        "name": "OP F11 / A9 / A9x",
+        "price": 42000
+    },
+    {
+        "cat": "LCD",
+        "name": "Re c11 / c12 / OP A15 / A16k / A15s / A35",
+        "price": 40000
+    },
+    {
+        "cat": "LCD",
+        "name": "Samsung A02s / A03s / A03 / A04e / M02s / M04",
+        "price": 42000
+    },
+    {
+        "cat": "LCD",
+        "name": "Samsung J7 Prime",
+        "price": 38000
+    },
+    {
+        "cat": "LCD",
+        "name": "Te spark 6 Go / spark Go-2022 / Go-2021",
+        "price": 42000
+    },
+    {
+        "cat": "LCD",
+        "name": "Te spark 8c / 9 / 9T",
+        "price": 42000
+    },
+    {
+        "cat": "LCD",
+        "name": "Te spark Go-2024 / spark Go-2025 / smart 8 / pop 8 / Hot 40i",
+        "price": 42000
+    },
+    {
+        "cat": "LCD",
+        "name": "Vi Y31-20 / Y31 / Y36-4G / Y51-20 / Y51-5G / Y51A / Y52-5G / Y53s / Y55 / Y56 / Y72 / Y72T",
+        "price": 42000
+    },
+    {
+        "cat": "LCD",
+        "name": "Vi Y02 / Y02A / Y02T / Y11-2023",
+        "price": 42000
+    },
+    {
+        "cat": "LCD",
+        "name": "Vi Y03 / Y03T / Y18 / Y18i / Y18E / Y18s / Y19E / Y28s-5G / Y36T / Y36c / Y37 / Y37m",
+        "price": 42000
+    },
+    {
+        "cat": "LCD",
+        "name": "Vi Y15-2019 / Y17-19 / Y3 / Y12 / Y11",
+        "price": 40000
+    },
+    {
+        "cat": "LCD",
+        "name": "Vi Y20 / Y20A / Y20i / Y12s / Y01 / Y15c / Y15s",
+        "price": 40000
+    },
+    {
+        "cat": "LCD",
+        "name": "Vi Y50",
+        "price": 45000
+    },
+    {
+        "cat": "LCD",
+        "name": "Vi Y81 / Y81i / Y83",
+        "price": 40000
+    },
+    {
+        "cat": "LCD",
+        "name": "Vi Y90 / Y91 / Y91i / Y91c / Y93 / Y95 / Y1s",
+        "price": 38000
+    },
+    {
+        "cat": "LCD",
+        "name": "Rm nt 6-5G / M3 Pro-5G / M3 Pro / nt 11se / nt 10t",
+        "price": 45000
+    },
+    {
+        "cat": "LCD",
+        "name": "Vi Y51s / Y70s / Y50t / Y70T / iQOO U1",
+        "price": 40000
+    },
+    {
+        "cat": "LCD",
+        "name": "Rm 10 / Rmnt 11-4G / 10 Pro",
+        "price": 42000
+    },
+    {
+        "cat": "LCD",
+        "name": "Rm nt 12R / 12-5G / 13 / nt 13r / Poco M6 Pro",
+        "price": 45000
+    },
+    {
+        "cat": "LCD",
+        "name": "Vi Y22",
+        "price": 40000
+    },
+    {
+        "cat": "LCD",
+        "name": "Hw 48P / Play 4t Pro",
+        "price": 42000
+    },
+    {
+        "cat": "LCD",
+        "name": "Hw nova 7i / 5i / P40 lite / nova 6se / nova 6",
+        "price": 53000
+    },
+    {
+        "cat": "LCD",
+        "name": "Ifn hot 30 / 30-5G / nt 30 / Pova 5 Pro",
+        "price": 43000
+    },
+    {
+        "cat": "LCD",
+        "name": "Tn spark 6 Go / smart 5 / 5a / hot 10 lite / spark 6 Go (2020) / itel S16 / P36 / P36 Pro / P37",
+        "price": 40000
+    },
+    {
+        "cat": "LCD",
+        "name": "OP A15 / A15s / c11 / A16k / A35 / c12 / c15 / c15e",
+        "price": 42000
+    },
+    {
+        "cat": "LCD",
+        "name": "itel A58 / Pop 5 lite / spark Go-22 / smart 6 / Pop 5 Pro / spark 8 / A58 Pro",
+        "price": 42000
+    },
+    {
+        "cat": "LCD",
+        "name": "Rm nt 11s / Rm nt 11-4G / Rm nt 12s",
+        "price": 50000
+    },
+    {
+        "cat": "LCD",
+        "name": "Vi Y16 / Y02s",
+        "price": 48000
+    },
+    {
+        "cat": "LCD",
+        "name": "Vi Y31(20) / Y51(20) / Y31s / Y52s",
+        "price": 50000
+    },
+    {
+        "cat": "LCD",
+        "name": "Tn spark 70 / spark 20",
+        "price": 48000
+    },
+    {
+        "cat": "Battery",
+        "name": "Mi Poco X3 / X3 Pro (BN57)",
+        "price": 35000
+    },
+    {
+        "cat": "Battery",
+        "name": "Rm 13c (BN5Q)",
+        "price": 30000
+    },
+    {
+        "cat": "Battery",
+        "name": "Rm 14 / Rm 14C / Rm 14R (BN5X)",
+        "price": 35000
+    },
+    {
+        "cat": "Battery",
+        "name": "Rm 7 / Rm nt 8 (BN46)",
+        "price": 28000
+    },
+    {
+        "cat": "Battery",
+        "name": "Rm K20 (BP41)",
+        "price": 30000
+    },
+    {
+        "cat": "Battery",
+        "name": "Rm K30-4G / 5G (BM4P)",
+        "price": 33000
+    },
+    {
+        "cat": "Battery",
+        "name": "Rm nt 10 Pro-5G (BM57)",
+        "price": 40000
+    },
+    {
+        "cat": "Battery",
+        "name": "Rm nt 11 Pro-4G (BM5A)",
+        "price": 42000
+    },
+    {
+        "cat": "Battery",
+        "name": "Rm nt 11 Pro-5G / Rm nt 11E Pro (BN5E)",
+        "price": 42000
+    },
+    {
+        "cat": "Battery",
+        "name": "Rm nt 11E / Poco M4-5G / Rm nt 11 Prime-5G (BN5H)",
+        "price": 30000
+    },
+    {
+        "cat": "Battery",
+        "name": "Rm nt 11S-4G (BN5D)",
+        "price": 38000
+    },
+    {
+        "cat": "Battery",
+        "name": "Rm nt 7 (BN4A)",
+        "price": 28000
+    },
+    {
+        "cat": "Battery",
+        "name": "Rm nt 8 Pro (BM4J)",
+        "price": 30000
+    },
+    {
+        "cat": "Battery",
+        "name": "Rm nt 9 Pro-5G / Mi 10T Lite (BM4W)",
+        "price": 32000
+    },
+    {
+        "cat": "Battery",
+        "name": "Rm nt 9-5G (BM54)",
+        "price": 32000
+    },
+    {
+        "cat": "Battery",
+        "name": "OP A15 / A15s / A16K (BLP817)",
+        "price": 30000
+    },
+    {
+        "cat": "Battery",
+        "name": "OP A3s / A7 / A12 / A5s / A31-2020 / C1 (BLP673)",
+        "price": 28000
+    },
+    {
+        "cat": "Battery",
+        "name": "OP A9-2020 / A5-2020 (BLP727)",
+        "price": 30000
+    },
+    {
+        "cat": "Battery",
+        "name": "OP F1s (BLP601)",
+        "price": 25000
+    },
+    {
+        "cat": "Battery",
+        "name": "OP F3 / F5 Youth / A77-4G / A73 (BLP631)",
+        "price": 25000
+    },
+    {
+        "cat": "Battery",
+        "name": "Samsung A02s / A03s / A2 Core (HQ-50s)",
+        "price": 30000
+    },
+    {
+        "cat": "Battery",
+        "name": "Te spark 2 (BL-34BT)",
+        "price": 25000
+    },
+    {
+        "cat": "Battery",
+        "name": "Te spark 6 Go / spark 5 / spark 5 Pro / spark 5 Air / spark 6-90 / SP 6T / pop 5 Lite / pop 4 (BL-49FT)",
+        "price": 30000
+    },
+    {
+        "cat": "Battery",
+        "name": "Vi Y15-2019 / Y17-2019 / Y11 / Y12 / Z1 Pro / Z5x (B-G7)",
+        "price": 30000
+    },
+    {
+        "cat": "Battery",
+        "name": "Vi Y20 / Y20i / Y20s (B-O5)",
+        "price": 30000
+    },
+    {
+        "cat": "Battery",
+        "name": "Vi Y33s (B-S2)",
+        "price": 29000
+    },
+    {
+        "cat": "Battery",
+        "name": "Rm 10c (BN5G / BN5G-OR)",
+        "price": 28000
+    },
+    {
+        "cat": "Battery",
+        "name": "Rm 12 / nt 12r (BM5R)",
+        "price": 28000
+    },
+    {
+        "cat": "Battery",
+        "name": "Rm 9A / 9C / 10A / M2 Pro / A1 / A1 Plus (BN56)",
+        "price": 28000
+    },
+    {
+        "cat": "Battery",
+        "name": "Rm nt 10-5G / 11-4G / 11 Pro / 10t 5G / Rm 10c Tablet (BN5A)",
+        "price": 28000
+    },
+    {
+        "cat": "Battery",
+        "name": "Rm 7 / nt 6 / nt 8 (BN46)",
+        "price": 25000
+    },
+    {
+        "cat": "Battery",
+        "name": "Rm 9 / nt 9 / 10x-4G (BN54)",
+        "price": 28000
+    },
+    {
+        "cat": "Battery",
+        "name": "Vi Y02s / Y02 / Y35-5G / T2x 5G (B-W1)",
+        "price": 28000
+    },
+    {
+        "cat": "Body Cover",
+        "name": "Rm 7 (Pink/Black)",
+        "price": 27000
+    },
+    {
+        "cat": "Body Cover",
+        "name": "Rm 8 (Gray/Blue)",
+        "price": 21000
+    },
+    {
+        "cat": "Body Cover",
+        "name": "Rm 9 (Green/Pink/Blue)",
+        "price": 21000
+    },
+    {
+        "cat": "Body Cover",
+        "name": "Rm 9A (Black/Blue)",
+        "price": 21000
+    },
+    {
+        "cat": "Body Cover",
+        "name": "Rm 9T / Rm nt 9-4G (Black/Blue)",
+        "price": 22000
+    },
+    {
+        "cat": "Body Cover",
+        "name": "Rm K30-4G/5G (Pink/Grey)",
+        "price": 37000
+    },
+    {
+        "cat": "Body Cover",
+        "name": "Rm nt 7 / Rm nt 7 Pro (Black/Blue)",
+        "price": 25000
+    },
+    {
+        "cat": "Body Cover",
+        "name": "Rm nt 8 (Black/Blue)",
+        "price": 28000
+    },
+    {
+        "cat": "Body Cover",
+        "name": "OP A3s (Red/Black)",
+        "price": 22000
+    },
+    {
+        "cat": "Body Cover",
+        "name": "OP A5s (Black/Blue)",
+        "price": 25000
+    },
+    {
+        "cat": "Body Cover",
+        "name": "Vi Y20 (Black/Blue)",
+        "price": 28000
+    },
+    {
+        "cat": "Body Cover",
+        "name": "Vi Y81 (Black/Gold)",
+        "price": 18000
+    },
+    {
+        "cat": "Body Cover",
+        "name": "Vi Y91 (Blue/Pink)",
+        "price": 21000
+    },
+    {
+        "cat": "Back Glass",
+        "name": "Rm 10A (Black/Blue)",
+        "price": 14000
+    },
+    {
+        "cat": "Back Glass",
+        "name": "Rm 12-4G / Rm 12-5G (Purple)",
+        "price": 12000
+    },
+    {
+        "cat": "Back Glass",
+        "name": "Rm 14C (Black/Green)",
+        "price": 13000
+    },
+    {
+        "cat": "Back Glass",
+        "name": "Rm 9A (Black/Blue)",
+        "price": 14000
+    },
+    {
+        "cat": "Back Glass",
+        "name": "Rm nt 11 Pro-4G / Rmnt 11E Pro (White)",
+        "price": 13000
+    },
+    {
+        "cat": "Back Glass",
+        "name": "Rm nt 13 Pro-4G (Black/Green)",
+        "price": 13000
+    },
+    {
+        "cat": "Back Glass",
+        "name": "Rm nt 13-4G (Black/Blue)",
+        "price": 12000
+    },
+    {
+        "cat": "Back Glass",
+        "name": "Rm nt 13-5G (Black/Green)",
+        "price": 13000
+    },
+    {
+        "cat": "Back Glass",
+        "name": "Rm nt 8 Pro (Gray/Green)",
+        "price": 12000
+    },
+    {
+        "cat": "Back Glass",
+        "name": "OP A15 / A15s / A35 (Green)",
+        "price": 12000
+    }
 ];
 /*DATA_END*/
 
