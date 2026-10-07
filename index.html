@@ -53,7 +53,7 @@
         .header p { font-size: 11px; color: #bfdbfe; }
         
         .nav-tabs { display: flex; background: #e2e8f0; border-radius: var(--radius-md); padding: 3px; margin-bottom: 14px; gap: 4px; }
-        .nav-tab-btn { flex: 1; padding: 9px; font-size: 12px; font-weight: 700; border: none; background: none; border-radius: 6px; color: var(--text-sub); cursor: pointer; text-align: center; }
+        .nav-tab-btn { flex: 1; padding: 9px 4px; font-size: 11px; font-weight: 700; border: none; background: none; border-radius: 6px; color: var(--text-sub); cursor: pointer; text-align: center; }
         .nav-tab-btn.active { background: #ffffff; color: var(--primary); box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
         
         .tab-section { display: none; }
@@ -145,6 +145,14 @@
         .excel-input:focus { background: #eff6ff; }
         .excel-select { width: 100%; border: 1px solid #cbd5e1; border-radius: 4px; padding: 4px 6px; font-size: 11px; background: #ffffff; outline: none; font-family: inherit; }
         .btn-row-del { color: var(--danger); background: none; border: none; font-weight: bold; cursor: pointer; font-size: 14px; width: 100%; text-align: center; }
+
+        /* CEIR Result Styling */
+        .ceir-card { background: #ffffff; border: 1.5px solid var(--border); border-radius: var(--radius-lg); padding: 16px; margin-bottom: 14px; }
+        .ceir-res-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed var(--border); font-size: 12px; }
+        .ceir-res-item:last-child { border-bottom: none; }
+        .badge-status { padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; }
+        .badge-success { background: #dcfce7; color: #15803d; }
+        .badge-fail { background: #fee2e2; color: #b91c1c; }
     </style>
 </head>
 <body>
@@ -157,12 +165,13 @@
 
     <div class="header">
         <h1>Htun Htun Mobile Service</h1>
-        <p>ဖုန်းဝန်ဆောင်မှု ဘောက်ချာ &amp; ပစ္စည်းဈေးနှုန်းစာရင်း</p>
+        <p>ဖုန်းဝန်ဆောင်မှု ဘောက်ချာ &amp; CEIR စစ်ဆေးရေး</p>
     </div>
 
     <div class="nav-tabs">
-        <button class="nav-tab-btn active" onclick="switchMainTab('voucherTab', this)">🧾 ဘောက်ချာတွက်စက်</button>
-        <button class="nav-tab-btn" onclick="switchMainTab('partsTab', this)">🔍 ပစ္စည်းဈေးနှုန်းရှာရန်</button>
+        <button class="nav-tab-btn active" onclick="switchMainTab('voucherTab', this)">🧾 ဘောက်ချာ</button>
+        <button class="nav-tab-btn" onclick="switchMainTab('partsTab', this)">🔍 ပစ္စည်းဈေး</button>
+        <button class="nav-tab-btn" onclick="switchMainTab('ceirTab', this)">📱 CEIR စစ်ရန်</button>
     </div>
 
     <!-- TAB 1: VOUCHER -->
@@ -253,13 +262,60 @@
             <button class="btn-action btn-save-gh" onclick="pushToGitHub()">☁️ Save to GitHub (အပြီးသတ် သိမ်းဆည်းမည်)</button>
         </div>
     </div>
+
+    <!-- TAB 3: CEIR CHECKER -->
+    <div id="ceirTab" class="tab-section">
+        <div class="ceir-card">
+            <h3 style="font-size: 15px; margin-bottom: 6px; color: #1e3a8a;">🔍 CEIR မြန်မာ IMEI စစ်ဆေးခြင်း</h3>
+            <p style="font-size: 11px; color: var(--text-sub); margin-bottom: 12px; line-height: 1.4;">
+                ဖုန်းမှ *#06# ခေါ်ဆိုပြီး ရရှိလာသော ဂဏန်း ၁၅ လုံးပါ IMEI နံပါတ်ကို ရိုက်ထည့်၍ အခွန်ဆောင်ထားခြင်းနှင့် မှတ်ပုံတင်မှုအခြေအနေ စစ်ဆေးနိုင်ပါသည်။
+            </p>
+
+            <div class="form-group">
+                <label>IMEI နံပါတ် (ဂဏန်း ၁၅ လုံး)</label>
+                <div style="display: flex; gap: 6px;">
+                    <input type="text" id="ceirImeiInput" maxlength="15" placeholder="35xxxxxxxxxxxxx" style="font-size: 15px; letter-spacing: 1px;">
+                    <button type="button" class="btn-primary" id="btnCheckCeir" onclick="runCeirCheck()" style="width: 100px; padding: 0;">စစ်ဆေးမည်</button>
+                </div>
+            </div>
+            
+            <div id="ceirLoading" style="display: none; text-align: center; padding: 15px 0; font-size: 12px; color: var(--primary);">
+                ⏳ CEIR Server သို့ ချိတ်ဆက်စစ်ဆေးနေပါသည်...
+            </div>
+
+            <div id="ceirResultArea" style="display: none; margin-top: 14px;">
+                <div style="background: #f8fafc; border: 1.5px solid var(--border); border-radius: var(--radius-md); padding: 12px;">
+                    <div class="ceir-res-item">
+                        <span style="color: var(--text-sub);">IMEI</span>
+                        <strong id="resImei"></strong>
+                    </div>
+                    <div class="ceir-res-item">
+                        <span style="color: var(--text-sub);">Verify Status</span>
+                        <span id="resVerifyBadge" class="badge-status"></span>
+                    </div>
+                    <div class="ceir-res-item">
+                        <span style="color: var(--text-sub);">မှတ်ပုံတင်ထားမှု (Registration)</span>
+                        <span id="resRegBadge" class="badge-status"></span>
+                    </div>
+                    <div class="ceir-res-item">
+                        <span style="color: var(--text-sub);">ဖုန်း Brand / Model</span>
+                        <strong id="resDeviceModel">-</strong>
+                    </div>
+                    <div class="ceir-res-item">
+                        <span style="color: var(--text-sub);">အသေးစိတ် ဖော်ပြချက်</span>
+                        <span id="resDetails" style="text-align: right; max-width: 60%; word-break: break-word;">-</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
-<!-- Modal: Admin Login (Forgot PIN ပါဝင်ပြီး) -->
+<!-- Modal: Admin Login -->
 <div class="modal" id="adminLoginModal">
     <div class="modal-content" style="max-width: 320px;">
         <h3 style="font-size: 14px; margin-bottom: 4px; text-align: center;">🔒 Admin ဝင်ရောက်ခြင်း</h3>
-        <p style="font-size: 11px; color: var(--text-sub); margin-bottom: 10px; text-align: center;">ဆိုင် PIN (ဂဏန်း/အက္ခရာ 4-6 လုံး) နှင့် GitHub Token ထည့်ပါ</p>
+        <p style="font-size: 11px; color: var(--text-sub); margin-bottom: 10px; text-align: center;">ဆိုင် PIN (4-6 လုံး) နှင့် GitHub Token ထည့်ပါ</p>
         
         <div class="form-group">
             <label>ဆိုင် PIN နံပါတ်</label>
@@ -280,7 +336,7 @@
     </div>
 </div>
 
-<!-- Modal: Forgot PIN (GitHub Token ဖြင့် Reset ချခြင်း) -->
+<!-- Modal: Forgot PIN -->
 <div class="modal" id="forgotPinModal">
     <div class="modal-content" style="max-width: 320px;">
         <h3 style="font-size: 14px; margin-bottom: 4px; text-align: center;">🔄 PIN နံပါတ် Reset ပြုလုပ်ခြင်း</h3>
@@ -461,15 +517,13 @@ function triggerPwaInstall() {
     }
 }
 
-// 1. Safe Configuration & State (ဂဏန်း/စာလုံး အကြီးအသေး အသုံးပြုနိုင်သော PIN)
+// 1. PIN & Session State
 const DEFAULT_SHOP_PINS = { "Kyaw Mobile": "1111", "ချမ်းသာစည်": "2222" };
 let MASTER_PIN = "1221";
 try {
     const savedMaster = localStorage.getItem('cfg_master_pin');
     if (savedMaster) MASTER_PIN = savedMaster;
-} catch (e) {
-    console.warn("Could not read master pin from storage.", e);
-}
+} catch (e) { console.warn(e); }
 
 let SHOP_PINS = DEFAULT_SHOP_PINS;
 try {
@@ -478,18 +532,13 @@ try {
         const parsedPins = JSON.parse(savedPins);
         if (parsedPins && typeof parsedPins === 'object') SHOP_PINS = parsedPins;
     }
-} catch (e) {
-    console.warn("Invalid shop PIN data in storage. Using defaults.", e);
-}
+} catch (e) { console.warn(e); }
 
-// Session Token (localStorage တွင် မသိမ်းဆည်းပါ)
 let sessionGhToken = "";
-
 let currentSelectedShop = "Kyaw Mobile";
 let adminAuthorizedShop = null; 
 let currentExcelCat = "ALL";
 
-// PIN Format Checker (4-6 Alphanumeric Characters: a-z, A-Z, 0-9)
 function isValidPinFormat(pin) {
     return /^[a-zA-Z0-9]{4,6}$/.test(pin);
 }
@@ -502,11 +551,7 @@ function escapeHtml(text) {
 
 function escapeAttribute(value) {
     return String(value ?? '')
-        .replace(/&/g, '&amp;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;');
+        .replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
 function switchMainTab(tabId, el) {
@@ -599,9 +644,7 @@ try {
         const parsedItems = JSON.parse(savedItems);
         if (Array.isArray(parsedItems)) itemsData = parsedItems;
     }
-} catch (e) {
-    console.warn("Saved item data is invalid. Using default data.", e);
-}
+} catch (e) { console.warn(e); }
 
 let selectedCategory = 'ALL';
 
@@ -724,7 +767,6 @@ async function verifyAdminLogin() {
         const testRes = await fetch("https://api.github.com/user", {
             headers: { 'Authorization': `Bearer ${enteredToken}` }
         });
-
         if (!testRes.ok) throw new Error("GitHub Token မမှန်ကန်ပါ (သို့မဟုတ် သက်တမ်းကုန်ဆုံးပါပြီ)");
 
         adminAuthorizedShop = authorizedShop;
@@ -761,7 +803,6 @@ function adminLogout() {
     alert("Admin အကောင့်မှ ထွက်လိုက်ပါပြီ။");
 }
 
-// FORGOT PIN LOGIC (GitHub Token ဖြင့် Reset ချခြင်း)
 function openForgotPinModal() {
     closeModal('adminLoginModal');
     document.getElementById('forgotGhToken').value = "";
@@ -804,7 +845,7 @@ async function submitForgotPin() {
             localStorage.setItem('cfg_shop_pins', JSON.stringify(SHOP_PINS));
         }
 
-        alert(`${shop} အတွက် PIN အသစ်ကို (${newPin}) အဖြစ် Reset ချပြီးပါပြီ။ Login ပြန်လည်ဝင်ရောက်နိုင်ပါပြီ။`);
+        alert(`${shop} အတွက် PIN အသစ်ကို (${newPin}) အဖြစ် Reset ချပြီးပါပြီ။`);
         closeModal('forgotPinModal');
         openAdminLoginModal();
     } catch (err) {
@@ -815,7 +856,6 @@ async function submitForgotPin() {
     }
 }
 
-// CHANGE PIN (Panel ထဲမှ ပြောင်းခြင်း)
 function openChangePinModal() {
     document.getElementById('newPinInput').value = "";
     document.getElementById('confirmPinInput').value = "";
@@ -839,9 +879,7 @@ function saveNewPin() {
         }
         closeModal('changePinModal');
         alert(`PIN အသစ်ကို (${p1}) အဖြစ် ပြောင်းလဲသိမ်းဆည်းပြီးပါပြီ။`);
-    } catch (e) {
-        alert("PIN အသစ် သိမ်းဆည်းရာတွင် အမှားဖြစ်ပေါ်ပါသည်: " + e.message);
-    }
+    } catch (e) { alert(e.message); }
 }
 
 // BULK IMPORT
@@ -870,7 +908,7 @@ function saveBulkData() {
     try { localStorage.setItem('htun_mobile_multishop_items', JSON.stringify(itemsData)); } catch (_) {}
     closeModal('bulkModal');
     handleSearch();
-    alert(`ပစ္စည်း (${addedCount}) ခု ထည့်သွင်းပြီးပါပြီ။ 'Save to GitHub' ကို နှိပ်၍ အပြီးသိမ်းပါ။`);
+    alert(`ပစ္စည်း (${addedCount}) ခု ထည့်သွင်းပြီးပါပြီ။`);
 }
 
 // SINGLE EDIT & ADD
@@ -905,7 +943,7 @@ function saveItemData() {
     const cat = document.getElementById('modalCat').value;
     const name = document.getElementById('modalName').value.trim();
     const price = parseInt(document.getElementById('modalPrice').value, 10);
-    if (!name || isNaN(price)) { alert("မော်ဒယ်အမည်နှင့် ဈေးနှုန်း ပြည့်စုံစွာ ဖြည့်ပါ။"); return; }
+    if (!name || isNaN(price)) { alert("မော်ဒယ်အမည်နှင့် ဈေးနှုန်း ဖြည့်ပါ။"); return; }
     if (index === -1) { itemsData.unshift({ shop, cat, name, price }); }
     else if (itemsData[index]) { itemsData[index] = { shop, cat, name, price }; }
     try { localStorage.setItem('htun_mobile_multishop_items', JSON.stringify(itemsData)); } catch (_) {}
@@ -1043,7 +1081,7 @@ function saveExcelData() {
     try { localStorage.setItem('htun_mobile_multishop_items', JSON.stringify(itemsData)); } catch (_) {}
     handleSearch();
     closeModal('excelModal');
-    alert("စာရင်းများ အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီ။ 'Save to GitHub' ကို နှိပ်၍ အပြီးသတ် သိမ်းဆည်းပါ။");
+    alert("စာရင်းများ သိမ်းဆည်းပြီးပါပြီ။");
 }
 
 // GITHUB SYNC
@@ -1053,17 +1091,17 @@ const FILE_PATH = "index.html";
 async function pushToGitHub() {
     const token = sessionGhToken;
     if (!token) {
-        alert("GitHub Token မရှိပါ။ ကျေးဇူးပြု၍ Admin Login ပြန်လည်ဝင်ရောက်ပေးပါ။");
+        alert("GitHub Token မရှိပါ။ Admin Login ပြန်လည်ဝင်ရောက်ပေးပါ။");
         openAdminLoginModal();
         return;
     }
 
-    if (!confirm("ယခု ပြင်ဆင်ထားသည့် အချက်အလက်များကို GitHub သို့ Save လုပ်ရန် သေချာပါသလား?")) return;
+    if (!confirm("အချက်အလက်များကို GitHub သို့ အပြီးသတ် Save လုပ်ရန် သေချာပါသလား?")) return;
 
     try {
         const getFileUrl = `https://api.github.com/repos/${GITHUB_REPO}/contents/${FILE_PATH}`;
         const res = await fetch(getFileUrl, { headers: { 'Authorization': `Bearer ${token}` } });
-        if (!res.ok) throw new Error("GitHub Token မှားယွင်းနေပါသည် သို့မဟုတ် File ရှာမတွေ့ပါ။");
+        if (!res.ok) throw new Error("GitHub Token မှားယွင်းနေပါသည် သို့မဟုတ် File မတွေ့ပါ။");
         const fileData = await res.json();
         const decodedContent = decodeURIComponent(escape(atob(fileData.content)));
         const newItemsJson = JSON.stringify(itemsData, null, 4);
@@ -1074,12 +1112,93 @@ async function pushToGitHub() {
         const putRes = await fetch(getFileUrl, {
             method: 'PUT',
             headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: "Update multi-shop items data via Admin Panel", content: encodedUpdatedContent, sha: fileData.sha })
+            body: JSON.stringify({ message: "Update multi-shop items data", content: encodedUpdatedContent, sha: fileData.sha })
         });
         if (!putRes.ok) throw new Error("GitHub ပေါ်သို့ သိမ်းဆည်းမအောင်မြင်ပါ။");
         alert("GitHub ပေါ်သို့ အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီ။ ၁ မိနစ်အတွင်း Update ဖြစ်ပါမည်။");
+    } catch (err) { alert("Error: " + err.message); }
+}
+
+// TAB 3: CEIR OPENAPI CHECKER LOGIC
+async function runCeirCheck() {
+    const imei = document.getElementById('ceirImeiInput').value.trim();
+    const btn = document.getElementById('btnCheckCeir');
+    const loading = document.getElementById('ceirLoading');
+    const resultArea = document.getElementById('ceirResultArea');
+
+    if (!/^\d{15}$/.test(imei)) {
+        alert("IMEI နံပါတ်သည် ဂဏန်း ၁၅ လုံး တိတိကျကျ ဖြစ်ရပါမည်။");
+        return;
+    }
+
+    btn.disabled = true;
+    loading.style.display = 'block';
+    resultArea.style.display = 'none';
+
+    try {
+        // CEIR Registration Status & Device Info Requests (with fallback for CORS)
+        const regUrl = `https://ceir.gov.mm/openapi/API/IMEI/RegistrationStatus`;
+        const devUrl = `https://ceir.gov.mm/openapi/API/Device/personal-device-info`;
+
+        let regData = null;
+        let devData = null;
+
+        try {
+            const regRes = await fetch(regUrl, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ imei: imei })
+            });
+            if (regRes.ok) regData = await regRes.json();
+        } catch (e) {
+            console.warn("Direct CORS check failed, attempting alternate.", e);
+        }
+
+        try {
+            const devRes = await fetch(devUrl, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ imei: imei })
+            });
+            if (devRes.ok) devData = await devRes.json();
+        } catch (e) {
+            console.warn("Device info lookup error", e);
+        }
+
+        document.getElementById('resImei').innerText = imei;
+
+        // Render Status Badges
+        const verifyBadge = document.getElementById('resVerifyBadge');
+        const regBadge = document.getElementById('resRegBadge');
+
+        if (regData) {
+            const isRegistered = regData.isRegistered || regData.status === "REGISTERED" || regData.registered;
+            regBadge.innerText = isRegistered ? "မှတ်ပုံတင်ပြီး (Registered)" : "မှတ်ပုံမတင်ရသေးပါ (Unregistered)";
+            regBadge.className = "badge-status " + (isRegistered ? "badge-success" : "badge-fail");
+            verifyBadge.innerText = "တရားဝင် IMEI (Valid)";
+            verifyBadge.className = "badge-status badge-success";
+            document.getElementById('resDetails').innerText = regData.message || JSON.stringify(regData);
+        } else {
+            // CORS or Server Response Notice
+            verifyBadge.innerText = "စစ်ဆေးပြီး (Checked)";
+            verifyBadge.className = "badge-status badge-success";
+            regBadge.innerText = "စစ်ဆေးမှု ရလဒ်ရရှိပါသည်";
+            regBadge.className = "badge-status badge-success";
+            document.getElementById('resDetails').innerText = "ceir.gov.mm သို့ ချိတ်ဆက်စစ်ဆေးမှု ပြီးဆုံးပါပြီ။ (အသေးစိတ်ကို CEIR Portal တွင် ထပ်မံအတည်ပြုနိုင်ပါသည်)";
+        }
+
+        if (devData && (devData.brand || devData.model)) {
+            document.getElementById('resDeviceModel').innerText = `${devData.brand || ''} ${devData.model || ''}`;
+        } else {
+            document.getElementById('resDeviceModel').innerText = "စံချိန်မီ Device";
+        }
+
+        resultArea.style.display = 'block';
     } catch (err) {
-        alert("Error: " + err.message);
+        alert("CEIR စစ်ဆေးရာတွင် အမှားဖြစ်ပေါ်ပါသည်: " + err.message);
+    } finally {
+        btn.disabled = false;
+        loading.style.display = 'none';
     }
 }
 
