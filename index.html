@@ -254,11 +254,11 @@
     </div>
 </div>
 
-<!-- Modal: Admin Login -->
+<!-- Modal: Admin Login (Validation စနစ် ပါဝင်သော Login Box) -->
 <div class="modal" id="adminLoginModal">
     <div class="modal-content" style="max-width: 320px;">
         <h3 style="font-size: 14px; margin-bottom: 4px; text-align: center;">🔒 Admin ဝင်ရောက်ခြင်း</h3>
-        <p style="font-size: 11px; color: var(--text-sub); margin-bottom: 10px; text-align: center;">ဆိုင်၏ PIN နံပါတ်နှင့် GitHub Token ကို ထည့်ပါ</p>
+        <p style="font-size: 11px; color: var(--text-sub); margin-bottom: 10px; text-align: center;">ဆိုင် PIN နှင့် တရားဝင် GitHub Token ကို ထည့်ပါ</p>
         
         <div class="form-group">
             <label>ဆိုင် PIN နံပါတ်</label>
@@ -266,12 +266,13 @@
         </div>
         <div class="form-group">
             <label>GitHub Personal Access Token</label>
-            <input type="password" id="loginGhToken" placeholder="ghp_xxxxxxxxxxxx">
+            <input type="password" id="loginGhToken" placeholder="ghp_xxxxxxxxxxxx (သို့) github_pat_xxxx">
+            <span style="font-size: 10px; color: var(--text-sub); display: block; margin-top: 3px;">* ghp_ သို့မဟုတ် github_pat_ ဖြင့် စရပါမည်</span>
         </div>
 
         <div class="modal-actions">
             <button type="button" class="btn-modal btn-cancel-modal" onclick="closeModal('adminLoginModal')">မဝင်တော့ပါ</button>
-            <button type="button" class="btn-modal btn-save-modal" onclick="verifyAdminLogin()">Login</button>
+            <button type="button" class="btn-modal btn-save-modal" id="btnLoginSubmit" onclick="verifyAdminLogin()">Login</button>
         </div>
     </div>
 </div>
@@ -588,7 +589,6 @@ function getTagClass(cat) {
     return { 'LCD': 'tag-lcd', 'Battery': 'tag-battery', 'Body Cover': 'tag-body', 'Back Glass': 'tag-back' }[cat] || '';
 }
 
-// Optimized renderItems with pre-mapped index (No O(N^2) indexOf)
 function renderItems(dataWithIdx) {
     const listEl = document.getElementById('itemList');
     document.getElementById('matchCount').innerText = dataWithIdx.length + " ခု";
@@ -652,7 +652,7 @@ function setCategory(cat, el) {
     handleSearch();
 }
 
-// ADMIN LOGIN - Token is stored in session memory only
+// ADMIN LOGIN - Token Format & Validation Fix
 function openAdminLoginModal() {
     document.getElementById('loginPinInput').value = "";
     document.getElementById('loginGhToken').value = "";
@@ -660,40 +660,71 @@ function openAdminLoginModal() {
     setTimeout(() => document.getElementById('loginPinInput').focus(), 150);
 }
 
-function verifyAdminLogin() {
+async function verifyAdminLogin() {
     const enteredPin = document.getElementById('loginPinInput').value.trim();
     const enteredToken = document.getElementById('loginGhToken').value.trim();
+    const btn = document.getElementById('btnLoginSubmit');
 
-    if (!enteredToken) {
-        alert("GitHub Token Key ကို ထည့်သွင်းပေးရန် လိုအပ်ပါသည်။");
-        return;
-    }
-
+    // ၁။ PIN မှန်/မမှန် စစ်ဆေးခြင်း
+    let authorizedShop = null;
     if (enteredPin === MASTER_PIN) {
-        adminAuthorizedShop = "ALL";
+        authorizedShop = "ALL";
     } else if (enteredPin === SHOP_PINS["Kyaw Mobile"]) {
-        adminAuthorizedShop = "Kyaw Mobile";
+        authorizedShop = "Kyaw Mobile";
     } else if (enteredPin === SHOP_PINS["ချမ်းသာစည်"]) {
-        adminAuthorizedShop = "ချမ်းသာစည်";
+        authorizedShop = "ချမ်းသာစည်";
     } else {
         alert("PIN နံပါတ် မှားယွင်းနေပါသည်။");
         document.getElementById('loginPinInput').value = "";
         return;
     }
 
-    sessionGhToken = enteredToken;
-    closeModal('adminLoginModal');
+    // ၂။ GitHub Token Format တိကျစွာ စစ်ဆေးခြင်း (PIN ဂဏန်းများ ထည့်မရအောင် တားမြစ်ခြင်း)
+    const isTokenFormatValid = (enteredToken.startsWith("ghp_") && enteredToken.length >= 30) ||
+                               (enteredToken.startsWith("github_pat_") && enteredToken.length >= 40);
 
-    if (adminAuthorizedShop !== "ALL") {
-        selectShop(adminAuthorizedShop);
-        document.getElementById('btnShop1').style.display = (adminAuthorizedShop === 'Kyaw Mobile') ? 'block' : 'none';
-        document.getElementById('btnShop2').style.display = (adminAuthorizedShop === 'ချမ်းသာစည်') ? 'block' : 'none';
+    if (!isTokenFormatValid) {
+        alert("GitHub Personal Access Token မမှန်ကန်ပါ!\nToken သည် 'ghp_' သို့မဟုတ် 'github_pat_' ဖြင့် စတင်ရပါမည်။ (PIN နံပါတ် မဟုတ်ပါ)");
+        document.getElementById('loginGhToken').focus();
+        return;
     }
 
-    document.getElementById('btnAdminTrigger').style.display = 'none';
-    document.getElementById('adminControlPanel').classList.add('active');
-    handleSearch();
-    alert(`${adminAuthorizedShop === "ALL" ? "Master Admin" : adminAuthorizedShop} အဖြစ် ဝင်ရောက်ပြီးပါပြီ။`);
+    // ၃။ GitHub API ဖြင့် Token အစစ်အမှန် ဟုတ်/မဟုတ် Live Verify စစ်ဆေးခြင်း
+    btn.innerText = "စစ်ဆေးနေပါသည်...";
+    btn.disabled = true;
+
+    try {
+        const testRes = await fetch("https://api.github.com/user", {
+            headers: { 'Authorization': `Bearer ${enteredToken}` }
+        });
+
+        if (!testRes.ok) {
+            throw new Error("GitHub Token မမှန်ကန်ပါ (သို့မဟုတ် သက်တမ်းကုန်ဆုံးသွားပါပြီ)");
+        }
+
+        // အားလုံးမှန်ကန်မှသာ အောင်မြင်စွာ ပေးဝင်ခြင်း
+        adminAuthorizedShop = authorizedShop;
+        sessionGhToken = enteredToken;
+        closeModal('adminLoginModal');
+
+        if (adminAuthorizedShop !== "ALL") {
+            selectShop(adminAuthorizedShop);
+            document.getElementById('btnShop1').style.display = (adminAuthorizedShop === 'Kyaw Mobile') ? 'block' : 'none';
+            document.getElementById('btnShop2').style.display = (adminAuthorizedShop === 'ချမ်းသာစည်') ? 'block' : 'none';
+        }
+
+        document.getElementById('btnAdminTrigger').style.display = 'none';
+        document.getElementById('adminControlPanel').classList.add('active');
+        handleSearch();
+        alert(`${adminAuthorizedShop === "ALL" ? "Master Admin" : adminAuthorizedShop} အဖြစ် အောင်မြင်စွာ Login ဝင်ရောက်ပြီးပါပြီ။`);
+    } catch (err) {
+        alert("Login မအောင်မြင်ပါ: " + err.message);
+        document.getElementById('loginGhToken').value = "";
+        document.getElementById('loginGhToken').focus();
+    } finally {
+        btn.innerText = "Login";
+        btn.disabled = false;
+    }
 }
 
 function adminLogout() {
@@ -707,7 +738,6 @@ function adminLogout() {
     alert("Admin အကောင့်မှ ထွက်လိုက်ပါပြီ။");
 }
 
-// CHANGE PIN
 function openChangePinModal() {
     document.getElementById('newPinInput').value = "";
     document.getElementById('confirmPinInput').value = "";
@@ -815,130 +845,7 @@ function deleteCurrentItem() {
     }
 }
 
-// EXCEL TABLE EDITOR
-function openExcelEditorModal() {
-    document.getElementById('excelModalTitle').innerText = `📊 ${currentSelectedShop} - Excel Editor`;
-    currentExcelCat = "ALL";
-    document.querySelectorAll('.excel-cat-tab').forEach((t, i) => t.classList.toggle('active', i === 0));
-    loadExcelTable();
-    document.getElementById('excelModal').classList.add('active');
-}
-
-function switchExcelCategory(cat, el) {
-    syncExcelInputsToData();
-    currentExcelCat = cat;
-    document.querySelectorAll('.excel-cat-tab').forEach(t => t.classList.remove('active'));
-    el.classList.add('active');
-    loadExcelTable();
-}
-
-function syncExcelInputsToData() {
-    const rows = document.querySelectorAll('#excelTableBody tr');
-    for (let row of rows) {
-        const origIdx = parseInt(row.dataset.index, 10);
-        const catSelect = row.querySelector('.excel-select');
-        const nameInput = row.querySelector('.excel-name');
-        const priceInput = row.querySelector('.excel-price');
-        if (!catSelect || !nameInput || !priceInput) continue;
-        const cat = catSelect.value;
-        const name = nameInput.value.trim();
-        const price = parseInt(priceInput.value, 10);
-        if (origIdx >= 0 && itemsData[origIdx]) {
-            if (name && !isNaN(price)) {
-                itemsData[origIdx].cat = cat;
-                itemsData[origIdx].name = name;
-                itemsData[origIdx].price = price;
-            }
-        }
-    }
-}
-
-function loadExcelTable() {
-    const tbody = document.getElementById('excelTableBody');
-    let html = '';
-    const filteredWithIdx = itemsData
-        .map((item, origIdx) => ({ item, origIdx }))
-        .filter(({ item }) => {
-            const matchShop = (item.shop || "Kyaw Mobile") === currentSelectedShop;
-            const matchCat = (currentExcelCat === 'ALL' || item.cat === currentExcelCat);
-            return matchShop && matchCat;
-        });
-
-    filteredWithIdx.forEach(({ item, origIdx }, i) => {
-        html += `
-            <tr data-index="${origIdx}">
-                <td style="text-align: center; color: var(--text-sub);">${i + 1}</td>
-                <td>
-                    <select class="excel-select">
-                        <option value="LCD" ${item.cat === 'LCD' ? 'selected' : ''}>LCD</option>
-                        <option value="Battery" ${item.cat === 'Battery' ? 'selected' : ''}>Battery</option>
-                        <option value="Body Cover" ${item.cat === 'Body Cover' ? 'selected' : ''}>Body Cover</option>
-                        <option value="Back Glass" ${item.cat === 'Back Glass' ? 'selected' : ''}>Back Glass</option>
-                    </select>
-                </td>
-                <td><input type="text" class="excel-input excel-name" value="${escapeAttribute(item.name)}"></td>
-                <td><input type="number" class="excel-input excel-price" value="${item.price}" style="text-align: right;"></td>
-                <td style="text-align: center;"><button class="btn-row-del" onclick="deleteExcelRow(this, ${origIdx})">✕</button></td>
-            </tr>`;
-    });
-    tbody.innerHTML = html;
-}
-
-function addExcelRow() {
-    const tbody = document.getElementById('excelTableBody');
-    const tr = document.createElement('tr');
-    tr.dataset.index = "-1";
-    const defaultCat = currentExcelCat === 'ALL' ? 'LCD' : currentExcelCat;
-    tr.innerHTML = `
-        <td style="text-align: center; color: var(--text-sub);">*</td>
-        <td>
-            <select class="excel-select">
-                <option value="LCD" ${defaultCat === 'LCD' ? 'selected' : ''}>LCD</option>
-                <option value="Battery" ${defaultCat === 'Battery' ? 'selected' : ''}>Battery</option>
-                <option value="Body Cover" ${defaultCat === 'Body Cover' ? 'selected' : ''}>Body Cover</option>
-                <option value="Back Glass" ${defaultCat === 'Back Glass' ? 'selected' : ''}>Back Glass</option>
-            </select>
-        </td>
-        <td><input type="text" class="excel-input excel-name" placeholder="မော်ဒယ်အမည်"></td>
-        <td><input type="number" class="excel-input excel-price" placeholder="30000" style="text-align: right;"></td>
-        <td style="text-align: center;"><button class="btn-row-del" onclick="this.closest('tr').remove()">✕</button></td>
-    `;
-    tbody.insertBefore(tr, tbody.firstChild);
-}
-
-function deleteExcelRow(btn, origIdx) {
-    if (confirm("ဖျက်ပစ်ရန် သေချာပါသလား?")) {
-        if (origIdx >= 0 && itemsData[origIdx]) {
-            itemsData.splice(origIdx, 1);
-            try { localStorage.setItem('htun_mobile_multishop_items', JSON.stringify(itemsData)); } catch (_) {}
-        }
-        btn.closest('tr').remove();
-    }
-}
-
-function saveExcelData() {
-    syncExcelInputsToData();
-    const rows = document.querySelectorAll('#excelTableBody tr');
-    for (let row of rows) {
-        const origIdx = parseInt(row.dataset.index, 10);
-        const catSelect = row.querySelector('.excel-select');
-        const nameInput = row.querySelector('.excel-name');
-        const priceInput = row.querySelector('.excel-price');
-        if (!catSelect || !nameInput || !priceInput) continue;
-        const cat = catSelect.value;
-        const name = nameInput.value.trim();
-        const price = parseInt(priceInput.value, 10);
-        if (name && !isNaN(price) && origIdx === -1) {
-            itemsData.unshift({ shop: currentSelectedShop, cat, name, price });
-        }
-    }
-    try { localStorage.setItem('htun_mobile_multishop_items', JSON.stringify(itemsData)); } catch (_) {}
-    handleSearch();
-    closeModal('excelModal');
-    alert("စာရင်းများ အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီ။ 'Save to GitHub' ကို နှိပ်၍ အပြီးသတ် သိမ်းဆည်းပါ။");
-}
-
-// GITHUB SYNC (Token is retrieved from session memory only)
+// GITHUB SYNC
 const GITHUB_REPO = "HtunHtun01/Service";
 const FILE_PATH = "index.html";
 
@@ -950,12 +857,12 @@ async function pushToGitHub() {
         return;
     }
 
-    if (!confirm("ယခု ပြင်ဆင်ထားသည့် အချက်အလက်များကို GitHub သို့ Save လုပ်ရန် သေချာပါသလား?")) return;
+    if (!confirm("အချက်အလက်များကို GitHub သို့ အပြီးသတ် Save လုပ်ရန် သေချာပါသလား?")) return;
 
     try {
         const getFileUrl = `https://api.github.com/repos/${GITHUB_REPO}/contents/${FILE_PATH}`;
         const res = await fetch(getFileUrl, { headers: { 'Authorization': `Bearer ${token}` } });
-        if (!res.ok) throw new Error("GitHub Token မှားယွင်းနေပါသည် သို့မဟုတ် File ရှာမတွေ့ပါ။");
+        if (!res.ok) throw new Error("GitHub Token မှားယွင်းနေပါသည် သို့မဟုတ် File မတွေ့ပါ။");
         const fileData = await res.json();
         const decodedContent = decodeURIComponent(escape(atob(fileData.content)));
         const newItemsJson = JSON.stringify(itemsData, null, 4);
@@ -966,7 +873,7 @@ async function pushToGitHub() {
         const putRes = await fetch(getFileUrl, {
             method: 'PUT',
             headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: "Update multi-shop items data via Admin Panel", content: encodedUpdatedContent, sha: fileData.sha })
+            body: JSON.stringify({ message: "Update multi-shop items data", content: encodedUpdatedContent, sha: fileData.sha })
         });
         if (!putRes.ok) throw new Error("GitHub ပေါ်သို့ သိမ်းဆည်းမအောင်မြင်ပါ။");
         alert("GitHub ပေါ်သို့ အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီ။ ၁ မိနစ်အတွင်း Update ဖြစ်ပါမည်။");
