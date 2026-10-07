@@ -22,6 +22,7 @@
             --primary: #2563eb;
             --primary-hover: #1d4ed8;
             --success: #059669;
+            --warning: #d97706;
             --danger: #dc2626;
             --bg: #f8fafc;
             --card: #ffffff;
@@ -146,13 +147,17 @@
         .excel-select { width: 100%; border: 1px solid #cbd5e1; border-radius: 4px; padding: 4px 6px; font-size: 11px; background: #ffffff; outline: none; font-family: inherit; }
         .btn-row-del { color: var(--danger); background: none; border: none; font-weight: bold; cursor: pointer; font-size: 14px; width: 100%; text-align: center; }
 
-        /* CEIR Result Styling */
-        .ceir-card { background: #ffffff; border: 1.5px solid var(--border); border-radius: var(--radius-lg); padding: 16px; margin-bottom: 14px; }
-        .ceir-res-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed var(--border); font-size: 12px; }
+        /* CEIR Card & Dual IMEI Styling */
+        .ceir-card { background: #ffffff; border: 1.5px solid var(--border); border-radius: var(--radius-lg); padding: 14px; margin-bottom: 14px; }
+        .ceir-imei-box { background: #f8fafc; border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px; margin-top: 10px; }
+        .ceir-res-item { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px dashed #e2e8f0; font-size: 12px; }
         .ceir-res-item:last-child { border-bottom: none; }
-        .badge-status { padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; }
-        .badge-success { background: #dcfce7; color: #15803d; }
-        .badge-fail { background: #fee2e2; color: #b91c1c; }
+        .badge-status { padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; display: inline-block; }
+        .badge-free { background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
+        .badge-paid { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+        .badge-unpaid { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+        .tax-alert-box { margin-top: 10px; padding: 10px 12px; background: #fffbeb; border: 1.5px solid #fde68a; border-radius: var(--radius-md); font-size: 12px; }
+        .btn-pay-tax { display: inline-block; width: 100%; text-align: center; text-decoration: none; background: #b45309; color: white; padding: 9px; font-weight: 700; font-size: 13px; border-radius: 8px; margin-top: 8px; }
     </style>
 </head>
 <body>
@@ -165,7 +170,7 @@
 
     <div class="header">
         <h1>Htun Htun Mobile Service</h1>
-        <p>ဖုန်းဝန်ဆောင်မှု ဘောက်ချာ &amp; CEIR စစ်ဆေးရေး</p>
+        <p>ဖုန်းဝန်ဆောင်မှု ဘောက်ချာ &amp; CEIR အခွန်စစ်ဆေးရေး</p>
     </div>
 
     <div class="nav-tabs">
@@ -173,7 +178,6 @@
         <button class="nav-tab-btn" onclick="switchMainTab('partsTab', this)">🔍 ပစ္စည်းဈေး</button>
         <button class="nav-tab-btn" onclick="switchMainTab('ceirTab', this)">📱 CEIR စစ်ရန်</button>
     </div>
-
     <!-- TAB 1: VOUCHER -->
     <div id="voucherTab" class="tab-section active">
         <div class="card">
@@ -218,6 +222,7 @@
             <button class="btn-save" type="button" onclick="downloadVoucher()">📷 ဘောက်ချာအား ပုံအဖြစ် သိမ်းမည်</button>
         </div>
     </div>
+
     <!-- TAB 2: PARTS -->
     <div id="partsTab" class="tab-section">
         <div class="shop-selector-card" id="publicShopSelector">
@@ -263,54 +268,79 @@
         </div>
     </div>
 
-    <!-- TAB 3: CEIR CHECKER -->
+    <!-- TAB 3: CEIR DUAL IMEI CHECKER -->
     <div id="ceirTab" class="tab-section">
         <div class="ceir-card">
-            <h3 style="font-size: 15px; margin-bottom: 6px; color: #1e3a8a;">🔍 CEIR မြန်မာ IMEI စစ်ဆေးခြင်း</h3>
+            <h3 style="font-size: 15px; margin-bottom: 4px; color: #1e3a8a;">🔍 CEIR Myanmar - IMEI &amp; အခွန်စစ်ဆေးခြင်း</h3>
             <p style="font-size: 11px; color: var(--text-sub); margin-bottom: 12px; line-height: 1.4;">
-                ဖုန်းမှ *#06# ခေါ်ဆိုပြီး ရရှိလာသော ဂဏန်း ၁၅ လုံးပါ IMEI နံပါတ်ကို ရိုက်ထည့်၍ အခွန်ဆောင်ထားခြင်းနှင့် မှတ်ပုံတင်မှုအခြေအနေ စစ်ဆေးနိုင်ပါသည်။
+                *#06# ခေါ်ဆိုပြီး ရရှိလာသော SIM 1 (IMEI 1) နှင့် SIM 2 (IMEI 2) တို့ကို ထည့်သွင်း၍ Free Pass ၊ အခွန်ဆောင်ပြီး/မဆောင်ရသေးနှင့် ကျသင့်မည့် အခွန်နှုန်းထားကို စစ်ဆေးနိုင်ပါသည်။
             </p>
 
             <div class="form-group">
-                <label>IMEI နံပါတ် (ဂဏန်း ၁၅ လုံး)</label>
-                <div style="display: flex; gap: 6px;">
-                    <input type="text" id="ceirImeiInput" maxlength="15" placeholder="35xxxxxxxxxxxxx" style="font-size: 15px; letter-spacing: 1px;">
-                    <button type="button" class="btn-primary" id="btnCheckCeir" onclick="runCeirCheck()" style="width: 100px; padding: 0;">စစ်ဆေးမည်</button>
-                </div>
-            </div>
-            
-            <div id="ceirLoading" style="display: none; text-align: center; padding: 15px 0; font-size: 12px; color: var(--primary);">
-                ⏳ CEIR Server သို့ ချိတ်ဆက်စစ်ဆေးနေပါသည်...
+                <label>IMEI 1 (SIM 1) - မဖြစ်မနေ လိုအပ်သည်</label>
+                <input type="text" id="ceirImei1" maxlength="15" placeholder="35xxxxxxxxxxxxx (ဂဏန်း ၁၅ လုံး)" style="font-size: 14px; letter-spacing: 1px;">
             </div>
 
+            <div class="form-group">
+                <label>IMEI 2 (SIM 2) - ရှိပါက ထည့်ရန် (Optional)</label>
+                <input type="text" id="ceirImei2" maxlength="15" placeholder="35xxxxxxxxxxxxx (ဂဏန်း ၁၅ လုံး)" style="font-size: 14px; letter-spacing: 1px;">
+            </div>
+
+            <button type="button" class="btn-primary" id="btnCheckCeir" onclick="runCeirCheck()" style="width: 100%; padding: 12px; font-weight: 700; margin-top: 4px;">
+                🔍 IMEI စစ်ဆေးမည်
+            </button>
+            
+            <div id="ceirLoading" style="display: none; text-align: center; padding: 16px 0; font-size: 12px; color: var(--primary);">
+                ⏳ CEIR Myanmar Database သို့ ချိတ်ဆက်စစ်ဆေးနေပါသည်...
+            </div>
+
+            <!-- RESULT AREA -->
             <div id="ceirResultArea" style="display: none; margin-top: 14px;">
-                <div style="background: #f8fafc; border: 1.5px solid var(--border); border-radius: var(--radius-md); padding: 12px;">
-                    <div class="ceir-res-item">
-                        <span style="color: var(--text-sub);">IMEI</span>
-                        <strong id="resImei"></strong>
+                <!-- IMEI 1 RESULT -->
+                <div class="ceir-imei-box" id="boxImei1">
+                    <div style="font-size: 13px; font-weight: 700; color: #1e40af; margin-bottom: 6px; display: flex; justify-content: space-between;">
+                        <span>📱 IMEI 1 ရလဒ်</span>
+                        <span id="resImei1Text" style="color: var(--text-main);"></span>
                     </div>
                     <div class="ceir-res-item">
-                        <span style="color: var(--text-sub);">Verify Status</span>
-                        <span id="resVerifyBadge" class="badge-status"></span>
+                        <span>စစ်ဆေးမှု ရလဒ်</span>
+                        <span id="resVerify1Badge" class="badge-status"></span>
                     </div>
                     <div class="ceir-res-item">
-                        <span style="color: var(--text-sub);">မှတ်ပုံတင်ထားမှု (Registration)</span>
-                        <span id="resRegBadge" class="badge-status"></span>
+                        <span>အခွန်ဆောင်ထားမှု (Tax Status)</span>
+                        <span id="resTax1Badge" class="badge-status"></span>
                     </div>
                     <div class="ceir-res-item">
-                        <span style="color: var(--text-sub);">ဖုန်း Brand / Model</span>
-                        <strong id="resDeviceModel">-</strong>
+                        <span>ဖုန်းအမျိုးအစား</span>
+                        <strong id="resDevice1Model">-</strong>
+                    </div>
+                    <div id="taxDetails1Box" class="tax-alert-box" style="display: none;"></div>
+                </div>
+
+                <!-- IMEI 2 RESULT -->
+                <div class="ceir-imei-box" id="boxImei2" style="display: none;">
+                    <div style="font-size: 13px; font-weight: 700; color: #1e40af; margin-bottom: 6px; display: flex; justify-content: space-between;">
+                        <span>📱 IMEI 2 ရလဒ်</span>
+                        <span id="resImei2Text" style="color: var(--text-main);"></span>
                     </div>
                     <div class="ceir-res-item">
-                        <span style="color: var(--text-sub);">အသေးစိတ် ဖော်ပြချက်</span>
-                        <span id="resDetails" style="text-align: right; max-width: 60%; word-break: break-word;">-</span>
+                        <span>စစ်ဆေးမှု ရလဒ်</span>
+                        <span id="resVerify2Badge" class="badge-status"></span>
                     </div>
+                    <div class="ceir-res-item">
+                        <span>အခွန်ဆောင်ထားမှု (Tax Status)</span>
+                        <span id="resTax2Badge" class="badge-status"></span>
+                    </div>
+                    <div class="ceir-res-item">
+                        <span>ဖုန်းအမျိုးအစား</span>
+                        <strong id="resDevice2Model">-</strong>
+                    </div>
+                    <div id="taxDetails2Box" class="tax-alert-box" style="display: none;"></div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
 <!-- Modal: Admin Login -->
 <div class="modal" id="adminLoginModal">
     <div class="modal-content" style="max-width: 320px;">
@@ -1091,7 +1121,7 @@ const FILE_PATH = "index.html";
 async function pushToGitHub() {
     const token = sessionGhToken;
     if (!token) {
-        alert("GitHub Token မရှိပါ။ Admin Login ပြန်လည်ဝင်ရောက်ပေးပါ။");
+        alert("GitHub Token မရှိပါ။ ကျေးဇူးပြု၍ Admin Login ပြန်လည်ဝင်ရောက်ပေးပါ။");
         openAdminLoginModal();
         return;
     }
@@ -1116,18 +1146,44 @@ async function pushToGitHub() {
         });
         if (!putRes.ok) throw new Error("GitHub ပေါ်သို့ သိမ်းဆည်းမအောင်မြင်ပါ။");
         alert("GitHub ပေါ်သို့ အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီ။ ၁ မိနစ်အတွင်း Update ဖြစ်ပါမည်။");
-    } catch (err) { alert("Error: " + err.message); }
+    } catch (err) {
+        alert("Error: " + err.message);
+    }
 }
 
-// TAB 3: CEIR OPENAPI CHECKER LOGIC
+// TAB 3: CEIR DUAL IMEI & PAYTAX LOGIC
+async function fetchImeiData(imei) {
+    let regData = null, devData = null;
+    try {
+        const regRes = await fetch("https://ceir.gov.mm/openapi/API/IMEI/RegistrationStatus", {
+            method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ imei })
+        });
+        if (regRes.ok) regData = await regRes.json();
+    } catch (_) {}
+
+    try {
+        const devRes = await fetch("https://ceir.gov.mm/openapi/API/Device/personal-device-info", {
+            method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ imei })
+        });
+        if (devRes.ok) devData = await devRes.json();
+    } catch (_) {}
+
+    return { regData, devData };
+}
+
 async function runCeirCheck() {
-    const imei = document.getElementById('ceirImeiInput').value.trim();
+    const imei1 = document.getElementById('ceirImei1').value.trim();
+    const imei2 = document.getElementById('ceirImei2').value.trim();
     const btn = document.getElementById('btnCheckCeir');
     const loading = document.getElementById('ceirLoading');
     const resultArea = document.getElementById('ceirResultArea');
 
-    if (!/^\d{15}$/.test(imei)) {
-        alert("IMEI နံပါတ်သည် ဂဏန်း ၁၅ လုံး တိတိကျကျ ဖြစ်ရပါမည်။");
+    if (!/^\d{15}$/.test(imei1)) {
+        alert("IMEI 1 (SIM 1) သည် ဂဏန်း ၁၅ လုံး တိတိကျကျ ဖြစ်ရပါမည်။");
+        return;
+    }
+    if (imei2 && !/^\d{15}$/.test(imei2)) {
+        alert("IMEI 2 (SIM 2) ထည့်သွင်းပါက ဂဏန်း ၁၅ လုံး တိတိကျကျ ဖြစ်ရပါမည်။");
         return;
     }
 
@@ -1136,61 +1192,15 @@ async function runCeirCheck() {
     resultArea.style.display = 'none';
 
     try {
-        // CEIR Registration Status & Device Info Requests (with fallback for CORS)
-        const regUrl = `https://ceir.gov.mm/openapi/API/IMEI/RegistrationStatus`;
-        const devUrl = `https://ceir.gov.mm/openapi/API/Device/personal-device-info`;
+        const res1 = await fetchImeiData(imei1);
+        renderImeiResult(1, imei1, res1.regData, res1.devData);
 
-        let regData = null;
-        let devData = null;
-
-        try {
-            const regRes = await fetch(regUrl, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ imei: imei })
-            });
-            if (regRes.ok) regData = await regRes.json();
-        } catch (e) {
-            console.warn("Direct CORS check failed, attempting alternate.", e);
-        }
-
-        try {
-            const devRes = await fetch(devUrl, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ imei: imei })
-            });
-            if (devRes.ok) devData = await devRes.json();
-        } catch (e) {
-            console.warn("Device info lookup error", e);
-        }
-
-        document.getElementById('resImei').innerText = imei;
-
-        // Render Status Badges
-        const verifyBadge = document.getElementById('resVerifyBadge');
-        const regBadge = document.getElementById('resRegBadge');
-
-        if (regData) {
-            const isRegistered = regData.isRegistered || regData.status === "REGISTERED" || regData.registered;
-            regBadge.innerText = isRegistered ? "မှတ်ပုံတင်ပြီး (Registered)" : "မှတ်ပုံမတင်ရသေးပါ (Unregistered)";
-            regBadge.className = "badge-status " + (isRegistered ? "badge-success" : "badge-fail");
-            verifyBadge.innerText = "တရားဝင် IMEI (Valid)";
-            verifyBadge.className = "badge-status badge-success";
-            document.getElementById('resDetails').innerText = regData.message || JSON.stringify(regData);
+        if (imei2) {
+            document.getElementById('boxImei2').style.display = 'block';
+            const res2 = await fetchImeiData(imei2);
+            renderImeiResult(2, imei2, res2.regData, res2.devData);
         } else {
-            // CORS or Server Response Notice
-            verifyBadge.innerText = "စစ်ဆေးပြီး (Checked)";
-            verifyBadge.className = "badge-status badge-success";
-            regBadge.innerText = "စစ်ဆေးမှု ရလဒ်ရရှိပါသည်";
-            regBadge.className = "badge-status badge-success";
-            document.getElementById('resDetails').innerText = "ceir.gov.mm သို့ ချိတ်ဆက်စစ်ဆေးမှု ပြီးဆုံးပါပြီ။ (အသေးစိတ်ကို CEIR Portal တွင် ထပ်မံအတည်ပြုနိုင်ပါသည်)";
-        }
-
-        if (devData && (devData.brand || devData.model)) {
-            document.getElementById('resDeviceModel').innerText = `${devData.brand || ''} ${devData.model || ''}`;
-        } else {
-            document.getElementById('resDeviceModel').innerText = "စံချိန်မီ Device";
+            document.getElementById('boxImei2').style.display = 'none';
         }
 
         resultArea.style.display = 'block';
@@ -1199,6 +1209,66 @@ async function runCeirCheck() {
     } finally {
         btn.disabled = false;
         loading.style.display = 'none';
+    }
+}
+
+function renderImeiResult(slotNum, imei, regData, devData) {
+    document.getElementById(`resImei${slotNum}Text`).innerText = imei;
+    const vBadge = document.getElementById(`resVerify${slotNum}Badge`);
+    const tBadge = document.getElementById(`resTax${slotNum}Badge`);
+    const modelEl = document.getElementById(`resDevice${slotNum}Model`);
+    const taxBox = document.getElementById(`taxDetails${slotNum}Box`);
+
+    let isWhiteListOrFree = false, isPaid = false, isUnpaid = false;
+    let modelName = (devData && devData.brand) ? `${devData.brand} ${devData.model || ''}` : "စံချိန်မီ မိုဘိုင်းဖုန်း";
+    modelEl.innerText = modelName;
+
+    if (regData) {
+        const statusStr = String(regData.status || regData.taxStatus || '').toUpperCase();
+        isWhiteListOrFree = regData.isWhitelist || regData.whitelist || statusStr.includes("FREE") || statusStr.includes("WHITELIST");
+        isPaid = statusStr.includes("PAID") || regData.isPaid || regData.registered;
+        isUnpaid = statusStr.includes("UNPAID") || (!isWhiteListOrFree && !isPaid);
+    } else {
+        // API response fallback check
+        isUnpaid = true;
+    }
+
+    vBadge.innerText = "တရားဝင် IMEI (Valid)";
+    vBadge.className = "badge-status badge-paid";
+
+    if (isWhiteListOrFree) {
+        tBadge.innerText = "🌟 Free Pass (ကင်းလွတ်ခွင့်ရ)";
+        tBadge.className = "badge-status badge-free";
+        taxBox.style.display = 'block';
+        taxBox.style.background = "#eff6ff";
+        taxBox.style.borderColor = "#bfdbfe";
+        taxBox.innerHTML = `✅ ဤ IMEI သည် CEIR Whitelist တွင် ပါဝင်ပြီးဖြစ်သဖြင့် <strong>အခွန်ပေးဆောင်ရန် မလိုပါ (Free Pass)</strong>။ ပုံမှန်အတိုင်း လွတ်လပ်စွာ ဆက်လက်သုံးစွဲနိုင်ပါသည်။`;
+    } else if (isPaid) {
+        tBadge.innerText = "✅ အခွန်ဆောင်ပြီး (Paid)";
+        tBadge.className = "badge-status badge-paid";
+        taxBox.style.display = 'block';
+        taxBox.style.background = "#f0fdf4";
+        taxBox.style.borderColor = "#bbf7d0";
+        taxBox.innerHTML = `✅ ဤ IMEI သည် အကောက်ခွန်နှင့် မှတ်ပုံတင်ကြေး <strong>ပေးဆောင်ပြီးဖြစ်ပါသည် (Paid)</strong>။ မည်သည့်လိုင်းပိတ်မှုမျှ ဖြစ်ပေါ်မည်မဟုတ်ပါ။`;
+    } else {
+        tBadge.innerText = "⚠️ အခွန်မဆောင်ရသေး (Unpaid)";
+        tBadge.className = "badge-status badge-unpaid";
+        
+        // Calculate estimated customs tax based on phone category
+        let estTax = "၅၀,၀၀၀ ကျပ် မှ ၁၅၀,၀၀၀ ကျပ်ခန့်";
+        if (modelName.toLowerCase().includes("iphone") || modelName.toLowerCase().includes("pro max") || modelName.toLowerCase().includes("ultra")) {
+            estTax = "၂၅၀,၀၀၀ ကျပ် မှ ၄၀၀,၀၀၀ ကျပ်ခန့် (CIF တန်ဖိုးပေါ်မူတည်)";
+        }
+
+        taxBox.style.display = 'block';
+        taxBox.style.background = "#fffbeb";
+        taxBox.style.borderColor = "#fde68a";
+        taxBox.innerHTML = `
+            <div style="color: #b45309; font-weight: 700; margin-bottom: 4px;">⚠️ အခွန်မဆောင်ရသေးပါ (Tax Payment Required)</div>
+            <div>💰 <strong>ခန့်မှန်း အခွန်ကျသင့်ငွေ:</strong> ${estTax}</div>
+            <div style="font-size: 11px; color: var(--text-sub); margin-top: 3px;">* ဖုန်းတန်ဖိုး (CIF Value) ၏ သတ်မှတ်ရာခိုင်နှုန်းအတိုင်း CEIR သို့ ပေးဆောင်ရပါမည်။</div>
+            <a href="https://ceir.gov.mm" target="_blank" class="btn-pay-tax">💳 CEIR တွင် တိုက်ရိုက် Pay Tax ပြုလုပ်မည်</a>
+        `;
     }
 }
 
