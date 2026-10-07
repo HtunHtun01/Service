@@ -76,12 +76,19 @@
         .item-price { font-size: 13px; font-weight: 700; color: var(--success); white-space: nowrap; }
         .btn-edit-item { font-size: 11px; color: var(--primary); background: none; border: none; cursor: pointer; text-decoration: underline; }
         .empty-state { text-align: center; padding: 25px 10px; color: var(--text-sub); font-size: 12px; background: white; border-radius: var(--radius-md); border: 1px dashed var(--border); }
-        .admin-box { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
-        .btn-action { width: 100%; padding: 11px; border-radius: var(--radius-md); font-size: 13px; font-weight: 600; cursor: pointer; border: none; }
-        .btn-add { background: #ffffff; color: var(--text-main); border: 1.5px dashed var(--border); }
+        
+        /* Admin Section Styling */
+        .admin-trigger-btn { width: 100%; background: #ffffff; color: #475569; border: 1.5px dashed var(--border); padding: 10px; font-size: 12px; font-weight: 600; border-radius: var(--radius-md); cursor: pointer; margin-top: 10px; }
+        .admin-panel { display: none; margin-top: 12px; padding: 12px; background: #ffffff; border: 1.5px solid #bfdbfe; border-radius: var(--radius-lg); box-shadow: 0 4px 10px rgba(37,99,235,0.06); }
+        .admin-panel.active { display: flex; flex-direction: column; gap: 8px; }
+        .admin-panel-header { display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 700; color: #1e40af; border-bottom: 1px solid #e2e8f0; padding-bottom: 6px; margin-bottom: 4px; }
+        .btn-action { width: 100%; padding: 10px; border-radius: var(--radius-md); font-size: 12px; font-weight: 600; cursor: pointer; border: none; }
+        .btn-add { background: #f8fafc; color: var(--text-main); border: 1.5px solid var(--border); }
         .btn-bulk { background: #2563eb; color: #ffffff; }
         .btn-excel { background: #047857; color: #ffffff; }
-        .btn-fixed-github { background: #0f172a; color: #ffffff; border: none; width: 100%; padding: 12px; font-size: 13px; font-weight: 700; border-radius: var(--radius-md); margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.15); }
+        .btn-save-gh { background: #0f172a; color: #ffffff; font-weight: 700; }
+        .btn-chg-pin { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; font-size: 11px; padding: 6px; border-radius: 6px; }
+
         .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.65); z-index: 1000; justify-content: center; align-items: center; padding: 8px; }
         .modal.active { display: flex; }
         .modal-content { background: #ffffff; width: 100%; max-width: 440px; border-radius: 12px; padding: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.25); max-height: 94vh; display: flex; flex-direction: column; }
@@ -95,12 +102,10 @@
         .btn-cancel-modal { background: #f1f5f9; color: var(--text-sub); }
         .btn-del-modal { background: #fee2e2; color: var(--danger); }
         
-        /* Excel Table & Category Tabs Styling */
         .excel-category-tabs { display: flex; gap: 6px; overflow-x: auto; padding: 6px 2px; border-bottom: 1.5px solid var(--border); margin: 6px 0 8px; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
         .excel-category-tabs::-webkit-scrollbar { display: none; }
         .excel-cat-tab { padding: 6px 12px; font-size: 12px; font-weight: 700; border-radius: 8px; border: 1.5px solid var(--border); background: #f8fafc; color: var(--text-sub); cursor: pointer; white-space: nowrap; flex-shrink: 0; }
         .excel-cat-tab.active { background: var(--primary); color: white; border-color: var(--primary); }
-        
         .excel-table-wrap { flex: 1; overflow: auto; border: 1px solid var(--border); border-radius: 6px; margin-top: 4px; -webkit-overflow-scrolling: touch; }
         .excel-table { width: 100%; border-collapse: collapse; min-width: 520px; font-size: 11px; }
         .excel-table th, .excel-table td { border: 1px solid #cbd5e1; padding: 6px 8px; }
@@ -196,11 +201,59 @@
 
         <div class="item-list" id="itemList"></div>
 
-        <div class="admin-box">
-            <button class="btn-action btn-bulk" onclick="handleBulkImportClick()">📋 အမြန်စာရင်းကူးထည့်မည် (Bulk Paste)</button>
-            <button class="btn-action btn-add" onclick="handleAddItemClick()">➕ ပစ္စည်းတစ်ခုချင်းစီ ထည့်မည်</button>
-            <button class="btn-action btn-excel" onclick="handleExcelEditorClick()">📊 Excel ပုံစံဖြင့် အားလုံးပြင်/ဖြည့်မည်</button>
-            <button class="btn-fixed-github" onclick="openSyncModal()">☁️ Save to GitHub (အပြီးသတ် သိမ်းဆည်းမည်)</button>
+        <!-- အောက်ခြေ Admin Panel (ပုံမှန်တွင် ဝှက်ထားမည်) -->
+        <button class="admin-trigger-btn" id="btnAdminTrigger" onclick="openAdminLoginModal()">🔒 Admin Edit (ဆိုင်ပြင်ဆင်ခွင့်)</button>
+        
+        <div class="admin-panel" id="adminControlPanel">
+            <div class="admin-panel-header">
+                <span>⚙️ <strong id="adminPanelShopName">Kyaw Mobile</strong> စီမံခန့်ခွဲမှု Panel</span>
+                <button class="btn-chg-pin" onclick="openChangePinModal()">🔑 PIN နံပါတ် ချိန်းမည်</button>
+            </div>
+            <button class="btn-action btn-bulk" onclick="openBulkModal()">📋 အမြန်စာရင်းကူးထည့်မည် (Bulk Paste)</button>
+            <button class="btn-action btn-add" onclick="openAddItemModal()">➕ ပစ္စည်းတစ်ခုချင်းစီ ထည့်မည်</button>
+            <button class="btn-action btn-excel" onclick="openExcelEditorModal()">📊 Excel ပုံစံဖြင့် အားလုံးပြင်/ဖြည့်မည်</button>
+            <button class="btn-action btn-save-gh" onclick="pushToGitHub()">☁️ Save to GitHub (အပြီးသတ် သိမ်းဆည်းမည်)</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Admin Unified Login (PIN & GitHub Key တစ်ခါတည်းတောင်းခြင်း) -->
+<div class="modal" id="adminLoginModal">
+    <div class="modal-content" style="max-width: 320px;">
+        <h3 style="font-size: 14px; margin-bottom: 4px; text-align: center;">🔒 Admin ဝင်ရောက်ခြင်း</h3>
+        <p style="font-size: 11px; color: var(--text-sub); margin-bottom: 10px; text-align: center;">ဆိုင်၏ PIN နှင့် GitHub Token ကို ထည့်သွင်းပေးပါ</p>
+        
+        <div class="form-group">
+            <label>ဆိုင် PIN နံပါတ်</label>
+            <input type="password" id="loginPinInput" placeholder="PIN ရိုက်ပါ" maxlength="8" style="text-align: center; font-size: 16px; letter-spacing: 2px;">
+        </div>
+        <div class="form-group">
+            <label>GitHub Personal Access Token</label>
+            <input type="password" id="loginGhToken" placeholder="ghp_xxxxxxxxxxxx">
+        </div>
+
+        <div class="modal-actions">
+            <button type="button" class="btn-modal btn-cancel-modal" onclick="closeModal('adminLoginModal')">မဝင်တော့ပါ</button>
+            <button type="button" class="btn-modal btn-save-modal" onclick="verifyAdminLogin()">Login</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Change PIN -->
+<div class="modal" id="changePinModal">
+    <div class="modal-content" style="max-width: 310px;">
+        <h3 style="font-size: 14px; margin-bottom: 6px; text-align: center;">🔑 PIN နံပါတ် အသစ်ချိန်းမည်</h3>
+        <div class="form-group">
+            <label>PIN အသစ် (ဂဏန်း ၄ လုံး)</label>
+            <input type="password" id="newPinInput" placeholder="ဥပမာ - 1111" maxlength="6" style="text-align: center; font-size: 16px;">
+        </div>
+        <div class="form-group">
+            <label>PIN အသစ် ပြန်ရိုက်ပါ</label>
+            <input type="password" id="confirmPinInput" placeholder="ထပ်မံ ရိုက်ထည့်ပါ" maxlength="6" style="text-align: center; font-size: 16px;">
+        </div>
+        <div class="modal-actions">
+            <button type="button" class="btn-modal btn-cancel-modal" onclick="closeModal('changePinModal')">ပိတ်မည်</button>
+            <button type="button" class="btn-modal btn-save-modal" onclick="saveNewPin()">ပြောင်းမည်</button>
         </div>
     </div>
 </div>
@@ -215,22 +268,7 @@
         </div>
         <div class="modal-actions">
             <button type="button" class="btn-modal btn-cancel-modal" onclick="closeModal('pinModal')">မလုပ်တော့ပါ</button>
-            <button type="button" class="btn-modal btn-save-modal" onclick="verifyPin()">ဖွင့်မည်</button>
-        </div>
-    </div>
-</div>
-
-<!-- Modal: Shop Edit Login Lock -->
-<div class="modal" id="shopLoginModal">
-    <div class="modal-content" style="max-width: 310px; text-align: center;">
-        <h3 id="shopLoginTitle" style="font-size: 14px; margin-bottom: 4px;">ဆိုင် PIN ရိုက်ထည့်ပါ</h3>
-        <p style="font-size: 11px; color: var(--text-sub); margin-bottom: 10px;">ပြင်ဆင်ခွင့်ရရန် ဆိုင်၏ PIN ကို ရိုက်ပါ</p>
-        <div class="form-group">
-            <input type="password" id="shopPinInput" placeholder="PIN" maxlength="8" style="text-align: center; font-size: 17px; letter-spacing: 3px;">
-        </div>
-        <div class="modal-actions">
-            <button type="button" class="btn-modal btn-cancel-modal" onclick="closeModal('shopLoginModal')">ပိတ်မည်</button>
-            <button type="button" class="btn-modal btn-save-modal" onclick="verifyShopPin()">Login</button>
+            <button type="button" class="btn-modal btn-save-modal" onclick="verifyVoucherPin()">ဖွင့်မည်</button>
         </div>
     </div>
 </div>
@@ -238,7 +276,7 @@
 <!-- Modal: Bulk Paste Import -->
 <div class="modal" id="bulkModal">
     <div class="modal-content">
-        <h3 id="bulkModalTitle" style="font-size: 14px; margin-bottom: 6px;">📋 အမြန်စာရင်းကူးထည့်ခြင်း</h3>
+        <h3 style="font-size: 14px; margin-bottom: 6px;">📋 အမြန်စာရင်းကူးထည့်ခြင်း</h3>
         <div class="form-group">
             <label>အမျိုးအစား ရွေးချယ်ပါ</label>
             <select id="bulkCat">
@@ -254,7 +292,7 @@
         </div>
         <div class="modal-actions">
             <button type="button" class="btn-modal btn-cancel-modal" onclick="closeModal('bulkModal')">ပိတ်မည်</button>
-            <button type="button" class="btn-modal btn-save-modal" onclick="saveBulkDataAndPromptSync()">သိမ်းမည် &amp; Sync</button>
+            <button type="button" class="btn-modal btn-save-modal" onclick="saveBulkData()">ထည့်သွင်းသိမ်းမည်</button>
         </div>
     </div>
 </div>
@@ -288,7 +326,7 @@
         <div class="modal-actions">
             <button type="button" class="btn-modal btn-cancel-modal" onclick="closeModal('itemModal')">ပိတ်မည်</button>
             <button type="button" class="btn-modal btn-del-modal" id="btnDelete" onclick="deleteCurrentItem()" style="display: none;">ဖျက်မည်</button>
-            <button type="button" class="btn-modal btn-save-modal" onclick="saveItemData()">သိမ်းမည် &amp; GitHub Sync</button>
+            <button type="button" class="btn-modal btn-save-modal" onclick="saveItemData()">သိမ်းမည်</button>
         </div>
     </div>
 </div>
@@ -301,7 +339,6 @@
             <button type="button" style="background: #e2e8f0; border: none; padding: 5px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer;" onclick="addExcelRow()">➕ တန်းအသစ်ထည့်မည်</button>
         </div>
         
-        <!-- Category Tabs -->
         <div class="excel-category-tabs">
             <button class="excel-cat-tab active" onclick="switchExcelCategory('ALL', this)">အားလုံး</button>
             <button class="excel-cat-tab" onclick="switchExcelCategory('LCD', this)">LCD</button>
@@ -327,30 +364,16 @@
 
         <div class="modal-actions">
             <button type="button" class="btn-modal btn-cancel-modal" onclick="closeModal('excelModal')">ပိတ်မည်</button>
-            <button type="button" class="btn-modal" style="background:#047857; color:white;" onclick="saveExcelDataAndPromptSync()">☁️ Save &amp; Sync to GitHub</button>
-        </div>
-    </div>
-</div>
-
-<!-- Modal: GitHub Token Sync -->
-<div class="modal" id="syncModal">
-    <div class="modal-content" style="max-width: 330px;">
-        <h3 style="font-size: 14px; margin-bottom: 6px;">GitHub Token ဖြည့်သွင်းရန်</h3>
-        <p style="font-size: 11px; color: var(--text-sub); margin-bottom: 10px;">GitHub Repository ထဲရှိ မူလဖိုင်တွင် အပြီးသိမ်းရန် Personal Access Token ထည့်ပေးပါ။</p>
-        <div class="form-group">
-            <input type="password" id="ghToken" placeholder="ghp_xxxxxxxxxxxx">
-        </div>
-        <div class="modal-actions">
-            <button type="button" class="btn-modal btn-cancel-modal" onclick="closeModal('syncModal')">ပိတ်မည်</button>
-            <button type="button" class="btn-modal btn-save-modal" id="btnSyncSubmit" onclick="pushToGitHub()">GitHub သို့ Save မည်</button>
+            <button type="button" class="btn-modal" style="background:#047857; color:white;" onclick="saveExcelData()">သိမ်းမည်</button>
         </div>
     </div>
 </div>
 <script>
-const MASTER_PIN = "1221"; 
-const SHOP_PINS = { "Kyaw Mobile": "1111", "ချမ်းသာစည်": "2222" };
+let MASTER_PIN = localStorage.getItem('cfg_master_pin') || "1221"; 
+let SHOP_PINS = JSON.parse(localStorage.getItem('cfg_shop_pins')) || { "Kyaw Mobile": "1111", "ချမ်းသာစည်": "2222" };
+
 let currentSelectedShop = "Kyaw Mobile";
-let pendingAction = null;
+let isAdminLoggedIn = false;
 let currentExcelCat = "ALL";
 
 function switchMainTab(tabId, el) {
@@ -368,7 +391,7 @@ function requestPinForVoucher() {
     setTimeout(() => document.getElementById("voucherPin").focus(), 150);
 }
 
-function verifyPin() {
+function verifyVoucherPin() {
     if (document.getElementById("voucherPin").value.trim() === MASTER_PIN) {
         closeModal("pinModal");
         generateVoucher();
@@ -441,29 +464,10 @@ let selectedCategory = 'ALL';
 function selectShop(shopName) {
     currentSelectedShop = shopName;
     document.getElementById('currentShopName').innerText = shopName;
+    document.getElementById('adminPanelShopName').innerText = shopName;
     document.getElementById('btnShop1').classList.toggle('active', shopName === 'Kyaw Mobile');
     document.getElementById('btnShop2').classList.toggle('active', shopName === 'ချမ်းသာစည်');
     handleSearch();
-}
-
-function requireShopAuth(shopName, callback) {
-    pendingAction = { shop: shopName, callback: callback };
-    document.getElementById('shopLoginTitle').innerText = `${shopName} PIN တောင်းဆိုခြင်း`;
-    document.getElementById('shopPinInput').value = "";
-    document.getElementById('shopLoginModal').classList.add('active');
-    setTimeout(() => document.getElementById('shopPinInput').focus(), 150);
-}
-
-function verifyShopPin() {
-    const pin = document.getElementById('shopPinInput').value.trim();
-    const targetShop = pendingAction.shop;
-    if (pin === SHOP_PINS[targetShop] || pin === MASTER_PIN) {
-        closeModal('shopLoginModal');
-        if (pendingAction && pendingAction.callback) pendingAction.callback();
-    } else {
-        alert("PIN မှားယွင်းနေပါသည်။");
-        document.getElementById('shopPinInput').value = "";
-    }
 }
 
 function getTagClass(cat) {
@@ -482,13 +486,13 @@ function renderItems(data) {
         const idx = itemsData.indexOf(item);
         html += `
             <div class="item-card">
-                <div style="max-width: 70%;">
+                <div style="max-width: ${isAdminLoggedIn ? '70%' : '75%'};">
                     <span class="category-tag ${getTagClass(item.cat)}">${item.cat}</span>
                     <div class="item-name">${escapeHtml(item.name)}</div>
                 </div>
                 <div style="text-align: right;">
                     <div class="item-price">${Number(item.price).toLocaleString()} K</div>
-                    <button class="btn-edit-item" onclick="handleEditItemClick(${idx})">ပြင်မည်</button>
+                    ${isAdminLoggedIn ? `<button class="btn-edit-item" onclick="openEditItemModal(${idx})">ပြင်မည်</button>` : ''}
                 </div>
             </div>`;
     });
@@ -520,16 +524,65 @@ function setCategory(cat, el) {
     handleSearch();
 }
 
-// BULK IMPORT
-function handleBulkImportClick() {
-    requireShopAuth(currentSelectedShop, () => {
-        document.getElementById('bulkModalTitle').innerText = `📋 ${currentSelectedShop} သို့ အမြန်စာရင်းသွင်းမည်`;
-        document.getElementById('bulkInput').value = "";
-        document.getElementById('bulkModal').classList.add('active');
-    });
+// ADMIN UNIFIED LOGIN
+function openAdminLoginModal() {
+    document.getElementById('loginPinInput').value = "";
+    document.getElementById('loginGhToken').value = localStorage.getItem('gh_token') || "";
+    document.getElementById('adminLoginModal').classList.add('active');
+    setTimeout(() => document.getElementById('loginPinInput').focus(), 150);
 }
 
-function saveBulkDataAndPromptSync() {
+function verifyAdminLogin() {
+    const enteredPin = document.getElementById('loginPinInput').value.trim();
+    const enteredToken = document.getElementById('loginGhToken').value.trim();
+    const targetShopPin = SHOP_PINS[currentSelectedShop];
+
+    if (enteredPin !== targetShopPin && enteredPin !== MASTER_PIN) {
+        alert("PIN နံပါတ် မှားယွင်းနေပါသည်။");
+        document.getElementById('loginPinInput').value = "";
+        return;
+    }
+    if (!enteredToken) {
+        alert("GitHub Token Key ကိုလည်း ထည့်သွင်းပေးရန် လိုအပ်ပါသည်။");
+        return;
+    }
+
+    localStorage.setItem('gh_token', enteredToken);
+    isAdminLoggedIn = true;
+    closeModal('adminLoginModal');
+    
+    document.getElementById('btnAdminTrigger').style.display = 'none';
+    document.getElementById('adminControlPanel').classList.add('active');
+    handleSearch();
+    alert(`Admin အဖြစ် အောင်မြင်စွာ Login ဝင်ရောက်ပြီးပါပြီ။`);
+}
+
+// CHANGE PIN LOGIC
+function openChangePinModal() {
+    document.getElementById('newPinInput').value = "";
+    document.getElementById('confirmPinInput').value = "";
+    document.getElementById('changePinModal').classList.add('active');
+}
+
+function saveNewPin() {
+    const p1 = document.getElementById('newPinInput').value.trim();
+    const p2 = document.getElementById('confirmPinInput').value.trim();
+    if (!p1 || p1.length < 4) { alert("PIN သည် အနည်းဆုံး ဂဏန်း ၄ လုံး ရှိရပါမည်။"); return; }
+    if (p1 !== p2) { alert("PIN နံပါတ် ၂ ကြိမ် ရိုက်ထည့်မှု မကိုက်ညီပါ။"); return; }
+
+    SHOP_PINS[currentSelectedShop] = p1;
+    localStorage.setItem('cfg_shop_pins', JSON.stringify(SHOP_PINS));
+    closeModal('changePinModal');
+    alert(`${currentSelectedShop} အတွက် PIN အသစ်ကို (${p1}) အဖြစ် ပြောင်းလဲသိမ်းဆည်းပြီးပါပြီ။`);
+}
+
+// BULK IMPORT
+function openBulkModal() {
+    document.getElementById('bulkInput').value = "";
+    document.getElementById('bulkModal').classList.add('active');
+}
+
+function saveBulkData() {
     const text = document.getElementById('bulkInput').value.trim();
     const cat = document.getElementById('bulkCat').value;
     if (!text) { alert("စာရင်းများ ရိုက်ထည့်ပေးပါ။"); return; }
@@ -548,35 +601,31 @@ function saveBulkDataAndPromptSync() {
     localStorage.setItem('htun_mobile_multishop_items', JSON.stringify(itemsData));
     closeModal('bulkModal');
     handleSearch();
-    openSyncModal();
+    alert(`ပစ္စည်း (${addedCount}) ခု အောင်မြင်စွာ ထည့်သွင်းပြီးပါပြီ။`);
 }
 
 // SINGLE EDIT & ADD
-function handleAddItemClick() {
-    requireShopAuth(currentSelectedShop, () => {
-        document.getElementById('modalTitle').innerText = `${currentSelectedShop} - ပစ္စည်းအသစ်ထည့်မည်`;
-        document.getElementById('modalShop').value = currentSelectedShop;
-        document.getElementById('editIndex').value = "-1";
-        document.getElementById('modalName').value = "";
-        document.getElementById('modalPrice').value = "";
-        document.getElementById('btnDelete').style.display = "none";
-        document.getElementById('itemModal').classList.add('active');
-    });
+function openAddItemModal() {
+    document.getElementById('modalTitle').innerText = `${currentSelectedShop} - ပစ္စည်းအသစ်ထည့်မည်`;
+    document.getElementById('modalShop').value = currentSelectedShop;
+    document.getElementById('editIndex').value = "-1";
+    document.getElementById('modalName').value = "";
+    document.getElementById('modalPrice').value = "";
+    document.getElementById('btnDelete').style.display = "none";
+    document.getElementById('itemModal').classList.add('active');
 }
 
-function handleEditItemClick(index) {
+function openEditItemModal(index) {
     const item = itemsData[index];
     const shop = item.shop || "Kyaw Mobile";
-    requireShopAuth(shop, () => {
-        document.getElementById('modalTitle').innerText = `${shop} - အချက်အလက်ပြင်မည်`;
-        document.getElementById('modalShop').value = shop;
-        document.getElementById('editIndex').value = index;
-        document.getElementById('modalCat').value = item.cat;
-        document.getElementById('modalName').value = item.name;
-        document.getElementById('modalPrice').value = item.price;
-        document.getElementById('btnDelete').style.display = "block";
-        document.getElementById('itemModal').classList.add('active');
-    });
+    document.getElementById('modalTitle').innerText = `${shop} - အချက်အလက်ပြင်မည်`;
+    document.getElementById('modalShop').value = shop;
+    document.getElementById('editIndex').value = index;
+    document.getElementById('modalCat').value = item.cat;
+    document.getElementById('modalName').value = item.name;
+    document.getElementById('modalPrice').value = item.price;
+    document.getElementById('btnDelete').style.display = "block";
+    document.getElementById('itemModal').classList.add('active');
 }
 
 function closeModal(id) { document.getElementById(id).classList.remove('active'); }
@@ -593,7 +642,6 @@ function saveItemData() {
     localStorage.setItem('htun_mobile_multishop_items', JSON.stringify(itemsData));
     closeModal('itemModal');
     handleSearch();
-    openSyncModal();
 }
 
 function deleteCurrentItem() {
@@ -603,19 +651,16 @@ function deleteCurrentItem() {
         localStorage.setItem('htun_mobile_multishop_items', JSON.stringify(itemsData));
         closeModal('itemModal');
         handleSearch();
-        openSyncModal();
     }
 }
 
 // EXCEL TABLE EDITOR WITH CATEGORY TABS
-function handleExcelEditorClick() {
-    requireShopAuth(currentSelectedShop, () => {
-        document.getElementById('excelModalTitle').innerText = `📊 ${currentSelectedShop} - Excel Editor`;
-        currentExcelCat = "ALL";
-        document.querySelectorAll('.excel-cat-tab').forEach((t, i) => t.classList.toggle('active', i === 0));
-        loadExcelTable();
-        document.getElementById('excelModal').classList.add('active');
-    });
+function openExcelEditorModal() {
+    document.getElementById('excelModalTitle').innerText = `📊 ${currentSelectedShop} - Excel Editor`;
+    currentExcelCat = "ALL";
+    document.querySelectorAll('.excel-cat-tab').forEach((t, i) => t.classList.toggle('active', i === 0));
+    loadExcelTable();
+    document.getElementById('excelModal').classList.add('active');
 }
 
 function switchExcelCategory(cat, el) {
@@ -630,7 +675,7 @@ function syncExcelInputsToData() {
     const rows = document.querySelectorAll('#excelTableBody tr');
     for (let row of rows) {
         const origIdx = parseInt(row.dataset.index, 10);
-        const cat = row.querySelector('.excel-cat').value;
+        const cat = row.querySelector('.excel-select').value;
         const name = row.querySelector('.excel-name').value.trim();
         const price = parseInt(row.querySelector('.excel-price').value, 10);
         if (origIdx >= 0 && itemsData[origIdx]) {
@@ -658,7 +703,7 @@ function loadExcelTable() {
             <tr data-index="${origIdx}">
                 <td style="text-align: center; color: var(--text-sub);">${i + 1}</td>
                 <td>
-                    <select class="excel-select excel-cat">
+                    <select class="excel-select">
                         <option value="LCD" ${item.cat === 'LCD' ? 'selected' : ''}>LCD</option>
                         <option value="Battery" ${item.cat === 'Battery' ? 'selected' : ''}>Battery</option>
                         <option value="Body Cover" ${item.cat === 'Body Cover' ? 'selected' : ''}>Body Cover</option>
@@ -681,7 +726,7 @@ function addExcelRow() {
     tr.innerHTML = `
         <td style="text-align: center; color: var(--text-sub);">*</td>
         <td>
-            <select class="excel-select excel-cat">
+            <select class="excel-select">
                 <option value="LCD" ${defaultCat === 'LCD' ? 'selected' : ''}>LCD</option>
                 <option value="Battery" ${defaultCat === 'Battery' ? 'selected' : ''}>Battery</option>
                 <option value="Body Cover" ${defaultCat === 'Body Cover' ? 'selected' : ''}>Body Cover</option>
@@ -705,45 +750,47 @@ function deleteExcelRow(btn, origIdx) {
     }
 }
 
-function saveExcelDataAndPromptSync() {
-    syncExcelInputsToData();
+function saveExcelData() {
     const rows = document.querySelectorAll('#excelTableBody tr');
     for (let row of rows) {
         const origIdx = parseInt(row.dataset.index, 10);
-        const cat = row.querySelector('.excel-cat').value;
+        const cat = row.querySelector('.excel-select').value;
         const name = row.querySelector('.excel-name').value.trim();
         const price = parseInt(row.querySelector('.excel-price').value, 10);
-        if (name && !isNaN(price) && origIdx === -1) {
-            itemsData.unshift({ shop: currentSelectedShop, cat, name, price });
+        if (name && !isNaN(price)) {
+            if (origIdx === -1) {
+                itemsData.unshift({ shop: currentSelectedShop, cat, name, price });
+            } else if (itemsData[origIdx]) {
+                itemsData[origIdx].cat = cat;
+                itemsData[origIdx].name = name;
+                itemsData[origIdx].price = price;
+            }
         }
     }
     localStorage.setItem('htun_mobile_multishop_items', JSON.stringify(itemsData));
     handleSearch();
     closeModal('excelModal');
-    openSyncModal();
+    alert("စာရင်းများ အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီ။");
 }
 
 // GITHUB SYNC
 const GITHUB_REPO = "HtunHtun01/Service";
 const FILE_PATH = "index.html";
 
-function openSyncModal() {
-    document.getElementById('ghToken').value = localStorage.getItem('gh_token') || '';
-    document.getElementById('syncModal').classList.add('active');
-}
-
 async function pushToGitHub() {
-    const token = document.getElementById('ghToken').value.trim();
-    if (!token) { alert("GitHub Token ထည့်သွင်းပေးပါ။"); return; }
-    const btn = document.getElementById('btnSyncSubmit');
-    btn.innerText = "သိမ်းဆည်းနေပါသည်...";
-    btn.disabled = true;
+    const token = localStorage.getItem('gh_token') || "";
+    if (!token) {
+        alert("GitHub Token မရှိသေးပါ။ ကျေးဇူးပြု၍ Admin Login ပြန်လည်ဝင်ရောက်ပေးပါ။");
+        openAdminLoginModal();
+        return;
+    }
+
+    if (!confirm("ယခု ပြင်ဆင်ထားသည့် အချက်အလက်များအားလုံးကို GitHub ပေါ်သို့ တိုက်ရိုက် Save လုပ်ရန် သေချာပါသလား?")) return;
 
     try {
-        localStorage.setItem('gh_token', token);
         const getFileUrl = `https://api.github.com/repos/${GITHUB_REPO}/contents/${FILE_PATH}`;
         const res = await fetch(getFileUrl, { headers: { 'Authorization': `Bearer ${token}` } });
-        if (!res.ok) throw new Error("GitHub File ရှာမတွေ့ပါ သို့မဟုတ် Token မှားယွင်းနေပါသည်။");
+        if (!res.ok) throw new Error("GitHub Token မှားယွင်းနေပါသည် သို့မဟုတ် File ရှာမတွေ့ပါ။");
         const fileData = await res.json();
         const decodedContent = decodeURIComponent(escape(atob(fileData.content)));
         const newItemsJson = JSON.stringify(itemsData, null, 4);
@@ -754,16 +801,12 @@ async function pushToGitHub() {
         const putRes = await fetch(getFileUrl, {
             method: 'PUT',
             headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: "Update multi-shop items data via Admin", content: encodedUpdatedContent, sha: fileData.sha })
+            body: JSON.stringify({ message: "Update multi-shop items data via Admin Panel", content: encodedUpdatedContent, sha: fileData.sha })
         });
         if (!putRes.ok) throw new Error("GitHub ပေါ်သို့ သိမ်းဆည်းမအောင်မြင်ပါ။");
         alert("GitHub ပေါ်သို့ အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီ။ ၁ မိနစ်အတွင်း Update ဖြစ်ပါမည်။");
-        closeModal('syncModal');
     } catch (err) {
         alert("Error: " + err.message);
-    } finally {
-        btn.innerText = "GitHub သို့ Save မည်";
-        btn.disabled = false;
     }
 }
 
