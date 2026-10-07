@@ -23,7 +23,7 @@
             --radius-lg: 14px;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Plus Jakarta Sans', 'Pyidaungsu', sans-serif; background-color: var(--bg); color: var(--text-main); padding: 12px 10px 60px; display: flex; justify-content: center; }
+        body { font-family: 'Plus Jakarta Sans', 'Pyidaungsu', sans-serif; background-color: var(--bg); color: var(--text-main); padding: 12px 10px 80px; display: flex; justify-content: center; }
         .container { width: 100%; max-width: 520px; }
         .header { background: linear-gradient(135deg, #1e40af, #2563eb); color: white; padding: 14px 16px; border-radius: var(--radius-lg); margin-bottom: 12px; text-align: center; }
         .header h1 { font-size: 18px; font-weight: 700; margin-bottom: 2px; }
@@ -81,10 +81,11 @@
         .btn-add { background: #ffffff; color: var(--text-main); border: 1.5px dashed var(--border); }
         .btn-bulk { background: #2563eb; color: #ffffff; }
         .btn-excel { background: #047857; color: #ffffff; }
+        .btn-fixed-github { background: #0f172a; color: #ffffff; border: none; width: 100%; padding: 12px; font-size: 13px; font-weight: 700; border-radius: var(--radius-md); margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.15); }
         .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.65); z-index: 1000; justify-content: center; align-items: center; padding: 12px; }
         .modal.active { display: flex; }
         .modal-content { background: #ffffff; width: 100%; max-width: 440px; border-radius: 12px; padding: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.25); max-height: 94vh; display: flex; flex-direction: column; }
-        .modal-content.excel-mode { max-width: 98vw; width: 650px; padding: 12px; }
+        .modal-content.excel-mode { max-width: 98vw; width: 680px; padding: 12px; }
         .form-group { margin-bottom: 9px; }
         .form-group label { display: block; font-size: 11px; font-weight: 600; margin-bottom: 2px; color: var(--text-sub); }
         .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 8px 10px; font-size: 12px; border: 1.5px solid var(--border); border-radius: 7px; outline: none; font-family: inherit; }
@@ -94,12 +95,15 @@
         .btn-cancel-modal { background: #f1f5f9; color: var(--text-sub); }
         .btn-del-modal { background: #fee2e2; color: var(--danger); }
         .excel-table-wrap { flex: 1; overflow: auto; border: 1px solid var(--border); border-radius: 6px; margin-top: 8px; }
-        .excel-table { width: 100%; border-collapse: collapse; min-width: 460px; font-size: 11px; }
+        .excel-table { width: 100%; border-collapse: collapse; min-width: 480px; font-size: 11px; }
         .excel-table th, .excel-table td { border: 1px solid #cbd5e1; padding: 4px 6px; }
         .excel-table th { background: #f1f5f9; position: sticky; top: 0; z-index: 2; font-weight: 600; }
         .excel-input { width: 100%; border: none; outline: none; background: transparent; font-size: 11px; font-family: inherit; padding: 3px 0; }
         .excel-input:focus { background: #eff6ff; }
         .btn-row-del { color: var(--danger); background: none; border: none; font-weight: bold; cursor: pointer; font-size: 12px; }
+        .excel-category-tabs { display: flex; gap: 4px; overflow-x: auto; padding-bottom: 6px; border-bottom: 1px solid var(--border); margin-top: 4px; scrollbar-width: none; }
+        .excel-cat-tab { padding: 4px 10px; font-size: 11px; font-weight: 700; border-radius: 6px; border: 1px solid var(--border); background: #f8fafc; color: var(--text-sub); cursor: pointer; white-space: nowrap; }
+        .excel-cat-tab.active { background: var(--primary); color: white; border-color: var(--primary); }
     </style>
 </head>
 <body>
@@ -191,6 +195,8 @@
             <button class="btn-action btn-bulk" onclick="handleBulkImportClick()">📋 အမြန်စာရင်းကူးထည့်မည် (Bulk Paste)</button>
             <button class="btn-action btn-add" onclick="handleAddItemClick()">➕ ပစ္စည်းတစ်ခုချင်းစီ ထည့်မည်</button>
             <button class="btn-action btn-excel" onclick="handleExcelEditorClick()">📊 Excel ပုံစံဖြင့် အားလုံးပြင်/ဖြည့်မည်</button>
+            <!-- Web အောက်နားတွင် အမြဲရှိနေမည့် Save to GitHub Button -->
+            <button class="btn-fixed-github" onclick="openSyncModal()">☁️ Save to GitHub (အပြီးသတ် သိမ်းဆည်းမည်)</button>
         </div>
     </div>
 </div>
@@ -225,7 +231,7 @@
     </div>
 </div>
 
-<!-- Modal: Bulk Paste Import (စာရင်းများစွာ တစ်ခါတည်းထည့်ရန်) -->
+<!-- Modal: Bulk Paste Import -->
 <div class="modal" id="bulkModal">
     <div class="modal-content">
         <h3 id="bulkModalTitle" style="font-size: 14px; margin-bottom: 6px;">📋 အမြန်စာရင်းကူးထည့်ခြင်း</h3>
@@ -240,7 +246,7 @@
         </div>
         <div class="form-group">
             <label>စာရင်းများ ကူးထည့်ပါ (တစ်ကြောင်းလျှင် မော်ဒယ် ၁ ခုနှင့် ဈေးနှုန်း)</label>
-            <textarea id="bulkInput" style="height: 160px;" placeholder="Huawei Y6P 45000&#10;Huawei Y6-2020 45000&#10;Honor Play 9A 45000&#10;Infinix Hot 30 43000"></textarea>
+            <textarea id="bulkInput" style="height: 160px;" placeholder="Huawei Y6P 45000&#10;Honor Play 9A 45000&#10;Infinix Hot 30 43000"></textarea>
         </div>
         <div class="modal-actions">
             <button type="button" class="btn-modal btn-cancel-modal" onclick="closeModal('bulkModal')">ပိတ်မည်</button>
@@ -278,20 +284,28 @@
         <div class="modal-actions">
             <button type="button" class="btn-modal btn-cancel-modal" onclick="closeModal('itemModal')">ပိတ်မည်</button>
             <button type="button" class="btn-modal btn-del-modal" id="btnDelete" onclick="deleteCurrentItem()" style="display: none;">ဖျက်မည်</button>
-            <button type="button" class="btn-modal btn-save-modal" onclick="saveItemData()">သိမ်းမည်</button>
+            <button type="button" class="btn-modal btn-save-modal" onclick="saveItemData()">သိမ်းမည် &amp; GitHub Sync</button>
         </div>
     </div>
 </div>
 
-<!-- Modal: Excel-Style Full Table Editor -->
+<!-- Modal: Excel-Style Full Table Editor with Category Tabs -->
 <div class="modal" id="excelModal">
     <div class="modal-content excel-mode">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
             <h3 style="font-size: 14px;" id="excelModalTitle">📊 Excel Table Editor</h3>
             <button type="button" style="background: #e2e8f0; border: none; padding: 4px 8px; border-radius: 4px; font-size: 11px; cursor: pointer;" onclick="addExcelRow()">➕ တန်းအသစ်ထည့်မည်</button>
         </div>
-        <p style="font-size: 11px; color: var(--text-sub);">အကွက်ထဲတွင် တိုက်ရိုက်ရိုက်ပြင်နိုင်ပါသည်။ ပြင်ပြီးပါက 'Save &amp; Sync to GitHub' ကို နှိပ်ပါ။</p>
         
+        <!-- Excel Mode Category Tabs -->
+        <div class="excel-category-tabs">
+            <button class="excel-cat-tab active" onclick="switchExcelCategory('ALL', this)">အားလုံး</button>
+            <button class="excel-cat-tab" onclick="switchExcelCategory('LCD', this)">LCD</button>
+            <button class="excel-cat-tab" onclick="switchExcelCategory('Battery', this)">Battery</button>
+            <button class="excel-cat-tab" onclick="switchExcelCategory('Body Cover', this)">Body Cover</button>
+            <button class="excel-cat-tab" onclick="switchExcelCategory('Back Glass', this)">Back Glass</button>
+        </div>
+
         <div class="excel-table-wrap">
             <table class="excel-table">
                 <thead>
@@ -333,6 +347,7 @@ const MASTER_PIN = "1221";
 const SHOP_PINS = { "Kyaw Mobile": "1111", "ချမ်းသာစည်": "2222" };
 let currentSelectedShop = "Kyaw Mobile";
 let pendingAction = null;
+let currentExcelCat = "ALL";
 
 function switchMainTab(tabId, el) {
     document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
@@ -399,2262 +414,17 @@ function downloadVoucher() {
 // TAB 2: DATA & MULTI-SHOP
 /*DATA_START*/
 let itemsData = [
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Back Glass",
-        "name": "Oppo A35 (Green)",
-        "price": 12000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Back Glass",
-        "name": "Oppo A15s (Green)",
-        "price": 12000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Back Glass",
-        "name": "Oppo A15 (Green)",
-        "price": 12000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Back Glass",
-        "name": "Redmi Note 8 Pro (Gray/Green)",
-        "price": 12000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Back Glass",
-        "name": "Redmi Note 13 5G (Black/Green)",
-        "price": 13000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Back Glass",
-        "name": "Redmi Note 13 4G (Black/Blue)",
-        "price": 12000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Back Glass",
-        "name": "Redmi Note 13 Pro 4G (Black/Green)",
-        "price": 13000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Back Glass",
-        "name": "Redmi Note 11E Pro (White)",
-        "price": 13000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Back Glass",
-        "name": "Redmi Note 11 Pro 4G (White)",
-        "price": 13000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Back Glass",
-        "name": "Redmi 9A (Black/Blue)",
-        "price": 14000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Back Glass",
-        "name": "Redmi 14C (Black/Green)",
-        "price": 13000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Back Glass",
-        "name": "Redmi 12 5G (Purple)",
-        "price": 12000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Back Glass",
-        "name": "Redmi 12 4G (Purple)",
-        "price": 12000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Back Glass",
-        "name": "Redmi 10A (Black/Blue)",
-        "price": 14000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Body Cover",
-        "name": "Vivo Y91 (Blue/Pink)",
-        "price": 21000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Body Cover",
-        "name": "Vivo Y81 (Black/Gold)",
-        "price": 18000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Body Cover",
-        "name": "Vivo Y20 (Black/Blue)",
-        "price": 28000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Body Cover",
-        "name": "Oppo A5s (Black/Blue)",
-        "price": 25000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Body Cover",
-        "name": "Oppo A3s (Red/Black)",
-        "price": 22000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Body Cover",
-        "name": "Redmi Note 8 (Black/Blue)",
-        "price": 28000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Body Cover",
-        "name": "Redmi Note 7 Pro (Black/Blue)",
-        "price": 25000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Body Cover",
-        "name": "Redmi Note 7 (Black/Blue)",
-        "price": 25000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Body Cover",
-        "name": "Redmi K30 5G (Pink/Grey)",
-        "price": 37000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Body Cover",
-        "name": "Redmi K30 4G (Pink/Grey)",
-        "price": 37000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Body Cover",
-        "name": "Redmi Note 9 4G (Black/Blue)",
-        "price": 22000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Body Cover",
-        "name": "Redmi 9T (Black/Blue)",
-        "price": 22000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Body Cover",
-        "name": "Redmi 9A (Black/Blue)",
-        "price": 21000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Body Cover",
-        "name": "Redmi 9 (Green/Pink/Blue)",
-        "price": 21000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Body Cover",
-        "name": "Redmi 8 (Gray/Blue)",
-        "price": 21000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Body Cover",
-        "name": "Redmi 7 (Pink/Black)",
-        "price": 27000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Vivo T2x 5G (B-W1)",
-        "price": 28000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Vivo Y35 5G (B-W1)",
-        "price": 28000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Vivo Y02 (B-W1)",
-        "price": 28000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Vivo Y02s (B-W1)",
-        "price": 28000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Redmi 10x 4G (BN54)",
-        "price": 28000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Redmi Note 9 (BN54)",
-        "price": 28000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Redmi 9 (BN54)",
-        "price": 28000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Redmi Note 8 (BN46)",
-        "price": 25000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Redmi Note 6 (BN46)",
-        "price": 25000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Redmi 7 (BN46)",
-        "price": 25000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Redmi 10c Tablet (BN5A)",
-        "price": 28000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Redmi Note 10t 5G (BN5A)",
-        "price": 28000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Redmi Note 11 Pro (BN5A)",
-        "price": 28000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Redmi Note 11 4G (BN5A)",
-        "price": 28000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Redmi Note 10 5G (BN5A)",
-        "price": 28000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Redmi A1 Plus (BN56)",
-        "price": 28000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Redmi A1 (BN56)",
-        "price": 28000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Poco M2 Pro (BN56)",
-        "price": 28000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Redmi 10A (BN56)",
-        "price": 28000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Redmi 9C (BN56)",
-        "price": 28000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Redmi 9A (BN56)",
-        "price": 28000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Redmi Note 12r (BM5R)",
-        "price": 28000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Redmi 12 (BM5R)",
-        "price": 28000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Redmi 10c (BN5G / BN5G-OR)",
-        "price": 28000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Vivo Y33s (B-S2)",
-        "price": 29000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Vivo Y20s (B-O5)",
-        "price": 30000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Vivo Y20i (B-O5)",
-        "price": 30000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Vivo Y20 (B-O5)",
-        "price": 30000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Vivo Z5x (B-G7)",
-        "price": 30000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Vivo Z1 Pro (B-G7)",
-        "price": 30000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Vivo Y12 (B-G7)",
-        "price": 30000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Vivo Y11 (B-G7)",
-        "price": 30000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Vivo Y17-2019 (B-G7)",
-        "price": 30000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Vivo Y15-2019 (B-G7)",
-        "price": 30000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Itel Pop 4 (BL-49FT)",
-        "price": 30000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Itel Pop 5 Lite (BL-49FT)",
-        "price": 30000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Tecno SP 6T (BL-49FT)",
-        "price": 30000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Tecno Spark 6-90 (BL-49FT)",
-        "price": 30000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Tecno Spark 5 Air (BL-49FT)",
-        "price": 30000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Tecno Spark 5 Pro (BL-49FT)",
-        "price": 30000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Tecno Spark 5 (BL-49FT)",
-        "price": 30000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Tecno Spark 6 Go (BL-49FT)",
-        "price": 30000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Tecno Spark 2 (BL-34BT)",
-        "price": 25000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Samsung A2 Core (HQ-50s)",
-        "price": 30000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Samsung A03s (HQ-50s)",
-        "price": 30000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Samsung A02s (HQ-50s)",
-        "price": 30000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Oppo A73 (BLP631)",
-        "price": 25000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Oppo A77 4G (BLP631)",
-        "price": 25000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Oppo F5 Youth (BLP631)",
-        "price": 25000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Oppo F3 (BLP631)",
-        "price": 25000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Oppo F1s (BLP601)",
-        "price": 25000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Oppo A5-2020 (BLP727)",
-        "price": 30000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Oppo A9-2020 (BLP727)",
-        "price": 30000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Realme C1 (BLP673)",
-        "price": 28000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Oppo A31-2020 (BLP673)",
-        "price": 28000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Oppo A5s (BLP673)",
-        "price": 28000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Oppo A12 (BLP673)",
-        "price": 28000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Oppo A7 (BLP673)",
-        "price": 28000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Oppo A3s (BLP673)",
-        "price": 28000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Oppo A16K (BLP817)",
-        "price": 30000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Oppo A15s (BLP817)",
-        "price": 30000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Oppo A15 (BLP817)",
-        "price": 30000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Redmi Note 9 5G (BM54)",
-        "price": 32000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Mi 10T Lite (BM4W)",
-        "price": 32000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Redmi Note 9 Pro 5G (BM4W)",
-        "price": 32000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Redmi Note 8 Pro (BM4J)",
-        "price": 30000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Redmi Note 7 (BN4A)",
-        "price": 28000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Redmi Note 11S 4G (BN5D)",
-        "price": 38000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Redmi Note 11 Prime 5G (BN5H)",
-        "price": 30000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Poco M4 5G (BN5H)",
-        "price": 30000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Redmi Note 11E (BN5H)",
-        "price": 30000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Redmi Note 11E Pro (BN5E)",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Redmi Note 11 Pro 5G (BN5E)",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Redmi Note 11 Pro 4G (BM5A)",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Redmi Note 10 Pro 5G (BM57)",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Redmi K30 5G (BM4P)",
-        "price": 33000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Redmi K30 4G (BM4P)",
-        "price": 33000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Redmi K20 (BP41)",
-        "price": 30000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Redmi Note 8 (BN46)",
-        "price": 28000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Redmi 7 (BN46)",
-        "price": 28000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Redmi 14R (BN5X)",
-        "price": 35000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Redmi 14C (BN5X)",
-        "price": 35000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Redmi 14 (BN5X)",
-        "price": 35000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Redmi 13c (BN5Q)",
-        "price": 30000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Mi Poco X3 Pro (BN57)",
-        "price": 35000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "Battery",
-        "name": "Mi Poco X3 (BN57)",
-        "price": 35000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Tecno Spark 20",
-        "price": 48000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Tecno Spark 70",
-        "price": 48000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y52s",
-        "price": 50000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y31s",
-        "price": 50000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y51-2020",
-        "price": 50000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y31-2020",
-        "price": 50000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y02s",
-        "price": 48000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y16",
-        "price": 48000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Redmi Note 12s",
-        "price": 50000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Redmi Note 11 4G",
-        "price": 50000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Redmi Note 11s",
-        "price": 50000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Itel A58 Pro",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Tecno Spark 8",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Itel Pop 5 Pro",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Infinix Smart 6",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Tecno Spark Go-2022",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Itel Pop 5 Lite",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Itel A58",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Realme C15e",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Realme C15",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Realme C12",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Oppo A35",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Oppo A16k",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Realme C11",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Oppo A15s",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Oppo A15",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Itel P37",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Itel P36 Pro",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Itel P36",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Itel S16",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Tecno Spark 6 Go-2020",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Infinix Hot 10 Lite",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Infinix Smart 5a",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Infinix Smart 5",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Tecno Spark 6 Go",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Tecno Pova 5 Pro",
-        "price": 43000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Infinix Note 30",
-        "price": 43000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Infinix Hot 30 5G",
-        "price": 43000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Infinix Hot 30",
-        "price": 43000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Huawei Nova 6",
-        "price": 53000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Huawei Nova 6se",
-        "price": 53000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Huawei P40 Lite",
-        "price": 53000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Huawei Nova 5i",
-        "price": 53000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Huawei Nova 7i",
-        "price": 53000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Huawei Play 4t Pro",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Huawei 48P",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y22",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Poco M6 Pro",
-        "price": 45000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Redmi Note 13r",
-        "price": 45000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Redmi 13",
-        "price": 45000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Redmi 12 5G",
-        "price": 45000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Redmi Note 12R",
-        "price": 45000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Redmi 10 Pro",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Redmi Note 11 4G",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Redmi 10",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "iQOO U1",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y70T",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y50t",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y70s",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y51s",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Redmi Note 10t",
-        "price": 45000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Redmi Note 11se",
-        "price": 45000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Poco M3 Pro",
-        "price": 45000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Poco M3 Pro 5G",
-        "price": 45000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Redmi Note 6 5G",
-        "price": 45000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y1s",
-        "price": 38000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y95",
-        "price": 38000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y93",
-        "price": 38000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y91c",
-        "price": 38000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y91i",
-        "price": 38000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y91",
-        "price": 38000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y90",
-        "price": 38000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y83",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y81i",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y81",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y50",
-        "price": 45000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y15s",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y15c",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y01",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y12s",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y20i",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y20A",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y20",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y11",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y12",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y3",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y17-2019",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y15-2019",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y37m",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y37",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y36c",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y36T",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y28s 5G",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y19E",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y18s",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y18E",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y18i",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y18",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y03T",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y03",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y11-2023",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y02T",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y02A",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y02",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y72T",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y72",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y56",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y55",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y53s",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y52 5G",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y51A",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y51 5G",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y51-2020",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y36 4G",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y31",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Vivo Y31-2020",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Infinix Hot 40i",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Itel Pop 8",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Infinix Smart 8",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Tecno Spark Go 2025",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Tecno Spark Go 2024",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Tecno Spark 9T",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Tecno Spark 9",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Tecno Spark 8c",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Tecno Spark Go 2021",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Tecno Spark Go 2022",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Tecno Spark 6 Go",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Samsung J7 Prime",
-        "price": 38000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Samsung M04",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Samsung M02s",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Samsung A04e",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Samsung A03",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Samsung A03s",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Samsung A02s",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Oppo A35",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Oppo A15s",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Oppo A16k",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Oppo A15",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Realme C12",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Realme C11",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Oppo A9x",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Oppo A9",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Oppo F11",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Realme 3i",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Realme 3",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Oppo A12s",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Oppo A12",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Oppo A11k",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Oppo A7",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Oppo A5s",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Realme C17",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Realme 7i",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Oppo A33-2020",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Oppo A32",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Oppo A55 4G",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Oppo A54 4G",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Oppo A53s",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Oppo A53-2020",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Realme 5s",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Realme 6i",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Realme C3",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Realme 5i",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Realme 5",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Oppo A11x",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Oppo A11",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Oppo A8",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Oppo A31-2020",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Oppo A9-2020",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Oppo A5-2020",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Oppo A92",
-        "price": 43000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Oppo A72",
-        "price": 43000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Oppo A52",
-        "price": 43000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Realme 2",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Realme 1",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Oppo A12E",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Oppo A5",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Oppo A3",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Oppo K10 5x",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Oppo A77",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Oppo A78 5G",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Oppo A58x 5G",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Oppo A58 5G",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Oppo A58",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Oppo A57-2020",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Oppo A38",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Oppo A18",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Oppo A17k",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Oppo A17",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Redmi Note 8 Pro",
-        "price": 50000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Poco X3 Pro",
-        "price": 52000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Poco X3",
-        "price": 52000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Redmi Note 9 Pro 5G",
-        "price": 52000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Poco M3",
-        "price": 43000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Redmi 9 Power",
-        "price": 43000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Redmi 9T",
-        "price": 43000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Redmi Note 9 4G",
-        "price": 43000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Redmi Note 8",
-        "price": 48000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Redmi Note 7 Pro",
-        "price": 50000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Redmi Note 7",
-        "price": 50000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Poco M5",
-        "price": 45000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Redmi 10 5G",
-        "price": 45000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Redmi Note 11R",
-        "price": 45000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Redmi Note 11F",
-        "price": 45000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Redmi 10 4G",
-        "price": 45000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Redmi Note 11 4G",
-        "price": 45000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Redmi Note 10 Pro 5G",
-        "price": 50000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Poco F2",
-        "price": 52000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Poco X2",
-        "price": 52000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Redmi K30i",
-        "price": 52000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Redmi K30 5G",
-        "price": 52000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Redmi K30 4G",
-        "price": 52000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Redmi A3",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Redmi 10A",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Redmi 9i",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Redmi 9C",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Redmi 9A",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Poco M2",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Redmi 9",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Redmi 8A",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Redmi 8",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Redmi 7",
-        "price": 38000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Poco C85",
-        "price": 45000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Redmi 15c 5G",
-        "price": 45000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Redmi 15c 4G",
-        "price": 45000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Poco C75",
-        "price": 43000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Redmi 14R",
-        "price": 43000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Redmi 14c",
-        "price": 43000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Poco C65",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Redmi 13R",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Redmi 13 4G",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Poco C55",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Redmi 11A",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Redmi 12c",
-        "price": 40000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Redmi Note 9",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Redmi 10x 4G",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Poco C40",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Redmi 10c",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Infinix Smart 7 HD",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Infinix Smart 7",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Itel Pop 7 Pro",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Tecno Spark Go 2023",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Tecno Spark 10c",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Tecno Spark 10",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Itel A70",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Itel A60s",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Itel A60",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Itel P40",
-        "price": 42000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Infinix Hot 40 Pro",
-        "price": 43000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Infinix Hot 40",
-        "price": 43000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Tecno Pova 5 Pro",
-        "price": 43000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Tecno Pova 5",
-        "price": 43000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Tecno Spark 20 Pro",
-        "price": 43000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Tecno Spark 10 Pro",
-        "price": 43000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Infinix Note 30",
-        "price": 43000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Infinix Hot 30",
-        "price": 43000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Honor 9A",
-        "price": 45000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Honor Play 9A",
-        "price": 45000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Huawei Y6-2020",
-        "price": 45000
-    },
-    {
-        "shop": "Kyaw Mobile",
-        "cat": "LCD",
-        "name": "Huawei Y6P",
-        "price": 45000
-    },
-    {
-        "shop": "ချမ်းသာစည်",
-        "cat": "LCD",
-        "name": "Hj",
-        "price": 12
-    }
+    { shop: "Kyaw Mobile", cat: "LCD", name: "Huawei Y6P", price: 45000 },
+    { shop: "Kyaw Mobile", cat: "LCD", name: "Huawei Y6-2020", price: 45000 },
+    { shop: "Kyaw Mobile", cat: "LCD", name: "Honor Play 9A", price: 45000 },
+    { shop: "Kyaw Mobile", cat: "LCD", name: "Infinix Hot 30", price: 43000 },
+    { shop: "Kyaw Mobile", cat: "Battery", name: "Mi Poco X3 (BN57)", price: 35000 },
+    { shop: "Kyaw Mobile", cat: "Battery", name: "Redmi 13c (BN5Q)", price: 30000 },
+    { shop: "Kyaw Mobile", cat: "Body Cover", name: "Redmi 7 (Pink/Black)", price: 27000 },
+    { shop: "Kyaw Mobile", cat: "Back Glass", name: "Redmi 10A (Black/Blue)", price: 14000 },
+    { shop: "ချမ်းသာစည်", cat: "LCD", name: "Redmi Note 10 Pro 5G", price: 50000 },
+    { shop: "ချမ်းသာစည်", cat: "LCD", name: "Oppo A52", price: 43000 },
+    { shop: "ချမ်းသာစည်", cat: "Battery", name: "Redmi Note 11 Pro 4G (BM5A)", price: 42000 }
 ];
 /*DATA_END*/
 
@@ -2746,7 +516,7 @@ function setCategory(cat, el) {
     handleSearch();
 }
 
-// BULK IMPORT LOGIC
+// BULK IMPORT
 function handleBulkImportClick() {
     requireShopAuth(currentSelectedShop, () => {
         document.getElementById('bulkModalTitle').innerText = `📋 ${currentSelectedShop} သို့ အမြန်စာရင်းသွင်းမည်`;
@@ -2759,31 +529,21 @@ function saveBulkDataAndPromptSync() {
     const text = document.getElementById('bulkInput').value.trim();
     const cat = document.getElementById('bulkCat').value;
     if (!text) { alert("စာရင်းများ ရိုက်ထည့်ပေးပါ။"); return; }
-
     const lines = text.split("\n");
     let addedCount = 0;
-
     for (let i = 0; i < lines.length; i++) {
         const line = lines[i].trim();
         if (!line) continue;
         const match = line.match(/^(.*?)[\s\t]+(\d+)$/);
         if (match) {
-            const name = match[1].trim();
-            const price = parseInt(match[2], 10);
-            itemsData.unshift({ shop: currentSelectedShop, cat, name, price });
+            itemsData.unshift({ shop: currentSelectedShop, cat, name: match[1].trim(), price: parseInt(match[2], 10) });
             addedCount++;
         }
     }
-
-    if (addedCount === 0) {
-        alert("စာရင်းပုံစံ မမှန်ကန်ပါ။ ဥပမာ - 'Huawei Y6P 45000' ပုံစံအတိုင်း ထည့်ပေးပါ။");
-        return;
-    }
-
+    if (addedCount === 0) { alert("စာရင်းပုံစံ မမှန်ကန်ပါ။"); return; }
     localStorage.setItem('htun_mobile_multishop_items', JSON.stringify(itemsData));
     closeModal('bulkModal');
     handleSearch();
-    alert(`ပစ္စည်း (${addedCount}) ခု အောင်မြင်စွာ ထည့်သွင်းပြီးပါပြီ။`);
     openSyncModal();
 }
 
@@ -2829,6 +589,7 @@ function saveItemData() {
     localStorage.setItem('htun_mobile_multishop_items', JSON.stringify(itemsData));
     closeModal('itemModal');
     handleSearch();
+    openSyncModal();
 }
 
 function deleteCurrentItem() {
@@ -2838,25 +599,59 @@ function deleteCurrentItem() {
         localStorage.setItem('htun_mobile_multishop_items', JSON.stringify(itemsData));
         closeModal('itemModal');
         handleSearch();
+        openSyncModal();
     }
 }
 
-// EXCEL TABLE EDITOR FUNCTIONS
+// EXCEL TABLE EDITOR WITH CATEGORY TABS
 function handleExcelEditorClick() {
     requireShopAuth(currentSelectedShop, () => {
-        document.getElementById('excelModalTitle').innerText = `📊 ${currentSelectedShop} - ပစ္စည်းစာရင်းဇယား အပြည့်အစုံ`;
+        document.getElementById('excelModalTitle').innerText = `📊 ${currentSelectedShop} - Excel Editor`;
+        currentExcelCat = "ALL";
+        document.querySelectorAll('.excel-cat-tab').forEach((t, i) => t.classList.toggle('active', i === 0));
         loadExcelTable();
         document.getElementById('excelModal').classList.add('active');
     });
 }
 
+function switchExcelCategory(cat, el) {
+    syncExcelInputsToData();
+    currentExcelCat = cat;
+    document.querySelectorAll('.excel-cat-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    loadExcelTable();
+}
+
+function syncExcelInputsToData() {
+    const rows = document.querySelectorAll('#excelTableBody tr');
+    for (let row of rows) {
+        const origIdx = parseInt(row.dataset.index, 10);
+        const cat = row.querySelector('.excel-cat').value;
+        const name = row.querySelector('.excel-name').value.trim();
+        const price = parseInt(row.querySelector('.excel-price').value, 10);
+        if (origIdx >= 0 && itemsData[origIdx]) {
+            if (name && !isNaN(price)) {
+                itemsData[origIdx].cat = cat;
+                itemsData[origIdx].name = name;
+                itemsData[origIdx].price = price;
+            }
+        }
+    }
+}
+
 function loadExcelTable() {
-    const shopItems = itemsData.filter(item => (item.shop || "Kyaw Mobile") === currentSelectedShop);
     const tbody = document.getElementById('excelTableBody');
     let html = '';
-    shopItems.forEach((item, i) => {
+    let filtered = itemsData.filter(item => {
+        const matchShop = (item.shop || "Kyaw Mobile") === currentSelectedShop;
+        const matchCat = (currentExcelCat === 'ALL' || item.cat === currentExcelCat);
+        return matchShop && matchCat;
+    });
+
+    filtered.forEach((item, i) => {
+        const origIdx = itemsData.indexOf(item);
         html += `
-            <tr data-index="${itemsData.indexOf(item)}">
+            <tr data-index="${origIdx}">
                 <td style="text-align: center; color: var(--text-sub);">${i + 1}</td>
                 <td>
                     <select class="excel-input excel-cat">
@@ -2868,7 +663,7 @@ function loadExcelTable() {
                 </td>
                 <td><input type="text" class="excel-input excel-name" value="${escapeHtml(item.name)}"></td>
                 <td><input type="number" class="excel-input excel-price" value="${item.price}" style="text-align: right;"></td>
-                <td style="text-align: center;"><button class="btn-row-del" onclick="this.closest('tr').remove()">✕</button></td>
+                <td style="text-align: center;"><button class="btn-row-del" onclick="deleteExcelRow(this, ${origIdx})">✕</button></td>
             </tr>`;
     });
     tbody.innerHTML = html;
@@ -2878,38 +673,51 @@ function addExcelRow() {
     const tbody = document.getElementById('excelTableBody');
     const tr = document.createElement('tr');
     tr.dataset.index = "-1";
+    const defaultCat = currentExcelCat === 'ALL' ? 'LCD' : currentExcelCat;
     tr.innerHTML = `
         <td style="text-align: center; color: var(--text-sub);">*</td>
         <td>
             <select class="excel-input excel-cat">
-                <option value="LCD">LCD</option>
-                <option value="Battery">Battery</option>
-                <option value="Body Cover">Body Cover</option>
-                <option value="Back Glass">Back Glass</option>
+                <option value="LCD" ${defaultCat === 'LCD' ? 'selected' : ''}>LCD</option>
+                <option value="Battery" ${defaultCat === 'Battery' ? 'selected' : ''}>Battery</option>
+                <option value="Body Cover" ${defaultCat === 'Body Cover' ? 'selected' : ''}>Body Cover</option>
+                <option value="Back Glass" ${defaultCat === 'Back Glass' ? 'selected' : ''}>Back Glass</option>
             </select>
         </td>
-        <td><input type="text" class="excel-input excel-name" placeholder="မော်ဒယ်အမည် ရိုက်ထည့်ပါ"></td>
+        <td><input type="text" class="excel-input excel-name" placeholder="မော်ဒယ်အမည်"></td>
         <td><input type="number" class="excel-input excel-price" placeholder="30000" style="text-align: right;"></td>
         <td style="text-align: center;"><button class="btn-row-del" onclick="this.closest('tr').remove()">✕</button></td>
     `;
     tbody.insertBefore(tr, tbody.firstChild);
 }
 
+function deleteExcelRow(btn, origIdx) {
+    if (confirm("ဖျက်ပစ်ရန် သေချာပါသလား?")) {
+        if (origIdx >= 0) {
+            itemsData.splice(origIdx, 1);
+            localStorage.setItem('htun_mobile_multishop_items', JSON.stringify(itemsData));
+        }
+        btn.closest('tr').remove();
+    }
+}
+
 function saveExcelDataAndPromptSync() {
     const rows = document.querySelectorAll('#excelTableBody tr');
-    let otherShopItems = itemsData.filter(item => (item.shop || "Kyaw Mobile") !== currentSelectedShop);
-    let updatedShopItems = [];
-
     for (let row of rows) {
+        const origIdx = parseInt(row.dataset.index, 10);
         const cat = row.querySelector('.excel-cat').value;
         const name = row.querySelector('.excel-name').value.trim();
         const price = parseInt(row.querySelector('.excel-price').value, 10);
         if (name && !isNaN(price)) {
-            updatedShopItems.push({ shop: currentSelectedShop, cat, name, price });
+            if (origIdx === -1) {
+                itemsData.unshift({ shop: currentSelectedShop, cat, name, price });
+            } else if (itemsData[origIdx]) {
+                itemsData[origIdx].cat = cat;
+                itemsData[origIdx].name = name;
+                itemsData[origIdx].price = price;
+            }
         }
     }
-
-    itemsData = [...updatedShopItems, ...otherShopItems];
     localStorage.setItem('htun_mobile_multishop_items', JSON.stringify(itemsData));
     handleSearch();
     closeModal('excelModal');
@@ -2947,7 +755,7 @@ async function pushToGitHub() {
         const putRes = await fetch(getFileUrl, {
             method: 'PUT',
             headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: "Update multi-shop items data via Admin", content: encodedUpdatedContent, sha: fileData.sha })
+            body: JSON.stringify({ message: "Update multi-shop items data", content: encodedUpdatedContent, sha: fileData.sha })
         });
         if (!putRes.ok) throw new Error("GitHub ပေါ်သို့ သိမ်းဆည်းမအောင်မြင်ပါ။");
         alert("GitHub ပေါ်သို့ အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီ။ ၁ မိနစ်အတွင်း Update ဖြစ်ပါမည်။");
