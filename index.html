@@ -269,6 +269,7 @@
             </div>
 
             <button class="btn-emerald" style="margin-top: 14px;" type="button" onclick="exportPNG()">📷 PNG ပုံအဖြစ် ဖုန်းထဲသိမ်းမည်</button>
+            <button id="copyInvoiceBtn" class="btn-main" style="width: 100%; margin-top: 8px;" type="button" onclick="copyInvoiceText()">📋 Invoice Text ကူးမည်</button>
         </div>
     </div>
 
@@ -518,6 +519,134 @@ function exportPNG() {
     });
 }
 
+function buildInvoiceText() {
+    const getText = (id) => {
+        return document.getElementById(id)?.innerText.trim() || '';
+    };
+
+    const invoiceNo = getText('vInvoiceNo');
+    const date = getText('vDateText');
+    const shopName = getText('vShopName');
+    const shopAddress = getText('vShopAddress');
+    const shopPhone = getText('vShopPhone');
+    const customerName = getText('vClientName');
+    const customerPhone = getText('vClientPhone');
+    const paymentStatus = getText('vStatusPill');
+    const subTotal = getText('vSubTotal');
+    const discount = getText('vDiscount');
+    const grandTotal = getText('vGrandTotal');
+    const payInfo = getText('vPayInfo');
+    const footerMsg = getText('vFooterMsg');
+
+    const rows = Array.from(document.querySelectorAll('#vTableBody tr'));
+    if (rows.length === 0) return '';
+
+    const itemLines = rows.map((row, index) => {
+        const cells = row.querySelectorAll('td');
+        const itemName = cells[1]?.innerText.trim() || '';
+        const itemPrice = cells[2]?.innerText.trim() || '';
+        return `${index + 1}. ${itemName} - ${itemPrice}`;
+    });
+
+    const discountRow = document.getElementById('rowDiscount');
+    const discountLine = discountRow && discountRow.style.display !== 'none'
+        ? `လျှော့ငွေ: ${discount}`
+        : '';
+
+    return [
+        `🧾 ${shopName}`,
+        shopAddress,
+        shopPhone,
+        '',
+        '━━━━━━━━━━━━━━━━',
+        `INVOICE ${invoiceNo}`,
+        `ရက်စွဲ: ${date}`,
+        '━━━━━━━━━━━━━━━━',
+        '',
+        `ဝယ်သူ: ${customerName}`,
+        customerPhone,
+        '',
+        'ပစ္စည်း / ဝန်ဆောင်မှု',
+        ...itemLines,
+        '',
+        '━━━━━━━━━━━━━━━━',
+        `Subtotal: ${subTotal}`,
+        discountLine,
+        `စုစုပေါင်း: ${grandTotal}`,
+        '',
+        `ငွေပေးချေမှု: ${paymentStatus}`,
+        '',
+        'ငွေပေးချေရန်',
+        payInfo,
+        '',
+        footerMsg
+    ].filter((line, index, lines) => {
+        // Remove the optional blank line created by an absent discount.
+        return line !== '' || lines[index - 1] !== 'Subtotal: ' + subTotal;
+    }).join('\n');
+}
+
+async function copyInvoiceText() {
+    const invoiceText = buildInvoiceText();
+
+    if (!invoiceText) {
+        alert('အရင်ဆုံး Invoice ထုတ်ပေးပါ။');
+        return;
+    }
+
+    try {
+        if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(invoiceText);
+        } else {
+            copyTextFallback(invoiceText);
+        }
+        showCopySuccess();
+    } catch (error) {
+        try {
+            copyTextFallback(invoiceText);
+            showCopySuccess();
+        } catch (fallbackError) {
+            alert('စာသားကူးယူ၍ မရပါ။ စာသားကို ကိုယ်တိုင်ရွေးပြီး Copy လုပ်ပေးပါ။');
+        }
+    }
+}
+
+function copyTextFallback(text) {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.setAttribute('readonly', '');
+    textarea.style.position = 'fixed';
+    textarea.style.left = '-9999px';
+    textarea.style.top = '0';
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+
+    const copied = document.execCommand('copy');
+    document.body.removeChild(textarea);
+
+    if (!copied) {
+        throw new Error('Clipboard copy failed');
+    }
+}
+
+function showCopySuccess() {
+    const button = document.getElementById('copyInvoiceBtn');
+    if (!button) {
+        alert('Invoice စာသားကို Copy လုပ်ပြီးပါပြီ။');
+        return;
+    }
+
+    const originalText = button.innerText;
+    button.innerText = '✅ Copy လုပ်ပြီးပါပြီ';
+    button.disabled = true;
+
+    setTimeout(() => {
+        button.innerText = originalText;
+        button.disabled = false;
+    }, 1800);
+}
+
 function renderHistoryList() {
     const q = (document.getElementById('histSearch').value || '').toLowerCase();
     const container = document.getElementById('historyListContainer');
@@ -534,20 +663,160 @@ function renderHistoryList() {
         return;
     }
 
-    container.innerHTML = filtered.map((item, idx) => `
-        <div class="hist-item" onclick="openFromHistory('${item.invId}')">
-            <div class="hist-head">
-                <span>${escapeHtml(item.custName)} (${item.invId})</span>
-                <span style="color: ${item.payStatus === 'PAID' ? 'var(--emerald)' : '#b91c1c'}; font-size: 12px;">
-                    ${item.payStatus === 'PAID' ? '✓ PAID' : '⚠ UNPAID'}
-                </span>
+    container.innerHTML = filtered.map((item) => {
+        const actionButton = item.payStatus !== 'PAID'
+            ? `
+                <button
+                    type="button"
+                    class="btn-main"
+                    style="width: 100%; margin-top: 8px;"
+                    onclick="event.stopPropagation(); markInvoiceAsPaid('${item.invId}')"
+                >
+                    ✅ PAID ပြောင်းပြီး Customer ဆီ ပို့မည်
+                </button>
+            `
+            : `
+                <button
+                    type="button"
+                    class="btn-emerald"
+                    style="margin-top: 8px; padding: 9px; font-size: 12px;"
+                    onclick="event.stopPropagation(); copyPaidUpdateText('${item.invId}')"
+                >
+                    📋 Paid Message ပြန်ကူးမည်
+                </button>
+            `;
+
+        const paidAtText = item.paidAt
+            ? ` &middot; Paid ${escapeHtml(formatPaidDate(item.paidAt))}`
+            : '';
+
+        return `
+            <div class="hist-item" onclick="openFromHistory('${item.invId}')">
+                <div class="hist-head">
+                    <span>${escapeHtml(item.custName)} (${escapeHtml(item.invId)})</span>
+                    <span style="color: ${item.payStatus === 'PAID' ? 'var(--emerald)' : '#b91c1c'}; font-size: 12px;">
+                        ${item.payStatus === 'PAID' ? '✓ PAID' : '⚠ UNPAID'}
+                    </span>
+                </div>
+                <div class="hist-sub">
+                    <span>${escapeHtml(item.dateStr)} &middot; ပစ္စည်း ${item.itemsList.length} မျိုး${paidAtText}</span>
+                    <strong style="color: var(--navy); font-size: 12px;">${Number(item.finalTotal || 0).toLocaleString()} K</strong>
+                </div>
+                ${actionButton}
             </div>
-            <div class="hist-sub">
-                <span>${item.dateStr} &middot; ပစ္စည်း ${item.itemsList.length} မျိုး</span>
-                <strong style="color: var(--navy); font-size: 12px;">${item.finalTotal.toLocaleString()} K</strong>
-            </div>
-        </div>
-    `).join('');
+        `;
+    }).join('');
+}
+
+function formatPaidDate(timestamp) {
+    return new Date(timestamp).toLocaleString('en-GB', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+}
+
+function buildPaidUpdateText(item) {
+    if (!item) return '';
+
+    const shopName = shopConfig.shopName || '';
+    const shopAddress = shopConfig.address || '';
+    const shopPhone = shopConfig.phone ? `📞 ${shopConfig.phone}` : '';
+    const customerName = item.custName || 'ဧည့်သည်တော်';
+    const customerPhone = item.custPhone ? `Phone: ${item.custPhone}` : '';
+    const paidAt = formatPaidDate(item.paidAt || Date.now());
+    const total = Number(item.finalTotal || 0).toLocaleString();
+
+    return [
+        '✅ ငွေပေးချေမှု အခြေအနေ ပြောင်းလဲပြီးပါပြီ',
+        '',
+        `🧾 ${shopName}`,
+        shopAddress,
+        shopPhone,
+        '',
+        '━━━━━━━━━━━━━━━━',
+        `INVOICE #${String(item.invId).replace(/^#/, '')}`,
+        `ရက်စွဲ: ${item.dateStr || ''}`,
+        '━━━━━━━━━━━━━━━━',
+        '',
+        `ဝယ်သူ: ${customerName}`,
+        customerPhone,
+        '',
+        'ယခင်အခြေအနေ: ⚠️ UNPAID',
+        'ယခုအခြေအနေ: ✅ PAID (ငွေပေးချေပြီး)',
+        '',
+        'ပေးချေပြီးသည့် အချိန်:',
+        paidAt,
+        '',
+        `စုစုပေါင်းပေးချေငွေ: ${total} K`,
+        '',
+        'ကျေးဇူးတင်ပါတယ်။'
+    ].filter(line => line !== '').join('\n');
+}
+
+async function copyPaidUpdateText(invId) {
+    const item = voucherHistory.find(history => history.invId === invId);
+
+    if (!item) {
+        alert('Invoice မတွေ့ပါ။');
+        return;
+    }
+
+    if (item.payStatus !== 'PAID') {
+        alert('အရင်ဆုံး Invoice ကို PAID ပြောင်းပေးပါ။');
+        return;
+    }
+
+    const message = buildPaidUpdateText(item);
+
+    try {
+        if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(message);
+        } else {
+            copyTextFallback(message);
+        }
+
+        alert('Paid ပြောင်းလဲကြောင်း Message ကို Copy လုပ်ပြီးပါပြီ။');
+    } catch (error) {
+        try {
+            copyTextFallback(message);
+            alert('Paid ပြောင်းလဲကြောင်း Message ကို Copy လုပ်ပြီးပါပြီ။');
+        } catch (fallbackError) {
+            alert('Message ကို Copy လုပ်၍ မရပါ။');
+        }
+    }
+}
+
+function markInvoiceAsPaid(invId) {
+    const item = voucherHistory.find(history => history.invId === invId);
+
+    if (!item) {
+        alert('Invoice မတွေ့ပါ။');
+        return;
+    }
+
+    if (item.payStatus === 'PAID') {
+        copyPaidUpdateText(invId);
+        return;
+    }
+
+    item.payStatus = 'PAID';
+    item.paidAt = Date.now();
+
+    try {
+        localStorage.setItem(
+            'hist_navy_emerald',
+            JSON.stringify(voucherHistory)
+        );
+    } catch (error) {
+        alert('Paid အခြေအနေကို သိမ်းဆည်း၍ မရပါ။');
+        return;
+    }
+
+    renderHistoryList();
+    copyPaidUpdateText(invId);
 }
 
 function openFromHistory(invId) {
@@ -583,4 +852,13 @@ function escapeHtml(text) {
 loadSetupToForm();
 </script>
 </body>
-</html>
+</html> document.getElementById('logoPreview').style.display = 'none';
+    document.getElementById('btnDelLogo').style.display = 'none';
+    document.getElementById('cfgLogoFile').value = "";
+}
+
+function saveShopSetup() {
+    shopConfig.shopName = document.getElementById('cfgShopName').value.trim() || "My Mobile Shop";
+    shopConfig.address = document.getElementById('cfgAddress').value.trim();
+    shopConfig.phone = document.getElementById('cfgPhone').value.trim();
+    shopConfig.pa
