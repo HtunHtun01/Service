@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Premium Service Invoice</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Pyidaungsu:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <style>
+        :root {
+            --navy: #0f2b48;
+            --emerald: #059669;
+            --emerald-light: #ecfdf5;
+            --bg: #f1f5f9;
+            --card-bg: #ffffff;
+            --text-dark: #0f172a;
+            --text-sub: #64748b;
+            --border: #e2e8f0;
+            --radius: 14px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Plus Jakarta Sans', 'Pyidaungsu', sans-serif; background: var(--bg); color: var(--text-dark); padding: 14px 10px 80px; display: flex; justify-content: center; }
+        .app-container { width: 100%; max-width: 480px; }
+
+        /* Top Bar Navigation Tabs */
+        .tabs { display: flex; background: #e2e8f0; border-radius: 12px; padding: 4px; margin-bottom: 14px; gap: 4px; }
+        .tab-btn { flex: 1; padding: 10px 6px; font-size: 12px; font-weight: 700; border: none; background: none; border-radius: 9px; color: var(--text-sub); cursor: pointer; transition: 0.2s; white-space: nowrap; }
+        .tab-btn.active { background: #ffffff; color: var(--navy); box-shadow: 0 2px 6px rgba(0,0,0,0.06); }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .panel-card { background: var(--card-bg); border-radius: var(--radius); padding: 16px; border: 1.5px solid var(--border); box-shadow: 0 4px 16px rgba(0,0,0,0.03); margin-bottom: 14px; }
+        .panel-title { font-size: 14px; font-weight: 800; color: var(--navy); margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+
+        .form-group { margin-bottom: 10px; }
+        .form-group label { display: block; font-size: 11px; font-weight: 700; color: var(--text-sub); margin-bottom: 4px; }
+        .form-group input, textarea, select { width: 100%; padding: 10px 12px; font-size: 13px; border: 1.5px solid var(--border); border-radius: 10px; outline: none; font-family: inherit; background: #f8fafc; }
+        .form-group input:focus, textarea:focus { border-color: var(--emerald); background: #ffffff; }
+
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+        .btn-row { display: flex; gap: 8px; margin-top: 10px; }
+        button { padding: 11px; font-size: 13px; font-weight: 700; border-radius: 10px; border: none; cursor: pointer; transition: 0.15s; }
+        .btn-main { background: var(--navy); color: #ffffff; flex: 1; }
+        .btn-emerald { background: var(--emerald); color: #ffffff; width: 100%; padding: 13px; font-size: 14px; }
+        .btn-outline { background: #f1f5f9; color: var(--text-sub); width: 85px; }
+
+        /* ================= PREMIUM INVOICE PRINT CANVAS ================= */
+        .voucher-wrap { display: flex; justify-content: center; }
+        #invoiceCanvas {
+            width: 100%;
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 24px 20px 24px;
+            box-shadow: 0 12px 35px rgba(15,43,72,0.08);
+            border: 1px solid #cbd5e1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Top Graphic Header (Curved Navy & Emerald Badges) */
+        .inv-head-graphic {
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 18px;
+            padding-bottom: 12px;
+        }
+
+        .inv-logo-area { display: flex; align-items: center; gap: 10px; max-width: 55%; }
+        .inv-logo-img { width: 50px; height: 50px; object-fit: contain; border-radius: 10px; border: 1px solid var(--border); }
+        .inv-shop-name { font-size: 18px; font-weight: 800; color: var(--navy); line-height: 1.25; }
+        .inv-shop-addr { font-size: 10px; color: var(--text-sub); margin-top: 3px; line-height: 1.4; }
+        .inv-shop-ph { font-size: 10.5px; font-weight: 700; color: var(--navy); margin-top: 2px; }
+
+        /* Slanted Right Curved Header */
+        .inv-badge-container {
+            background: linear-gradient(135deg, var(--emerald) 0%, var(--emerald) 38%, var(--navy) 38.1%, var(--navy) 100%);
+            color: #ffffff;
+            padding: 10px 16px 10px 24px;
+            border-top-left-radius: 30px;
+            border-bottom-left-radius: 30px;
+            text-align: right;
+            box-shadow: -2px 4px 12px rgba(15,43,72,0.15);
+            min-width: 140px;
+        }
+        .inv-badge-title { font-size: 16px; font-weight: 800; letter-spacing: 1px; }
+        .inv-badge-sub { font-size: 10px; color: #cbd5e1; margin-top: 2px; }
+
+        /* Customer & Meta Details */
+        .inv-meta-grid { display: flex; justify-content: space-between; font-size: 11.5px; border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 14px; }
+        .inv-client-box strong { color: var(--navy); font-size: 12px; }
+
+        /* Elegant Table */
+        .inv-table { width: 100%; border-collapse: collapse; font-size: 12.5px; margin-bottom: 14px; }
+        .inv-table th { background: var(--navy); color: #ffffff; font-weight: 700; font-size: 11px; padding: 8px 10px; text-align: left; }
+        .inv-table th:first-child { border-top-left-radius: 8px; border-bottom-left-radius: 8px; width: 24px; }
+        .inv-table th:last-child { border-top-right-radius: 8px; border-bottom-right-radius: 8px; text-align: right; }
+        .inv-table td { padding: 9px 10px; border-bottom: 1px solid #f1f5f9; color: var(--text-dark); }
+        .td-price { text-align: right; font-weight: 700; color: var(--navy); }
+
+        /* Calculation & Totals */
+        .inv-calc-box { margin-left: auto; width: 62%; font-size: 12px; margin-bottom: 14px; }
+        .calc-row { display: flex; justify-content: space-between; padding: 4px 0; color: var(--text-sub); }
+        .calc-row.grand { border-top: 2px dashed #cbd5e1; padding-top: 6px; margin-top: 4px; font-size: 15px; font-weight: 800; color: var(--navy); }
+        .grand-price { color: var(--emerald); font-size: 17px; }
+
+        /* Payment Status Banner */
+        .status-pill {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 3px 12px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .status-paid { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+        .status-unpaid { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+
+        /* Pay Information Info Card */
+        .inv-kpay-card {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--emerald);
+            border-radius: 10px;
+            padding: 10px 12px;
+            font-size: 11.5px;
+            line-height: 1.5;
+            color: #334155;
+            margin-bottom: 12px;
+        }
+
+        .inv-footer { text-align: center; font-size: 11px; color: var(--text-sub); border-top: 1px solid #f1f5f9; padding-top: 10px; font-weight: 500; }
+
+        /* History List Table */
+        .hist-item { background: #ffffff; border: 1px solid var(--border); border-radius: 10px; padding: 12px; margin-bottom: 8px; cursor: pointer; transition: 0.15s; }
+        .hist-item:hover { border-color: var(--emerald); background: var(--emerald-light); }
+        .hist-head { display: flex; justify-content: space-between; font-weight: 700; font-size: 13px; color: var(--navy); }
+        .hist-sub { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-sub); margin-top: 4px; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('tabCreate', this)">🧾 ဘောက်ချာသစ်</button>
+        <button class="tab-btn" onclick="switchTab('tabHistory', this)">📋 စာရင်းမှတ်တမ်း</button>
+        <button class="tab-btn" onclick="switchTab('tabSetup', this)">⚙️ ဆိုင် Setup</button>
+    </div>
+
+    <!-- TAB 1: CREATE VOUCHER -->
+    <div id="tabCreate" class="tab-content active">
+        <div class="panel-card">
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>လူကြီးမင်း/ဝယ်သူအမည်</label>
+                    <input type="text" id="custName" placeholder="ကိုအောင် (သို့) ဧည့်သည်">
+                </div>
+                <div class="form-group">
+                    <label>ဖုန်းနံပါတ်</label>
+                    <input type="text" id="custPhone" placeholder="09xxxxxxxxx">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>ပစ္စည်းနှင့် ပြုပြင်စရိတ် စာရင်း (တစ်ကြောင်းလျှင် တစ်ခု)</label>
+                <textarea id="rawInput" placeholder="Redmi Note 10 Pro LCD 55000&#10;Vivo Y15 Password Unlock 10000&#10;iPhone 11 Battery 35000"></textarea>
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Discount လျှော့ငွေ (ကျပ်)</label>
+                    <input type="number" id="discountInput" value="0" placeholder="0">
+                </div>
+                <div class="form-group">
+                    <label>ငွေပေးချေမှု အခြေအနေ</label>
+                    <select id="payStatusSelect">
+                        <option value="PAID">✅ ငွေပေးချေပြီး (PAID)</option>
+                        <option value="UNPAID">⚠️ ငွေမပေးရသေး (UNPAID)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="btn-row">
+                <button class="btn-outline" type="button" onclick="clearInputs()">ရှင်းမည်</button>
+                <button class="btn-main" type="button" onclick="generateInvoice()">ဘောက်ချာထုတ်မည်</button>
+            </div>
+        </div>
+
+        <!-- INVOICE PREVIEW AREA -->
+        <div id="previewArea" style="display: none;">
+            <div class="voucher-wrap">
+                <div id="invoiceCanvas">
+                    <!-- GRAPHIC TOP BAR -->
+                    <div class="inv-head-graphic">
+                        <div class="inv-logo-area">
+                            <img id="vLogo" class="inv-logo-img" src="" style="display: none;" alt="Logo">
+                            <div>
+                                <div class="inv-shop-name" id="vShopName">Htun Htun Mobile Service</div>
+                                <div class="inv-shop-addr" id="vShopAddress">မန္တလေးမြို့</div>
+                                <div class="inv-shop-ph" id="vShopPhone">📞 09400084212</div>
+                            </div>
+                        </div>
+
+                        <div class="inv-badge-container">
+                            <div class="inv-badge-title">INVOICE</div>
+                            <div class="inv-badge-sub" id="vInvoiceNo">#INV-001</div>
+                            <div class="inv-badge-sub" id="vDateText">12 Oct 2026</div>
+                        </div>
+                    </div>
+
+                    <!-- CLIENT INFO -->
+                    <div class="inv-meta-grid">
+                        <div class="inv-client-box">
+                            <div style="font-size: 10px; color: var(--text-sub);">INVOICE TO:</div>
+                            <strong id="vClientName">Customer</strong>
+                            <div id="vClientPhone" style="font-size: 11px; color: var(--text-sub);">-</div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 10px; color: var(--text-sub); margin-bottom: 2px;">PAYMENT STATUS:</div>
+                            <span id="vStatusPill" class="status-pill status-paid">PAID</span>
+                        </div>
+                    </div>
+
+                    <!-- TABLE -->
+                    <table class="inv-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>ပြုပြင်မှု / ဝန်ဆောင်မှု ပစ္စည်း</th>
+                                <th>ကျသင့်ငွေ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="vTableBody"></tbody>
+                    </table>
+
+                    <!-- TOTALS -->
+                    <div class="inv-calc-box">
+                        <div class="calc-row">
+                            <span>Sub Total:</span>
+                            <strong id="vSubTotal">0 K</strong>
+                        </div>
+                        <div class="calc-row" id="rowDiscount" style="display: none;">
+                            <span style="color: #b91c1c;">Discount:</span>
+                            <span style="color: #b91c1c; font-weight: 700;" id="vDiscount">-0 K</span>
+                        </div>
+                        <div class="calc-row grand">
+                            <span>Total Due:</span>
+                            <span class="grand-price" id="vGrandTotal">0 K</span>
+                        </div>
+                    </div>
+
+                    <!-- PAYMENT DETAILS -->
+                    <div class="inv-kpay-card">
+                        <strong style="color: var(--navy);">💳 ငွေပေးချေရန် အကောင့် (KPay / Wave)</strong><br>
+                        <span id="vPayInfo">KPay: 09400084212 (Htun Htun)</span>
+                    </div>
+
+                    <div class="inv-footer" id="vFooterMsg">အားပေးမှုကို အထူးကျေးဇူးတင်ရှိပါသည်</div>
+                </div>
+            </div>
+
+            <button class="btn-emerald" style="margin-top: 14px;" type="button" onclick="exportPNG()">📷 PNG ပုံအဖြစ် ဖုန်းထဲသိမ်းမည်</button>
+            <button id="copyInvoiceBtn" class="btn-main" style="width: 100%; margin-top: 8px;" type="button" onclick="copyInvoiceText()">📋 Invoice Text ကူးမည်</button>
+        </div>
+    </div>
+
+    <!-- TAB 2: VOUCHER HISTORY & SEARCH -->
+    <div id="tabHistory" class="tab-content">
+        <div class="panel-card">
+            <div class="panel-title">
+                <span>📋 သိမ်းဆည်းထားသော စာရင်းများ</span>
+                <span id="histCountBadge" style="font-size: 11px; background: var(--emerald-light); color: var(--emerald); padding: 2px 8px; border-radius: 12px;">0 ခု</span>
+            </div>
+            <div class="form-group">
+                <input type="text" id="histSearch" placeholder="🔍 ဝယ်သူအမည် သို့မဟုတ် Voucher No ဖြင့် ရှာမည်..." oninput="renderHistoryList()">
+            </div>
+            <div id="historyListContainer" style="max-height: 400px; overflow-y: auto;"></div>
+        </div>
+    </div>
+
+    <!-- TAB 3: SETUP CONFIG -->
+    <div id="tabSetup" class="tab-content">
+        <div class="panel-card">
+            <div class="panel-title">⚙️ ဆိုင် အချက်အလက် &amp; Logo ပြင်ဆင်ခြင်း</div>
+            
+            <div class="form-group">
+                <label>ဆိုင်အမည် (Shop Name)</label>
+                <input type="text" id="cfgShopName" placeholder="Htun Htun Mobile Service">
+            </div>
+
+            <div class="form-group">
+                <label>ဆိုင်လိပ်စာ (Address)</label>
+                <input type="text" id="cfgAddress" placeholder="လမ်း ၃၀၊ မန္တလေးမြို့">
+            </div>
+
+            <div class="form-group">
+                <label>ဆက်သွယ်ရန် ဖုန်းနံပါတ်</label>
+                <input type="text" id="cfgPhone" placeholder="09400084212">
+            </div>
+
+            <div class="form-group">
+                <label>KPay / WavePay အချက်အလက်</label>
+                <input type="text" id="cfgPayInfo" placeholder="KPay: 09400084212 (Htun Htun) | Wave: 09400084212">
+            </div>
+
+            <div class="form-group">
+                <label>ကျေးဇူးတင်လွှာ စာတို (Footer)</label>
+                <input type="text" id="cfgFooterMsg" placeholder="အားပေးမှုကို အထူးကျေးဇူးတင်ရှိပါသည်">
+            </div>
+
+            <div class="form-group">
+                <label>ဆိုင် Logo တင်ရန် (PNG / JPG)</label>
+                <input type="file" id="cfgLogoFile" accept="image/*" onchange="handleLogoUpload(event)">
+                <div style="margin-top: 6px; display: flex; align-items: center; gap: 8px;">
+                    <img id="logoPreview" src="" style="width: 40px; height: 40px; object-fit: contain; border-radius: 8px; border: 1px solid var(--border); display: none;">
+                    <button type="button" id="btnDelLogo" style="display: none; font-size: 11px; color: #b91c1c; background: none; padding: 0;" onclick="removeLogo()">Logo ဖြုတ်မည်</button>
+                </div>
+            </div>
+
+            <button type="button" class="btn-main" style="width: 100%; margin-top: 6px;" onclick="saveShopSetup()">💾 ဆိုင် Setup သိမ်းဆည်းမည်</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// Persistent Store
+let shopConfig = {
+    shopName: "Htun Htun Mobile Service",
+    address: "မန္တလေးမြို့",
+    phone: "09400084212",
+    payInfo: "KPay: 09400084212 (Htun Htun) | Wave: 09400084212",
+    footerMsg: "စိတ်တိုင်းကျ ဝန်ဆောင်မှုပေးခြင်းအတွက် ကျေးဇူးတင်ပါသည်",
+    logoBase64: ""
+};
+
+let voucherHistory = [];
+
+// Init Load from localStorage
+try {
+    const savedCfg = localStorage.getItem('cfg_navy_emerald');
+    if (savedCfg) shopConfig = JSON.parse(savedCfg);
+
+    const savedHist = localStorage.getItem('hist_navy_emerald');
+    if (savedHist) voucherHistory = JSON.parse(savedHist);
+} catch (_) {}
+
+function switchTab(tabId, btn) {
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    btn.classList.add('active');
+    if (tabId === 'tabHistory') renderHistoryList();
+}
+
+function loadSetupToForm() {
+    document.getElementById('cfgShopName').value = shopConfig.shopName || '';
+    document.getElementById('cfgAddress').value = shopConfig.address || '';
+    document.getElementById('cfgPhone').value = shopConfig.phone || '';
+    document.getElementById('cfgPayInfo').value = shopConfig.payInfo || '';
+    document.getElementById('cfgFooterMsg').value = shopConfig.footerMsg || '';
+    if (shopConfig.logoBase64) {
+        document.getElementById('logoPreview').src = shopConfig.logoBase64;
+        document.getElementById('logoPreview').style.display = 'block';
+        document.getElementById('btnDelLogo').style.display = 'inline-block';
+    }
+}
+
+function handleLogoUpload(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(evt) {
+        shopConfig.logoBase64 = evt.target.result;
+        document.getElementById('logoPreview').src = evt.target.result;
+        document.getElementById('logoPreview').style.display = 'block';
+        document.getElementById('btnDelLogo').style.display = 'inline-block';
+    };
+    reader.readAsDataURL(file);
+}
+
+function removeLogo() {
+    shopConfig.logoBase64 = "";
+    document.getElementById('logoPreview').style.display = 'none';
+    document.getElementById('btnDelLogo').style.display = 'none';
+    document.getElementById('cfgLogoFile').value = "";
+}
+
+function saveShopSetup() {
+    shopConfig.shopName = document.getElementById('cfgShopName').value.trim() || "My Mobile Shop";
+    shopConfig.address = document.getElementById('cfgAddress').value.trim();
+    shopConfig.phone = document.getElementById('cfgPhone').value.trim();
+    shopConfig.payInfo = document.getElementById('cfgPayInfo').value.trim();
+    shopConfig.footerMsg = document.getElementById('cfgFooterMsg').value.trim();
+
+    localStorage.setItem('cfg_navy_emerald', JSON.stringify(shopConfig));
+    alert("ဆိုင်အချက်အလက်များကို သိမ်းဆည်းပြီးပါပြီ။");
+    switchTab('tabCreate', document.querySelectorAll('.tab-btn')[0]);
+}
+
+function generateInvoice() {
+    const raw = document.getElementById('rawInput').value.trim();
+    if (!raw) { alert("စာရင်းများ ရိုက်ထည့်ပေးပါ။"); return; }
+
+    const lines = raw.split("\n");
+    let subTotal = 0, count = 0, rowsHtml = "", itemsList = [];
+
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (!line) continue;
+        const match = line.match(/^(.*?)[\s\t]+(\d+)$/);
+        if (match) {
+            count++;
+            const name = match[1].trim();
+            const price = parseInt(match[2], 10);
+            subTotal += price;
+            itemsList.push({ name, price });
+            rowsHtml += `<tr>
+                <td style="color: var(--text-sub);">${count}</td>
+                <td style="font-weight: 600;">${escapeHtml(name)}</td>
+                <td class="td-price">${price.toLocaleString()} K</td>
+            </tr>`;
+        }
+    }
+
+    if (count === 0) { alert("နမူနာအတိုင်း 'LCD 35000' ပုံစံဖြင့် ထည့်ပေးပါ။"); return; }
+
+    const discount = parseInt(document.getElementById('discountInput').value, 10) || 0;
+    const finalTotal = Math.max(0, subTotal - discount);
+    const payStatus = document.getElementById('payStatusSelect').value;
+    const custName = document.getElementById('custName').value.trim() || "ဧည့်သည်တော်";
+    const custPhone = document.getElementById('custPhone').value.trim();
+
+    const now = new Date();
+    const invId = `INV-${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}-${now.getSeconds()}${now.getMilliseconds()}`;
+    const dateStr = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+
+    // Render on Invoice Canvas
+    document.getElementById('vShopName').innerText = shopConfig.shopName;
+    document.getElementById('vShopAddress').innerText = shopConfig.address;
+    document.getElementById('vShopPhone').innerText = shopConfig.phone ? `📞 ${shopConfig.phone}` : "";
+    document.getElementById('vPayInfo').innerText = shopConfig.payInfo;
+    document.getElementById('vFooterMsg').innerText = shopConfig.footerMsg;
+
+    if (shopConfig.logoBase64) {
+        document.getElementById('vLogo').src = shopConfig.logoBase64;
+        document.getElementById('vLogo').style.display = 'block';
+    } else {
+        document.getElementById('vLogo').style.display = 'none';
+    }
+
+    document.getElementById('vInvoiceNo').innerText = `#${invId}`;
+    document.getElementById('vDateText').innerText = dateStr;
+    document.getElementById('vClientName').innerText = custName;
+    document.getElementById('vClientPhone').innerText = custPhone ? `Phone: ${custPhone}` : "";
+
+    const statusPill = document.getElementById('vStatusPill');
+    if (payStatus === "PAID") {
+        statusPill.className = "status-pill status-paid";
+        statusPill.innerText = "PAID (ပေးချေပြီး)";
+    } else {
+        statusPill.className = "status-pill status-unpaid";
+        statusPill.innerText = "UNPAID (မပေးရသေး)";
+    }
+
+    document.getElementById('vTableBody').innerHTML = rowsHtml;
+    document.getElementById('vSubTotal').innerText = `${subTotal.toLocaleString()} K`;
+
+    const rowDisc = document.getElementById('rowDiscount');
+    if (discount > 0) {
+        rowDisc.style.display = "flex";
+        document.getElementById('vDiscount').innerText = `-${discount.toLocaleString()} K`;
+    } else {
+        rowDisc.style.display = "none";
+    }
+
+    document.getElementById('vGrandTotal').innerText = `${finalTotal.toLocaleString()} K`;
+
+    // Save to History (Top unshift)
+    const record = {
+        invId,
+        dateStr,
+        custName,
+        custPhone,
+        itemsList,
+        subTotal,
+        discount,
+        finalTotal,
+        payStatus,
+        createdAt: Date.now()
+    };
+    voucherHistory.unshift(record);
+    if (voucherHistory.length > 50) voucherHistory.pop(); // keep last 50
+    localStorage.setItem('hist_navy_emerald', JSON.stringify(voucherHistory));
+
+    document.getElementById('previewArea').style.display = 'block';
+    document.getElementById('previewArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function exportPNG() {
+    if (typeof html2canvas === "undefined") {
+        alert("ပုံထုတ်စနစ် လုပ်ဆောင်နေဆဲဖြစ်ပါသည်၊ ခေတ္တစောင့်ပါ။");
+        return;
+    }
+    const target = document.getElementById('invoiceCanvas');
+    html2canvas(target, { scale: 3, backgroundColor: '#ffffff' }).then(canvas => {
+        const link = document.createElement("a");
+        link.download = `${document.getElementById('vInvoiceNo').innerText.replace('#','')}.png`;
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+    });
+}
+
+function buildInvoiceText() {
+    const getText = (id) => {
+        return document.getElementById(id)?.innerText.trim() || '';
+    };
+
+    const invoiceNo = getText('vInvoiceNo');
+    const date = getText('vDateText');
+    const shopName = getText('vShopName');
+    const shopAddress = getText('vShopAddress');
+    const shopPhone = getText('vShopPhone');
+    const customerName = getText('vClientName');
+    const customerPhone = getText('vClientPhone');
+    const paymentStatus = getText('vStatusPill');
+    const subTotal = getText('vSubTotal');
+    const discount = getText('vDiscount');
+    const grandTotal = getText('vGrandTotal');
+    const payInfo = getText('vPayInfo');
+    const footerMsg = getText('vFooterMsg');
+
+    const rows = Array.from(document.querySelectorAll('#vTableBody tr'));
+    if (rows.length === 0) return '';
+
+    const itemLines = rows.map((row, index) => {
+        const cells = row.querySelectorAll('td');
+        const itemName = cells[1]?.innerText.trim() || '';
+        const itemPrice = cells[2]?.innerText.trim() || '';
+        return `${index + 1}. ${itemName} - ${itemPrice}`;
+    });
+
+    const discountRow = document.getElementById('rowDiscount');
+    const discountLine = discountRow && discountRow.style.display !== 'none'
+        ? `လျှော့ငွေ: ${discount}`
+        : '';
+
+    return [
+        `🧾 ${shopName}`,
+        shopAddress,
+        shopPhone,
+        '',
+        '━━━━━━━━━━━━━━━━',
+        `INVOICE ${invoiceNo}`,
+        `ရက်စွဲ: ${date}`,
+        '━━━━━━━━━━━━━━━━',
+        '',
+        `ဝယ်သူ: ${customerName}`,
+        customerPhone,
+        '',
+        'ပစ္စည်း / ဝန်ဆောင်မှု',
+        ...itemLines,
+        '',
+        '━━━━━━━━━━━━━━━━',
+        `Subtotal: ${subTotal}`,
+        discountLine,
+        `စုစုပေါင်း: ${grandTotal}`,
+        '',
+        `ငွေပေးချေမှု: ${paymentStatus}`,
+        '',
+        'ငွေပေးချေရန်',
+        payInfo,
+        '',
+        footerMsg
+    ].filter((line, index, lines) => {
+        // Remove the optional blank line created by an absent discount.
+        return line !== '' || lines[index - 1] !== 'Subtotal: ' + subTotal;
+    }).join('\n');
+}
+
+async function copyInvoiceText() {
+    const invoiceText = buildInvoiceText();
+
+    if (!invoiceText) {
+        alert('အရင်ဆုံး Invoice ထုတ်ပေးပါ။');
+        return;
+    }
+
+    try {
+        if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(invoiceText);
+        } else {
+            copyTextFallback(invoiceText);
+        }
+        showCopySuccess();
+    } catch (error) {
+        try {
+            copyTextFallback(invoiceText);
+            showCopySuccess();
+        } catch (fallbackError) {
+            alert('စာသားကူးယူ၍ မရပါ။ စာသားကို ကိုယ်တိုင်ရွေးပြီး Copy လုပ်ပေးပါ။');
+        }
+    }
+}
+
+function copyTextFallback(text) {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.setAttribute('readonly', '');
+    textarea.style.position = 'fixed';
+    textarea.style.left = '-9999px';
+    textarea.style.top = '0';
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+
+    const copied = document.execCommand('copy');
+    document.body.removeChild(textarea);
+
+    if (!copied) {
+        throw new Error('Clipboard copy failed');
+    }
+}
+
+function showCopySuccess() {
+    const button = document.getElementById('copyInvoiceBtn');
+    if (!button) {
+        alert('Invoice စာသားကို Copy လုပ်ပြီးပါပြီ။');
+        return;
+    }
+
+    const originalText = button.innerText;
+    button.innerText = '✅ Copy လုပ်ပြီးပါပြီ';
+    button.disabled = true;
+
+    setTimeout(() => {
+        button.innerText = originalText;
+        button.disabled = false;
+    }, 1800);
+}
+
+function renderHistoryList() {
+    const q = (document.getElementById('histSearch').value || '').toLowerCase();
+    const container = document.getElementById('historyListContainer');
+    document.getElementById('histCountBadge').innerText = `${voucherHistory.length} ခု`;
+
+    const filtered = voucherHistory.filter(h => 
+        h.custName.toLowerCase().includes(q) || 
+        h.invId.toLowerCase().includes(q) ||
+        (h.custPhone && h.custPhone.includes(q))
+    );
+
+    if (filtered.length === 0) {
+        container.innerHTML = `<div style="text-align: center; padding: 24px; font-size: 12px; color: var(--text-sub);">မှတ်တမ်း မရှိသေးပါ။</div>`;
+        return;
+    }
+
+    container.innerHTML = filtered.map((item) => {
+        const actionButton = item.payStatus !== 'PAID'
+            ? `
+                <button
+                    type="button"
+                    class="btn-main"
+                    style="width: 100%; margin-top: 8px;"
+                    onclick="event.stopPropagation(); markInvoiceAsPaid('${item.invId}')"
+                >
+                    ✅ PAID ပြောင်းပြီး Customer ဆီ ပို့မည်
+                </button>
+            `
+            : `
+                <button
+                    type="button"
+                    class="btn-emerald"
+                    style="margin-top: 8px; padding: 9px; font-size: 12px;"
+                    onclick="event.stopPropagation(); copyPaidUpdateText('${item.invId}')"
+                >
+                    📋 Paid Message ပြန်ကူးမည်
+                </button>
+            `;
+
+        const paidAtText = item.paidAt
+            ? ` &middot; Paid ${escapeHtml(formatPaidDate(item.paidAt))}`
+            : '';
+
+        return `
+            <div class="hist-item" onclick="openFromHistory('${item.invId}')">
+                <div class="hist-head">
+                    <span>${escapeHtml(item.custName)} (${escapeHtml(item.invId)})</span>
+                    <span style="color: ${item.payStatus === 'PAID' ? 'var(--emerald)' : '#b91c1c'}; font-size: 12px;">
+                        ${item.payStatus === 'PAID' ? '✓ PAID' : '⚠ UNPAID'}
+                    </span>
+                </div>
+                <div class="hist-sub">
+                    <span>${escapeHtml(item.dateStr)} &middot; ပစ္စည်း ${item.itemsList.length} မျိုး${paidAtText}</span>
+                    <strong style="color: var(--navy); font-size: 12px;">${Number(item.finalTotal || 0).toLocaleString()} K</strong>
+                </div>
+                ${actionButton}
+            </div>
+        `;
+    }).join('');
+}
+
+function formatPaidDate(timestamp) {
+    return new Date(timestamp).toLocaleString('en-GB', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+}
+
+function buildPaidUpdateText(item) {
+    if (!item) return '';
+
+    const shopName = shopConfig.shopName || '';
+    const shopAddress = shopConfig.address || '';
+    const shopPhone = shopConfig.phone ? `📞 ${shopConfig.phone}` : '';
+    const customerName = item.custName || 'ဧည့်သည်တော်';
+    const customerPhone = item.custPhone ? `Phone: ${item.custPhone}` : '';
+    const paidAt = formatPaidDate(item.paidAt || Date.now());
+    const total = Number(item.finalTotal || 0).toLocaleString();
+
+    return [
+        '✅ ငွေပေးချေမှု အခြေအနေ ပြောင်းလဲပြီးပါပြီ',
+        '',
+        `🧾 ${shopName}`,
+        shopAddress,
+        shopPhone,
+        '',
+        '━━━━━━━━━━━━━━━━',
+        `INVOICE #${String(item.invId).replace(/^#/, '')}`,
+        `ရက်စွဲ: ${item.dateStr || ''}`,
+        '━━━━━━━━━━━━━━━━',
+        '',
+        `ဝယ်သူ: ${customerName}`,
+        customerPhone,
+        '',
+        'ယခင်အခြေအနေ: ⚠️ UNPAID',
+        'ယခုအခြေအနေ: ✅ PAID (ငွေပေးချေပြီး)',
+        '',
+        'ပေးချေပြီးသည့် အချိန်:',
+        paidAt,
+        '',
+        `စုစုပေါင်းပေးချေငွေ: ${total} K`,
+        '',
+        'ကျေးဇူးတင်ပါတယ်။'
+    ].filter(line => line !== '').join('\n');
+}
+
+async function copyPaidUpdateText(invId) {
+    const item = voucherHistory.find(history => history.invId === invId);
+
+    if (!item) {
+        alert('Invoice မတွေ့ပါ။');
+        return;
+    }
+
+    if (item.payStatus !== 'PAID') {
+        alert('အရင်ဆုံး Invoice ကို PAID ပြောင်းပေးပါ။');
+        return;
+    }
+
+    const message = buildPaidUpdateText(item);
+
+    try {
+        if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(message);
+        } else {
+            copyTextFallback(message);
+        }
+
+        alert('Paid ပြောင်းလဲကြောင်း Message ကို Copy လုပ်ပြီးပါပြီ။');
+    } catch (error) {
+        try {
+            copyTextFallback(message);
+            alert('Paid ပြောင်းလဲကြောင်း Message ကို Copy လုပ်ပြီးပါပြီ။');
+        } catch (fallbackError) {
+            alert('Message ကို Copy လုပ်၍ မရပါ။');
+        }
+    }
+}
+
+function markInvoiceAsPaid(invId) {
+    const item = voucherHistory.find(history => history.invId === invId);
+
+    if (!item) {
+        alert('Invoice မတွေ့ပါ။');
+        return;
+    }
+
+    if (item.payStatus === 'PAID') {
+        copyPaidUpdateText(invId);
+        return;
+    }
+
+    item.payStatus = 'PAID';
+    item.paidAt = Date.now();
+
+    try {
+        localStorage.setItem(
+            'hist_navy_emerald',
+            JSON.stringify(voucherHistory)
+        );
+    } catch (error) {
+        alert('Paid အခြေအနေကို သိမ်းဆည်း၍ မရပါ။');
+        return;
+    }
+
+    renderHistoryList();
+    copyPaidUpdateText(invId);
+}
+
+function openFromHistory(invId) {
+    const item = voucherHistory.find(h => h.invId === invId);
+    if (!item) return;
+
+    document.getElementById('custName').value = item.custName;
+    document.getElementById('custPhone').value = item.custPhone || '';
+    document.getElementById('discountInput').value = item.discount || 0;
+    document.getElementById('payStatusSelect').value = item.payStatus;
+
+    const rawStr = item.itemsList.map(i => `${i.name} ${i.price}`).join('\n');
+    document.getElementById('rawInput').value = rawStr;
+
+    switchTab('tabCreate', document.querySelectorAll('.tab-btn')[0]);
+    generateInvoice();
+}
+
+function clearInputs() {
+    document.getElementById('custName').value = '';
+    document.getElementById('custPhone').value = '';
+    document.getElementById('rawInput').value = '';
+    document.getElementById('discountInput').value = '0';
+    document.getElementById('previewArea').style.display = 'none';
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.innerText = String(text ?? '');
+    return div.innerHTML;
+}
+
+loadSetupToForm();
+</script>
+</body>
+</html>
