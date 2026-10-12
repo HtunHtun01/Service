@@ -3,574 +3,229 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Htun Htun Mobile Service & Parts</title>
+    <title>Htun Htun Mobile Service Voucher</title>
     
-    <meta name="theme-color" content="#1e40af">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="HtunMobile">
-    
-    <link rel="manifest" href="data:application/manifest+json;charset=utf-8,%7B%22name%22%3A%22Htun%20Htun%20Mobile%22%2C%22short_name%22%3A%22HtunMobile%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%231e40af%22%2C%22theme_color%22%3A%22%231e40af%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22https%3A%2F%2Fcdn-icons-png.flaticon.com%2F512%2F2920%2F2920349.png%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fpng%22%7D%5D%7D">
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Pyidaungsu:wght@400;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Pyidaungsu:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <style>
         :root {
-            --primary: #2563eb;
-            --primary-hover: #1d4ed8;
-            --success: #059669;
-            --warning: #d97706;
-            --danger: #dc2626;
-            --bg: #f8fafc;
-            --card: #ffffff;
-            --text-main: #0f172a;
-            --text-sub: #64748b;
-            --border: #cbd5e1;
-            --radius-md: 10px;
-            --radius-lg: 14px;
+            --primary: #1e3a8a;
+            --primary-accent: #2563eb;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --radius: 16px;
         }
+
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Plus Jakarta Sans', 'Pyidaungsu', sans-serif; background-color: var(--bg); color: var(--text-main); padding: 12px 10px 80px; display: flex; justify-content: center; }
-        .container { width: 100%; max-width: 520px; }
+        body { font-family: 'Plus Jakarta Sans', 'Pyidaungsu', sans-serif; background: #f8fafc; color: var(--text-dark); padding: 16px 12px 60px; display: flex; justify-content: center; }
+        .app-container { width: 100%; max-width: 440px; }
+
+        .input-card { background: #ffffff; border-radius: var(--radius); padding: 16px; border: 1.5px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,0.04); margin-bottom: 16px; }
+        .input-label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 8px; color: var(--text-dark); }
         
-        #pwaInstallBanner {
-            display: none;
-            background: linear-gradient(135deg, #0f172a, #1e293b);
-            color: white;
-            padding: 10px 14px;
-            border-radius: var(--radius-md);
-            margin-bottom: 12px;
-            align-items: center;
-            justify-content: space-between;
+        textarea { width: 100%; height: 130px; padding: 12px; font-size: 13.5px; line-height: 1.6; border: 1.5px solid var(--border); border-radius: 10px; outline: none; font-family: inherit; resize: vertical; background: #f8fafc; }
+        textarea:focus { border-color: var(--primary-accent); background: #ffffff; }
+
+        .btn-row { display: flex; gap: 8px; margin-top: 10px; }
+        button { padding: 12px; font-size: 13px; font-weight: 700; border-radius: 10px; border: none; cursor: pointer; transition: 0.15s; }
+        .btn-main { background: var(--primary); color: #ffffff; flex: 1; box-shadow: 0 4px 10px rgba(30,58,138,0.2); }
+        .btn-main:active { transform: scale(0.98); }
+        .btn-clear { background: #f1f5f9; color: var(--text-muted); width: 85px; }
+        .btn-download { background: #059669; color: #ffffff; width: 100%; margin-top: 14px; padding: 14px; font-size: 14px; box-shadow: 0 4px 14px rgba(5,150,105,0.25); }
+
+        /* ================= PREMIUM VOUCHER CARD ================= */
+        .voucher-wrapper { display: flex; justify-content: center; }
+        #voucherCard {
+            width: 100%;
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 24px 20px 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+            border: 1px solid #cbd5e1;
+            position: relative;
+            overflow: hidden;
         }
-        #pwaInstallBanner span { font-size: 12px; font-weight: 600; }
-        #btnInstallApp { background: #2563eb; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; }
 
-        .header { background: linear-gradient(135deg, #1e40af, #2563eb); color: white; padding: 14px 16px; border-radius: var(--radius-lg); margin-bottom: 12px; text-align: center; }
-        .header h1 { font-size: 18px; font-weight: 700; margin-bottom: 2px; }
-        .header p { font-size: 11px; color: #bfdbfe; }
-        
-        .nav-tabs { display: flex; background: #e2e8f0; border-radius: var(--radius-md); padding: 3px; margin-bottom: 14px; gap: 4px; }
-        .nav-tab-btn { flex: 1; padding: 9px 4px; font-size: 11px; font-weight: 700; border: none; background: none; border-radius: 6px; color: var(--text-sub); cursor: pointer; text-align: center; }
-        .nav-tab-btn.active { background: #ffffff; color: var(--primary); box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
-        
-        .tab-section { display: none; }
-        .tab-section.active { display: block; }
-        .card { background: var(--card); border-radius: var(--radius-lg); padding: 14px; border: 1px solid var(--border); margin-bottom: 14px; }
-        .card-label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; }
-        textarea { width: 100%; height: 120px; padding: 10px; font-size: 13px; line-height: 1.5; color: var(--text-main); background-color: #f8fafc; border: 1.5px solid var(--border); border-radius: var(--radius-md); outline: none; resize: vertical; font-family: inherit; }
-        .btn-group { display: flex; gap: 8px; margin-top: 10px; }
-        button { padding: 10px 12px; font-size: 13px; font-weight: 600; border-radius: var(--radius-md); border: none; cursor: pointer; }
-        .btn-primary { background-color: var(--primary); color: #ffffff; flex: 1; }
-        .btn-outline { background-color: #f1f5f9; color: var(--text-sub); width: 85px; }
-        .btn-save { background-color: var(--success); color: #ffffff; margin-top: 12px; width: 100%; padding: 12px; font-size: 14px; }
-        
-        #voucherArea { background: #ffffff; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 18px 14px; }
-        .voucher-header { text-align: center; border-bottom: 2px dashed #cbd5e1; padding-bottom: 10px; margin-bottom: 10px; }
-        .voucher-shop-name { font-size: 17px; font-weight: 700; color: #1e3a8a; }
-        .voucher-meta { font-size: 11px; color: var(--text-sub); line-height: 1.4; }
-        table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 10px; }
-        th { background-color: #f8fafc; color: var(--text-sub); font-weight: 600; font-size: 11px; padding: 7px 8px; text-align: left; border-bottom: 1px solid var(--border); }
-        td { padding: 8px; border-bottom: 1px solid #f1f5f9; }
-        .td-num { color: var(--text-sub); width: 26px; }
-        .td-price { text-align: right; font-weight: 600; }
-        .voucher-summary { border-top: 2px dashed #cbd5e1; padding-top: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .payment-box { margin-top: 10px; padding: 9px 11px; background-color: #eff6ff; border: 1px solid #bfdbfe; border-radius: var(--radius-md); font-size: 11px; }
-        .voucher-footer { text-align: center; margin-top: 10px; font-size: 11px; color: var(--text-sub); }
-        
-        .shop-selector-card { background: #ffffff; border: 1.5px solid var(--border); border-radius: var(--radius-lg); padding: 6px; margin-bottom: 10px; display: flex; gap: 6px; }
-        .shop-btn { flex: 1; padding: 9px; border-radius: var(--radius-md); border: 1.5px solid #e2e8f0; background: #f8fafc; color: var(--text-main); font-weight: 700; font-size: 12px; cursor: pointer; text-align: center; }
-        .shop-btn.active { background: #1e293b; color: #ffffff; border-color: #1e293b; }
-        
-        .search-box { position: sticky; top: 8px; z-index: 50; background: var(--card); border-radius: var(--radius-lg); box-shadow: 0 4px 10px rgba(0,0,0,0.06); padding: 10px; margin-bottom: 12px; border: 1.5px solid var(--border); }
-        .search-input-wrap { position: relative; display: flex; align-items: center; }
-        .search-input { width: 100%; padding: 10px 12px; padding-right: 32px; font-size: 13px; border: 1.5px solid var(--border); border-radius: 7px; outline: none; font-family: inherit; }
-        .clear-btn { position: absolute; right: 8px; background: none; border: none; font-size: 16px; color: var(--text-sub); cursor: pointer; display: none; }
-        
-        .category-tabs { display: flex; gap: 5px; overflow-x: auto; padding-top: 8px; scrollbar-width: none; }
-        .category-tabs::-webkit-scrollbar { display: none; }
-        .cat-btn { padding: 4px 9px; font-size: 11px; font-weight: 600; border-radius: 15px; border: 1px solid var(--border); background: #f1f5f9; color: var(--text-sub); white-space: nowrap; cursor: pointer; }
-        .cat-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
-        
-        .result-info { display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: var(--text-sub); margin: 0 4px 8px; }
-        .item-list { display: flex; flex-direction: column; gap: 7px; margin-bottom: 14px; }
-        .item-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 9px 11px; display: flex; justify-content: space-between; align-items: center; }
-        .category-tag { display: inline-block; font-size: 9px; font-weight: 700; padding: 2px 4px; border-radius: 4px; margin-bottom: 2px; text-transform: uppercase; }
-        .tag-lcd { background: #e0f2fe; color: #0284c7; }
-        .tag-battery { background: #fef3c7; color: #d97706; }
-        .tag-body { background: #f3e8ff; color: #9333ea; }
-        .tag-back { background: #dcfce7; color: #16a34a; }
-        .item-name { font-size: 12px; font-weight: 600; line-height: 1.4; color: var(--text-main); }
-        .item-price { font-size: 13px; font-weight: 700; color: var(--success); white-space: nowrap; }
-        .btn-edit-item { font-size: 11px; color: var(--primary); background: none; border: none; cursor: pointer; text-decoration: underline; }
-        .empty-state { text-align: center; padding: 25px 10px; color: var(--text-sub); font-size: 12px; background: white; border-radius: var(--radius-md); border: 1px dashed var(--border); }
-        
-        .admin-trigger-btn { width: 100%; background: #ffffff; color: #475569; border: 1.5px dashed var(--border); padding: 10px; font-size: 12px; font-weight: 600; border-radius: var(--radius-md); cursor: pointer; margin-top: 10px; }
-        .admin-panel { display: none; margin-top: 12px; padding: 12px; background: #ffffff; border: 1.5px solid #bfdbfe; border-radius: var(--radius-lg); }
-        .admin-panel.active { display: flex; flex-direction: column; gap: 8px; }
-        .admin-panel-header { display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 700; color: #1e40af; border-bottom: 1px solid #e2e8f0; padding-bottom: 6px; margin-bottom: 4px; }
-        .btn-action { width: 100%; padding: 10px; border-radius: var(--radius-md); font-size: 12px; font-weight: 600; cursor: pointer; border: none; }
-        .btn-add { background: #f8fafc; color: var(--text-main); border: 1.5px solid var(--border); }
-        .btn-bulk { background: #2563eb; color: #ffffff; }
-        .btn-excel { background: #047857; color: #ffffff; }
-        .btn-save-gh { background: #0f172a; color: #ffffff; font-weight: 700; }
-        .btn-chg-pin { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; font-size: 11px; padding: 6px; border-radius: 6px; }
-        .btn-logout { background: #fee2e2; color: var(--danger); border: 1px solid #fecaca; font-size: 11px; padding: 6px; border-radius: 6px; }
-        .btn-forgot-pin { background: none; border: none; color: var(--primary); font-size: 11px; font-weight: 600; cursor: pointer; text-decoration: underline; margin-top: 6px; text-align: center; width: 100%; }
+        #voucherCard::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 6px;
+            background: var(--primary);
+        }
 
-        .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.65); z-index: 1000; justify-content: center; align-items: center; padding: 8px; }
-        .modal.active { display: flex; }
-        .modal-content { background: #ffffff; width: 100%; max-width: 440px; border-radius: 12px; padding: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.25); max-height: 94vh; display: flex; flex-direction: column; }
-        .modal-content.excel-mode { max-width: 98vw; width: 680px; padding: 12px 10px; }
-        .form-group { margin-bottom: 9px; }
-        .form-group label { display: block; font-size: 11px; font-weight: 600; margin-bottom: 2px; color: var(--text-sub); }
-        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 8px 10px; font-size: 12px; border: 1.5px solid var(--border); border-radius: 7px; outline: none; font-family: inherit; }
-        .modal-actions { display: flex; gap: 6px; margin-top: 10px; }
-        .btn-modal { flex: 1; padding: 9px; border: none; border-radius: 7px; font-weight: 600; font-size: 12px; cursor: pointer; }
-        .btn-save-modal { background: var(--primary); color: white; }
-        .btn-cancel-modal { background: #f1f5f9; color: var(--text-sub); }
-        .btn-del-modal { background: #fee2e2; color: var(--danger); }
-        
-        .excel-category-tabs { display: flex; gap: 6px; overflow-x: auto; padding: 6px 2px; border-bottom: 1.5px solid var(--border); margin: 6px 0 8px; scrollbar-width: none; }
-        .excel-category-tabs::-webkit-scrollbar { display: none; }
-        .excel-cat-tab { padding: 6px 12px; font-size: 12px; font-weight: 700; border-radius: 8px; border: 1.5px solid var(--border); background: #f8fafc; color: var(--text-sub); cursor: pointer; white-space: nowrap; flex-shrink: 0; }
-        .excel-cat-tab.active { background: var(--primary); color: white; border-color: var(--primary); }
-        .excel-table-wrap { flex: 1; overflow: auto; border: 1px solid var(--border); border-radius: 6px; margin-top: 4px; }
-        .excel-table { width: 100%; border-collapse: collapse; min-width: 520px; font-size: 11px; }
-        .excel-table th, .excel-table td { border: 1px solid #cbd5e1; padding: 6px 8px; }
-        .excel-table th { background: #f1f5f9; position: sticky; top: 0; z-index: 2; font-weight: 600; }
-        .excel-input { width: 100%; border: none; outline: none; background: transparent; font-size: 12px; font-family: inherit; }
-        .excel-input:focus { background: #eff6ff; }
-        .excel-select { width: 100%; border: 1px solid #cbd5e1; border-radius: 4px; padding: 4px 6px; font-size: 11px; background: #ffffff; outline: none; font-family: inherit; }
-        .btn-row-del { color: var(--danger); background: none; border: none; font-weight: bold; cursor: pointer; font-size: 14px; width: 100%; text-align: center; }
+        .v-header { text-align: center; border-bottom: 2px dashed #cbd5e1; padding-bottom: 14px; margin-bottom: 12px; }
+        .v-shop-title { font-size: 20px; font-weight: 800; color: var(--primary); letter-spacing: -0.3px; line-height: 1.3; }
+        .v-address { font-size: 11px; color: var(--text-muted); margin-top: 3px; font-weight: 500; }
+        .v-phone { font-size: 11.5px; font-weight: 700; color: #1e293b; margin-top: 2px; }
+        .v-badge-tag { display: inline-block; background: #f1f5f9; color: var(--text-muted); font-size: 10px; font-weight: 700; padding: 2px 10px; border-radius: 20px; margin-top: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
 
-        /* CEIR Card & Dual IMEI Styling */
-        .ceir-card { background: #ffffff; border: 1.5px solid var(--border); border-radius: var(--radius-lg); padding: 14px; margin-bottom: 14px; }
-        .ceir-imei-box { background: #f8fafc; border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px; margin-top: 10px; }
-        .ceir-res-item { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px dashed #e2e8f0; font-size: 12px; }
-        .ceir-res-item:last-child { border-bottom: none; }
-        .badge-status { padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; display: inline-block; }
-        .badge-free { background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
-        .badge-paid { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
-        .badge-unpaid { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
-        .tax-alert-box { margin-top: 10px; padding: 10px 12px; background: #fffbeb; border: 1.5px solid #fde68a; border-radius: var(--radius-md); font-size: 12px; }
-        .btn-pay-tax { display: inline-block; width: 100%; text-align: center; text-decoration: none; background: #b45309; color: white; padding: 9px; font-weight: 700; font-size: 13px; border-radius: 8px; margin-top: 8px; }
+        .v-meta-row { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); margin-bottom: 10px; padding: 0 2px; }
+
+        .v-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 12px; }
+        .v-table th { background: #f8fafc; color: var(--text-muted); font-weight: 700; font-size: 11px; padding: 8px 10px; text-align: left; border-top: 1px solid #f1f5f9; border-bottom: 1px solid #e2e8f0; }
+        .v-table td { padding: 9px 10px; border-bottom: 1px solid #f8fafc; color: #1e293b; }
+        .td-idx { width: 24px; color: var(--text-muted); font-size: 11px; }
+        .td-name { font-weight: 600; line-height: 1.4; }
+        .td-val { text-align: right; font-weight: 700; color: #0f172a; white-space: nowrap; }
+
+        .v-summary { border-top: 2px dashed #cbd5e1; padding-top: 12px; display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
+        .v-total-lbl { font-size: 13px; font-weight: 700; color: #475569; }
+        .v-total-num { font-size: 21px; font-weight: 800; color: #059669; letter-spacing: -0.5px; }
+
+        .v-pay-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid var(--primary);
+            border-radius: 10px;
+            padding: 10px 12px;
+            font-size: 11.5px;
+            line-height: 1.5;
+            color: #334155;
+            margin-bottom: 12px;
+        }
+
+        .v-footer { text-align: center; font-size: 11px; color: var(--text-muted); border-top: 1px solid #f1f5f9; padding-top: 10px; font-weight: 500; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div id="pwaInstallBanner">
-        <span>📲 ဖုန်းထဲမှာ App အဖြစ် Install လုပ်မလား?</span>
-        <button id="btnInstallApp" onclick="triggerPwaInstall()">Install</button>
-    </div>
-
-    <div class="header">
-        <h1>Htun Htun Mobile Service</h1>
-        <p>ဖုန်းဝန်ဆောင်မှု ဘောက်ချာ &amp; CEIR အခွန်စစ်ဆေးရေး</p>
-    </div>
-
-    <div class="nav-tabs">
-        <button class="nav-tab-btn active" onclick="switchMainTab('voucherTab', this)">🧾 ဘောက်ချာ</button>
-        <button class="nav-tab-btn" onclick="switchMainTab('partsTab', this)">🔍 ပစ္စည်းဈေး</button>
-        <button class="nav-tab-btn" onclick="switchMainTab('ceirTab', this)">📱 CEIR စစ်ရန်</button>
-    </div>
-    <!-- TAB 1: VOUCHER -->
-    <div id="voucherTab" class="tab-section active">
-        <div class="card">
-            <label class="card-label" for="rawInput">စာရင်းထည့်သွင်းရန် (တစ်ကြောင်းလျှင် ပစ္စည်းတစ်ခု)</label>
-            <textarea id="rawInput" placeholder="Note 11e global 15000&#10;Vivo y15 lock 10000&#10;Oppo a5 2020 frp 15000"></textarea>
-            <div class="btn-group">
-                <button class="btn-outline" type="button" onclick="clearVoucherInput()">ရှင်းမည်</button>
-                <button class="btn-primary" type="button" onclick="requestPinForVoucher()">ပေါင်းမည်</button>
-            </div>
+<div class="app-container">
+    <!-- စာရင်းထည့်သွင်းရန် CARD -->
+    <div class="input-card">
+        <label class="input-label">ဝန်ဆောင်ခ / ပစ္စည်း စာရင်းရိုက်ထည့်ပါ</label>
+        <textarea id="rawListInput" placeholder="Redmi Note 10 Pro LCD 55000&#10;Vivo Y15 Password Unlock 10000&#10;iPhone 11 Battery Change 35000"></textarea>
+        <div class="btn-row">
+            <button class="btn-clear" type="button" onclick="clearInput()">ရှင်းမည်</button>
+            <button class="btn-main" type="button" onclick="buildVoucher()">ဘောက်ချာထုတ်မည်</button>
         </div>
+    </div>
 
-        <div id="outputContainer" style="display: none;">
-            <div id="voucherArea">
-                <div class="voucher-header">
-                    <div class="voucher-shop-name">Htun Htun Mobile Service</div>
-                    <div class="voucher-meta">Service Receipt &amp; Voucher</div>
-                    <div class="voucher-meta" id="currentDate"></div>
-                    <div class="voucher-meta" style="font-weight: 600; color: #1e40af; margin-top: 2px;">
-                        📞 ဆက်သွယ်ရန်: 09400084212
-                    </div>
+    <!-- ဘောက်ချာ ပြသရာနေရာ -->
+    <div id="resultArea" style="display: none;">
+        <div class="voucher-wrapper">
+            <div id="voucherCard">
+                <div class="v-header">
+                    <div class="v-shop-title" id="outShopName">Htun Htun Mobile Service</div>
+                    <div class="v-address" id="outAddress">မန္တလေးမြို့</div>
+                    <div class="v-phone" id="outPhone">📞 09400084212</div>
+                    <div class="v-badge-tag">Service Receipt</div>
                 </div>
-                <table>
+
+                <div class="v-meta-row">
+                    <span id="outVoucherId">No: #0001</span>
+                    <span id="outDateTime">ရက်စွဲ: -</span>
+                </div>
+
+                <table class="v-table">
                     <thead>
                         <tr>
-                            <th class="td-num">စဉ်</th>
-                            <th>အမျိုးအမည်</th>
+                            <th class="td-idx">#</th>
+                            <th>ပြုပြင်မှု / ပစ္စည်း</th>
                             <th style="text-align: right;">ကျသင့်ငွေ</th>
                         </tr>
                     </thead>
-                    <tbody id="tableBody"></tbody>
+                    <tbody id="outTableBody"></tbody>
                 </table>
-                <div class="voucher-summary">
-                    <div style="font-size: 13px; font-weight: 700;">စုစုပေါင်း ကျသင့်ငွေ</div>
-                    <div style="font-size: 16px; font-weight: 700; color: var(--success);" id="grandTotalText">0 K</div>
-                </div>
-                <div class="payment-box">
-                    <strong style="color: #1e40af;">💳 ငွေပေးချေရန် အကောင့်</strong><br>
-                    <strong>KBZPay:</strong> 09400084212 | <strong>Name:</strong> Htun Htun
-                </div>
-                <div class="voucher-footer">အားပေးမှုကို အထူးကျေးဇူးတင်ရှိပါသည်</div>
-            </div>
-            <button class="btn-save" type="button" onclick="downloadVoucher()">📷 ဘောက်ချာအား ပုံအဖြစ် သိမ်းမည်</button>
-        </div>
-    </div>
 
-    <!-- TAB 2: PARTS -->
-    <div id="partsTab" class="tab-section">
-        <div class="shop-selector-card" id="publicShopSelector">
-            <button class="shop-btn active" id="btnShop1" onclick="selectShop('Kyaw Mobile')">🏬 Kyaw Mobile</button>
-            <button class="shop-btn" id="btnShop2" onclick="selectShop('ချမ်းသာစည်')">🏬 ချမ်းသာစည်</button>
-        </div>
-
-        <div class="search-box">
-            <div class="search-input-wrap">
-                <input type="text" id="searchInput" class="search-input" placeholder="မော်ဒယ် သို့မဟုတ် ကုဒ် ရိုက်ရှာပါ..." oninput="handleSearchDebounced()">
-                <button class="clear-btn" id="clearBtn" onclick="clearSearch()">✕</button>
-            </div>
-            <div class="category-tabs">
-                <button class="cat-btn active" onclick="setCategory('ALL', this)">အားလုံး</button>
-                <button class="cat-btn" onclick="setCategory('LCD', this)">LCD</button>
-                <button class="cat-btn" onclick="setCategory('Battery', this)">Battery</button>
-                <button class="cat-btn" onclick="setCategory('Body Cover', this)">Body Cover</button>
-                <button class="cat-btn" onclick="setCategory('Back Glass', this)">Back Glass</button>
-            </div>
-        </div>
-
-        <div class="result-info">
-            <span>စာရင်း (<strong id="currentShopName">Kyaw Mobile</strong>)</span>
-            <strong id="matchCount">0 ခု</strong>
-        </div>
-
-        <div class="item-list" id="itemList"></div>
-
-        <button class="admin-trigger-btn" id="btnAdminTrigger" onclick="openAdminLoginModal()">🔒 Admin Edit (ဆိုင်ပြင်ဆင်ခွင့်)</button>
-        
-        <div class="admin-panel" id="adminControlPanel">
-            <div class="admin-panel-header">
-                <span>⚙️ <strong id="adminPanelShopName">Kyaw Mobile</strong> စီမံခန့်ခွဲမှု Panel</span>
-                <div style="display: flex; gap: 4px;">
-                    <button class="btn-chg-pin" onclick="openChangePinModal()">🔑 PIN ချိန်းမည်</button>
-                    <button class="btn-logout" onclick="adminLogout()">ထွက်မည်</button>
-                </div>
-            </div>
-            <button class="btn-action btn-bulk" onclick="openBulkModal()">📋 အမြန်စာရင်းကူးထည့်မည် (Bulk Paste)</button>
-            <button class="btn-action btn-add" onclick="openAddItemModal()">➕ ပစ္စည်းတစ်ခုချင်းစီ ထည့်မည်</button>
-            <button class="btn-action btn-excel" onclick="openExcelEditorModal()">📊 Excel ပုံစံဖြင့် အားလုံးပြင်/ဖြည့်မည်</button>
-            <button class="btn-action btn-save-gh" onclick="pushToGitHub()">☁️ Save to GitHub (အပြီးသတ် သိမ်းဆည်းမည်)</button>
-        </div>
-    </div>
-
-    <!-- TAB 3: CEIR DUAL IMEI CHECKER -->
-    <div id="ceirTab" class="tab-section">
-        <div class="ceir-card">
-            <h3 style="font-size: 15px; margin-bottom: 4px; color: #1e3a8a;">🔍 CEIR Myanmar - IMEI &amp; အခွန်စစ်ဆေးခြင်း</h3>
-            <p style="font-size: 11px; color: var(--text-sub); margin-bottom: 12px; line-height: 1.4;">
-                *#06# ခေါ်ဆိုပြီး ရရှိလာသော SIM 1 (IMEI 1) နှင့် SIM 2 (IMEI 2) တို့ကို ထည့်သွင်း၍ Free Pass ၊ အခွန်ဆောင်ပြီး/မဆောင်ရသေးနှင့် ကျသင့်မည့် အခွန်နှုန်းထားကို စစ်ဆေးနိုင်ပါသည်။
-            </p>
-
-            <div class="form-group">
-                <label>IMEI 1 (SIM 1) - မဖြစ်မနေ လိုအပ်သည်</label>
-                <input type="text" id="ceirImei1" maxlength="15" placeholder="35xxxxxxxxxxxxx (ဂဏန်း ၁၅ လုံး)" style="font-size: 14px; letter-spacing: 1px;">
-            </div>
-
-            <div class="form-group">
-                <label>IMEI 2 (SIM 2) - ရှိပါက ထည့်ရန် (Optional)</label>
-                <input type="text" id="ceirImei2" maxlength="15" placeholder="35xxxxxxxxxxxxx (ဂဏန်း ၁၅ လုံး)" style="font-size: 14px; letter-spacing: 1px;">
-            </div>
-
-            <button type="button" class="btn-primary" id="btnCheckCeir" onclick="runCeirCheck()" style="width: 100%; padding: 12px; font-weight: 700; margin-top: 4px;">
-                🔍 IMEI စစ်ဆေးမည်
-            </button>
-            
-            <div id="ceirLoading" style="display: none; text-align: center; padding: 16px 0; font-size: 12px; color: var(--primary);">
-                ⏳ CEIR Myanmar Database သို့ ချိတ်ဆက်စစ်ဆေးနေပါသည်...
-            </div>
-
-            <!-- RESULT AREA -->
-            <div id="ceirResultArea" style="display: none; margin-top: 14px;">
-                <!-- IMEI 1 RESULT -->
-                <div class="ceir-imei-box" id="boxImei1">
-                    <div style="font-size: 13px; font-weight: 700; color: #1e40af; margin-bottom: 6px; display: flex; justify-content: space-between;">
-                        <span>📱 IMEI 1 ရလဒ်</span>
-                        <span id="resImei1Text" style="color: var(--text-main);"></span>
-                    </div>
-                    <div class="ceir-res-item">
-                        <span>စစ်ဆေးမှု ရလဒ်</span>
-                        <span id="resVerify1Badge" class="badge-status"></span>
-                    </div>
-                    <div class="ceir-res-item">
-                        <span>အခွန်ဆောင်ထားမှု (Tax Status)</span>
-                        <span id="resTax1Badge" class="badge-status"></span>
-                    </div>
-                    <div class="ceir-res-item">
-                        <span>ဖုန်းအမျိုးအစား</span>
-                        <strong id="resDevice1Model">-</strong>
-                    </div>
-                    <div id="taxDetails1Box" class="tax-alert-box" style="display: none;"></div>
+                <div class="v-summary">
+                    <span class="v-total-lbl">စုစုပေါင်း ကျသင့်ငွေ</span>
+                    <span class="v-total-num" id="outGrandTotal">0 K</span>
                 </div>
 
-                <!-- IMEI 2 RESULT -->
-                <div class="ceir-imei-box" id="boxImei2" style="display: none;">
-                    <div style="font-size: 13px; font-weight: 700; color: #1e40af; margin-bottom: 6px; display: flex; justify-content: space-between;">
-                        <span>📱 IMEI 2 ရလဒ်</span>
-                        <span id="resImei2Text" style="color: var(--text-main);"></span>
-                    </div>
-                    <div class="ceir-res-item">
-                        <span>စစ်ဆေးမှု ရလဒ်</span>
-                        <span id="resVerify2Badge" class="badge-status"></span>
-                    </div>
-                    <div class="ceir-res-item">
-                        <span>အခွန်ဆောင်ထားမှု (Tax Status)</span>
-                        <span id="resTax2Badge" class="badge-status"></span>
-                    </div>
-                    <div class="ceir-res-item">
-                        <span>ဖုန်းအမျိုးအစား</span>
-                        <strong id="resDevice2Model">-</strong>
-                    </div>
-                    <div id="taxDetails2Box" class="tax-alert-box" style="display: none;"></div>
+                <div class="v-pay-card" id="outPayBox">
+                    <strong style="color: var(--primary);">💳 ငွေပေးချေရန် အကောင့်</strong><br>
+                    <span id="outPayDetails">KPay: 09400084212 (Htun Htun) | Wave: 09400084212</span>
                 </div>
+
+                <div class="v-footer" id="outFooterMsg">အားပေးမှုကို အထူးကျေးဇူးတင်ရှိပါသည်</div>
             </div>
         </div>
-    </div>
-</div>
-<!-- Modal: Admin Login -->
-<div class="modal" id="adminLoginModal">
-    <div class="modal-content" style="max-width: 320px;">
-        <h3 style="font-size: 14px; margin-bottom: 4px; text-align: center;">🔒 Admin ဝင်ရောက်ခြင်း</h3>
-        <p style="font-size: 11px; color: var(--text-sub); margin-bottom: 10px; text-align: center;">ဆိုင် PIN (4-6 လုံး) နှင့် GitHub Token ထည့်ပါ</p>
-        
-        <div class="form-group">
-            <label>ဆိုင် PIN နံပါတ်</label>
-            <input type="password" id="loginPinInput" placeholder="PIN ရိုက်ပါ (eg. 1111, Ab12)" maxlength="6" style="text-align: center; font-size: 16px; letter-spacing: 2px;">
-        </div>
-        <div class="form-group">
-            <label>GitHub Personal Access Token</label>
-            <input type="password" id="loginGhToken" placeholder="ghp_xxxxxxxxxxxx (သို့) github_pat_xxxx">
-            <span style="font-size: 10px; color: var(--text-sub); display: block; margin-top: 3px;">* ghp_ သို့မဟုတ် github_pat_ ဖြင့် စရပါမည်</span>
-        </div>
 
-        <div class="modal-actions">
-            <button type="button" class="btn-modal btn-cancel-modal" onclick="closeModal('adminLoginModal')">မဝင်တော့ပါ</button>
-            <button type="button" class="btn-modal btn-save-modal" id="btnLoginSubmit" onclick="verifyAdminLogin()">Login</button>
-        </div>
-        
-        <button type="button" class="btn-forgot-pin" onclick="openForgotPinModal()">❓ PIN မေ့သွားပါသလား? (Reset PIN)</button>
+        <button class="btn-download" type="button" onclick="saveAsImage()">📷 ဘောက်ချာအား ပုံအဖြစ် သိမ်းမည်</button>
     </div>
 </div>
 
-<!-- Modal: Forgot PIN -->
-<div class="modal" id="forgotPinModal">
-    <div class="modal-content" style="max-width: 320px;">
-        <h3 style="font-size: 14px; margin-bottom: 4px; text-align: center;">🔄 PIN နံပါတ် Reset ပြုလုပ်ခြင်း</h3>
-        <p style="font-size: 11px; color: var(--text-sub); margin-bottom: 10px; text-align: center;">PIN အသစ် သတ်မှတ်ရန် သင့် GitHub Token ဖြင့် အတည်ပြုပါ</p>
-        
-        <div class="form-group">
-            <label>ဆိုင်အမည် ရွေးချယ်ပါ</label>
-            <select id="forgotShopSelect">
-                <option value="Kyaw Mobile">Kyaw Mobile</option>
-                <option value="ချမ်းသာစည်">ချမ်းသာစည်</option>
-                <option value="ALL">Master Admin</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label>GitHub Personal Access Token</label>
-            <input type="password" id="forgotGhToken" placeholder="ghp_xxxx... ထည့်ပါ">
-        </div>
-        <div class="form-group">
-            <label>PIN အသစ် (4 မှ 6 လုံး - ဂဏန်း/စာလုံး a-z, A-Z)</label>
-            <input type="text" id="forgotNewPin" placeholder="eg. 1221 သို့မဟုတ် K9aB" maxlength="6" style="text-align: center; font-size: 15px;">
-        </div>
-
-        <div class="modal-actions">
-            <button type="button" class="btn-modal btn-cancel-modal" onclick="closeModal('forgotPinModal')">ပိတ်မည်</button>
-            <button type="button" class="btn-modal btn-save-modal" id="btnForgotSubmit" onclick="submitForgotPin()">PIN ပြောင်းမည်</button>
-        </div>
-    </div>
-</div>
-
-<!-- Modal: Change PIN -->
-<div class="modal" id="changePinModal">
-    <div class="modal-content" style="max-width: 310px;">
-        <h3 style="font-size: 14px; margin-bottom: 6px; text-align: center;">🔑 PIN နံပါတ် အသစ်ချိန်းမည်</h3>
-        <div class="form-group">
-            <label id="lblChangePinTarget">PIN အသစ် (4 မှ 6 လုံး - ဂဏန်း/စာလုံး a-z, A-Z)</label>
-            <input type="text" id="newPinInput" placeholder="eg. Ab12, 112233" maxlength="6" style="text-align: center; font-size: 16px;">
-        </div>
-        <div class="form-group">
-            <label>PIN အသစ် ပြန်ရိုက်ပါ</label>
-            <input type="text" id="confirmPinInput" placeholder="ထပ်မံ ရိုက်ထည့်ပါ" maxlength="6" style="text-align: center; font-size: 16px;">
-        </div>
-        <div class="modal-actions">
-            <button type="button" class="btn-modal btn-cancel-modal" onclick="closeModal('changePinModal')">ပိတ်မည်</button>
-            <button type="button" class="btn-modal btn-save-modal" onclick="saveNewPin()">ပြောင်းမည်</button>
-        </div>
-    </div>
-</div>
-
-<!-- Modal: Voucher PIN Lock -->
-<div class="modal" id="pinModal">
-    <div class="modal-content" style="max-width: 300px; text-align: center;">
-        <h3 style="font-size: 14px; margin-bottom: 6px;">🔒 PIN လော့ခတ်ထားပါသည်</h3>
-        <p style="font-size: 11px; color: var(--text-sub); margin-bottom: 10px;">ဘောက်ချာထုတ်ရန် PIN ရိုက်ထည့်ပါ</p>
-        <div class="form-group">
-            <input type="password" id="voucherPin" placeholder="PIN" maxlength="6" style="text-align: center; font-size: 18px; letter-spacing: 4px;">
-        </div>
-        <div class="modal-actions">
-            <button type="button" class="btn-modal btn-cancel-modal" onclick="closeModal('pinModal')">မလုပ်တော့ပါ</button>
-            <button type="button" class="btn-modal btn-save-modal" onclick="verifyVoucherPin()">ဖွင့်မည်</button>
-        </div>
-    </div>
-</div>
-
-<!-- Modal: Bulk Paste Import -->
-<div class="modal" id="bulkModal">
-    <div class="modal-content">
-        <h3 style="font-size: 14px; margin-bottom: 6px;">📋 အမြန်စာရင်းကူးထည့်ခြင်း (<span id="bulkShopTitle"></span>)</h3>
-        <div class="form-group">
-            <label>အမျိုးအစား ရွေးချယ်ပါ</label>
-            <select id="bulkCat">
-                <option value="LCD">LCD</option>
-                <option value="Battery">Battery</option>
-                <option value="Body Cover">Body Cover</option>
-                <option value="Back Glass">Back Glass</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label>စာရင်းများ ကူးထည့်ပါ (တစ်ကြောင်းလျှင် မော်ဒယ် ၁ ခုနှင့် ဈေးနှုန်း)</label>
-            <textarea id="bulkInput" style="height: 160px;" placeholder="Huawei Y6P 45000&#10;Honor Play 9A 45000&#10;Infinix Hot 30 43000"></textarea>
-        </div>
-        <div class="modal-actions">
-            <button type="button" class="btn-modal btn-cancel-modal" onclick="closeModal('bulkModal')">ပိတ်မည်</button>
-            <button type="button" class="btn-modal btn-save-modal" onclick="saveBulkData()">ထည့်သွင်းသိမ်းမည်</button>
-        </div>
-    </div>
-</div>
-
-<!-- Modal: Single Add / Edit Item -->
-<div class="modal" id="itemModal">
-    <div class="modal-content">
-        <h3 id="modalTitle" style="font-size: 14px; margin-bottom: 8px;">ပစ္စည်းပြင်ဆင်ခြင်း</h3>
-        <input type="hidden" id="editIndex" value="-1">
-        <div class="form-group">
-            <label>ဆိုင်အမည်</label>
-            <input type="text" id="modalShop" disabled style="background:#f1f5f9; font-weight: bold;">
-        </div>
-        <div class="form-group">
-            <label>အမျိုးအစား</label>
-            <select id="modalCat">
-                <option value="LCD">LCD</option>
-                <option value="Battery">Battery</option>
-                <option value="Body Cover">Body Cover</option>
-                <option value="Back Glass">Back Glass</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label>မော်ဒယ်အမည် (Model Name)</label>
-            <textarea id="modalName" style="height: 65px; resize: vertical;" placeholder="မော်ဒယ်အမည်..."></textarea>
-        </div>
-        <div class="form-group">
-            <label>ဈေးနှုန်း (ကျပ်)</label>
-            <input type="number" id="modalPrice" placeholder="ဥပမာ - 30000">
-        </div>
-        <div class="modal-actions">
-            <button type="button" class="btn-modal btn-cancel-modal" onclick="closeModal('itemModal')">ပိတ်မည်</button>
-            <button type="button" class="btn-modal btn-del-modal" id="btnDelete" onclick="deleteCurrentItem()" style="display: none;">ဖျက်မည်</button>
-            <button type="button" class="btn-modal btn-save-modal" onclick="saveItemData()">သိမ်းမည်</button>
-        </div>
-    </div>
-</div>
-
-<!-- Modal: Excel-Style Full Table Editor -->
-<div class="modal" id="excelModal">
-    <div class="modal-content excel-mode">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h3 style="font-size: 14px;" id="excelModalTitle">📊 Excel Table Editor</h3>
-            <button type="button" style="background: #e2e8f0; border: none; padding: 5px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer;" onclick="addExcelRow()">➕ တန်းအသစ်ထည့်မည်</button>
-        </div>
-        
-        <div class="excel-category-tabs">
-            <button class="excel-cat-tab active" onclick="switchExcelCategory('ALL', this)">အားလုံး</button>
-            <button class="excel-cat-tab" onclick="switchExcelCategory('LCD', this)">LCD</button>
-            <button class="excel-cat-tab" onclick="switchExcelCategory('Battery', this)">Battery</button>
-            <button class="excel-cat-tab" onclick="switchExcelCategory('Body Cover', this)">Body Cover</button>
-            <button class="excel-cat-tab" onclick="switchExcelCategory('Back Glass', this)">Back Glass</button>
-        </div>
-
-        <div class="excel-table-wrap">
-            <table class="excel-table">
-                <thead>
-                    <tr>
-                        <th style="width: 32px; text-align: center;">#</th>
-                        <th style="width: 120px; text-align: left;">Category</th>
-                        <th style="min-width: 220px; text-align: left;">Model Name / Description</th>
-                        <th style="width: 95px; text-align: right;">Price (K)</th>
-                        <th style="width: 36px; text-align: center;">ဖျက်</th>
-                    </tr>
-                </thead>
-                <tbody id="excelTableBody"></tbody>
-            </table>
-        </div>
-
-        <div class="modal-actions">
-            <button type="button" class="btn-modal btn-cancel-modal" onclick="closeModal('excelModal')">ပိတ်မည်</button>
-            <button type="button" class="btn-modal" style="background:#047857; color:white;" onclick="saveExcelData()">သိမ်းမည်</button>
-        </div>
-    </div>
-</div>
 <script>
-// PWA Installation Trigger
-let deferredPrompt;
-window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    const banner = document.getElementById('pwaInstallBanner');
-    if (banner) banner.style.display = 'flex';
-});
+// ဆိုင်အချက်အလက် သတ်မှတ်ချက် (Config)
+const shopConfig = {
+    shopName: "Htun Htun Mobile Service",
+    address: "မန္တလေးမြို့",
+    phone: "09400084212",
+    payInfo: "KPay: 09400084212 (Htun Htun) | Wave: 09400084212",
+    footerMsg: "စိတ်တိုင်းကျ ဝန်ဆောင်မှုပေးခြင်းအတွက် ကျေးဇူးတင်ပါသည်"
+};
 
-function triggerPwaInstall() {
-    if (deferredPrompt) {
-        deferredPrompt.prompt();
-        deferredPrompt.userChoice.then((choiceResult) => {
-            if (choiceResult.outcome === 'accepted') {
-                document.getElementById('pwaInstallBanner').style.display = 'none';
-            }
-            deferredPrompt = null;
-        });
+function buildVoucher() {
+    const raw = document.getElementById('rawListInput').value.trim();
+    if (!raw) {
+        alert("ပစ္စည်းနှင့် ဈေးနှုန်းစာရင်း ရိုက်ထည့်ပေးပါ။");
+        return;
     }
+
+    const lines = raw.split("\n");
+    let sum = 0, count = 0, rowsHtml = "";
+
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (!line) continue;
+        const match = line.match(/^(.*?)[\s\t]+(\d+)$/);
+        if (match) {
+            count++;
+            const name = match[1].trim();
+            const price = parseInt(match[2], 10);
+            sum += price;
+            rowsHtml += `<tr>
+                <td class="td-idx">${count}</td>
+                <td class="td-name">${escapeHtml(name)}</td>
+                <td class="td-val">${price.toLocaleString()} K</td>
+            </tr>`;
+        }
+    }
+
+    if (count === 0) {
+        alert("စာရင်းပုံစံ မမှန်ပါ။ ဥပမာ - 'LCD 35000' ပုံစံဖြင့် ရိုက်ထည့်ပါ။");
+        return;
+    }
+
+    // ဆိုင်အချက်အလက်များ တပ်ဆင်ခြင်း
+    document.getElementById('outShopName').innerText = shopConfig.shopName;
+    document.getElementById('outAddress').innerText = shopConfig.address;
+    document.getElementById('outPhone').innerText = shopConfig.phone ? `📞 ${shopConfig.phone}` : "";
+    document.getElementById('outPayDetails').innerText = shopConfig.payInfo;
+    document.getElementById('outFooterMsg').innerText = shopConfig.footerMsg;
+
+    const now = new Date();
+    document.getElementById('outDateTime').innerText = now.toLocaleDateString('en-GB') + " " + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    document.getElementById('outVoucherId').innerText = `No: #${now.getSeconds()}${now.getMilliseconds()}`;
+    document.getElementById('outGrandTotal').innerText = sum.toLocaleString() + " K";
+    document.getElementById('outTableBody').innerHTML = rowsHtml;
+
+    document.getElementById('resultArea').style.display = "block";
+    document.getElementById('resultArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-// 1. PIN & Session State
-const DEFAULT_SHOP_PINS = { "Kyaw Mobile": "1111", "ချမ်းသာစည်": "2222" };
-let MASTER_PIN = "1221";
-try {
-    const savedMaster = localStorage.getItem('cfg_master_pin');
-    if (savedMaster) MASTER_PIN = savedMaster;
-} catch (e) { console.warn(e); }
+function clearInput() {
+    document.getElementById('rawListInput').value = "";
+    document.getElementById('resultArea').style.display = "none";
+}
 
-let SHOP_PINS = DEFAULT_SHOP_PINS;
-try {
-    const savedPins = localStorage.getItem('cfg_shop_pins');
-    if (savedPins) {
-        const parsedPins = JSON.parse(savedPins);
-        if (parsedPins && typeof parsedPins === 'object') SHOP_PINS = parsedPins;
+function saveAsImage() {
+    if (typeof html2canvas === "undefined") {
+        alert("ပုံထုတ်သည့်စနစ် ဆွဲတင်နေဆဲဖြစ်ပါသည်၊ ခေတ္တစောင့်ပေးပါ။");
+        return;
     }
-} catch (e) { console.warn(e); }
-
-let sessionGhToken = "";
-let currentSelectedShop = "Kyaw Mobile";
-let adminAuthorizedShop = null; 
-let currentExcelCat = "ALL";
-
-function isValidPinFormat(pin) {
-    return /^[a-zA-Z0-9]{4,6}$/.test(pin);
+    const target = document.getElementById('voucherCard');
+    html2canvas(target, { scale: 3, backgroundColor: null }).then(canvas => {
+        const link = document.createElement("a");
+        link.download = `HtunHtun_Voucher_${Date.now()}.png`;
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+    });
 }
 
 function escapeHtml(text) {
@@ -578,702 +233,6 @@ function escapeHtml(text) {
     div.innerText = String(text ?? '');
     return div.innerHTML;
 }
-
-function escapeAttribute(value) {
-    return String(value ?? '')
-        .replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-}
-
-function switchMainTab(tabId, el) {
-    document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
-    document.querySelectorAll('.nav-tab-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById(tabId).classList.add('active');
-    el.classList.add('active');
-}
-
-// TAB 1: VOUCHER
-function requestPinForVoucher() {
-    if (!document.getElementById("rawInput").value.trim()) { alert("စာရင်းအရင် ရိုက်ထည့်ပေးပါ။"); return; }
-    document.getElementById("voucherPin").value = "";
-    document.getElementById("pinModal").classList.add("active");
-    setTimeout(() => document.getElementById("voucherPin").focus(), 150);
-}
-
-function verifyVoucherPin() {
-    if (document.getElementById("voucherPin").value === MASTER_PIN) {
-        closeModal("pinModal");
-        generateVoucher();
-    } else {
-        alert("PIN မှားယွင်းနေပါသည်။");
-        document.getElementById("voucherPin").value = "";
-    }
-}
-
-function generateVoucher() {
-    const lines = document.getElementById("rawInput").value.trim().split("\n");
-    let grandTotal = 0, count = 0, rowsHtml = "";
-    for (let i = 0; i < lines.length; i++) {
-        const line = lines[i].trim();
-        if (!line) continue;
-        const match = line.match(/^(.*?)[\s\t]+(\d+)$/);
-        if (match) {
-            count++;
-            const price = parseInt(match[2], 10);
-            grandTotal += price;
-            rowsHtml += `<tr><td class="td-num">${count}</td><td>${escapeHtml(match[1].trim())}</td><td class="td-price">${price.toLocaleString()} K</td></tr>`;
-        }
-    }
-    if (count === 0) { alert("နမူနာ - 'Model 15000' ပုံစံအတိုင်း ထည့်ပေးပါ။"); return; }
-    const now = new Date();
-    document.getElementById("currentDate").innerText = "ရက်စွဲ - " + now.toLocaleDateString('en-GB') + " | " + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    document.getElementById("grandTotalText").innerText = grandTotal.toLocaleString() + " K";
-    document.getElementById("tableBody").innerHTML = rowsHtml;
-    document.getElementById("outputContainer").style.display = "block";
-    document.getElementById("outputContainer").scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
-function clearVoucherInput() {
-    document.getElementById("rawInput").value = "";
-    document.getElementById("outputContainer").style.display = "none";
-}
-
-function downloadVoucher() {
-    if (typeof html2canvas === "undefined") {
-        alert("ပုံထုတ်ပေးသည့်စနစ် ဆွဲတင်နေဆဲဖြစ်ပါသည်။ ခေတ္တစောင့်ပြီး ပြန်လည်နှိပ်ပေးပါ။");
-        return;
-    }
-    const voucherElement = document.getElementById("voucherArea");
-    html2canvas(voucherElement, { scale: 2, backgroundColor: "#ffffff" }).then(canvas => {
-        const link = document.createElement("a");
-        link.download = "HtunHtun_Service_" + Date.now() + ".png";
-        link.href = canvas.toDataURL("image/png");
-        link.click();
-    });
-}
-
-// TAB 2: DATA & MULTI-SHOP
-/*DATA_START*/
-let itemsData = [
-    { shop: "Kyaw Mobile", cat: "LCD", name: "Huawei Y6P", price: 45000 },
-    { shop: "Kyaw Mobile", cat: "LCD", name: "Huawei Y6-2020", price: 45000 },
-    { shop: "Kyaw Mobile", cat: "LCD", name: "Honor Play 9A", price: 45000 },
-    { shop: "Kyaw Mobile", cat: "LCD", name: "Infinix Hot 30", price: 43000 },
-    { shop: "Kyaw Mobile", cat: "Battery", name: "Mi Poco X3 (BN57)", price: 35000 },
-    { shop: "Kyaw Mobile", cat: "Battery", name: "Redmi 13c (BN5Q)", price: 30000 },
-    { shop: "Kyaw Mobile", cat: "Body Cover", name: "Redmi 7 (Pink/Black)", price: 27000 },
-    { shop: "Kyaw Mobile", cat: "Back Glass", name: "Redmi 10A (Black/Blue)", price: 14000 },
-    { shop: "ချမ်းသာစည်", cat: "LCD", name: "Redmi Note 10 Pro 5G", price: 50000 },
-    { shop: "ချမ်းသာစည်", cat: "LCD", name: "Oppo A52", price: 43000 },
-    { shop: "ချမ်းသာစည်", cat: "Battery", name: "Redmi Note 11 Pro 4G (BM5A)", price: 42000 }
-];
-/*DATA_END*/
-
-try {
-    const savedItems = localStorage.getItem('htun_mobile_multishop_items');
-    if (savedItems) {
-        const parsedItems = JSON.parse(savedItems);
-        if (Array.isArray(parsedItems)) itemsData = parsedItems;
-    }
-} catch (e) { console.warn(e); }
-
-let selectedCategory = 'ALL';
-
-function selectShop(shopName) {
-    if (adminAuthorizedShop && adminAuthorizedShop !== "ALL" && adminAuthorizedShop !== shopName) {
-        alert(`သင်သည် ${adminAuthorizedShop} အဖြစ်သာ ဝင်ရောက်ထားသဖြင့် အခြားဆိုင်သို့ ပြောင်း၍မရပါ။`);
-        return;
-    }
-    currentSelectedShop = shopName;
-    document.getElementById('currentShopName').innerText = shopName;
-    document.getElementById('adminPanelShopName').innerText = shopName;
-    document.getElementById('btnShop1').classList.toggle('active', shopName === 'Kyaw Mobile');
-    document.getElementById('btnShop2').classList.toggle('active', shopName === 'ချမ်းသာစည်');
-    handleSearch();
-}
-
-function getTagClass(cat) {
-    return { 'LCD': 'tag-lcd', 'Battery': 'tag-battery', 'Body Cover': 'tag-body', 'Back Glass': 'tag-back' }[cat] || '';
-}
-
-function renderItems(dataWithIdx) {
-    const listEl = document.getElementById('itemList');
-    document.getElementById('matchCount').innerText = dataWithIdx.length + " ခု";
-    if (dataWithIdx.length === 0) {
-        listEl.innerHTML = `<div class="empty-state">${escapeHtml(currentSelectedShop)} တွင် ပစ္စည်းမရှိပါ။</div>`;
-        return;
-    }
-    let html = '';
-    dataWithIdx.forEach(({ item, idx }) => {
-        const canEdit = adminAuthorizedShop && (adminAuthorizedShop === "ALL" || adminAuthorizedShop === item.shop);
-        html += `
-            <div class="item-card">
-                <div style="max-width: ${canEdit ? '70%' : '75%'};">
-                    <span class="category-tag ${getTagClass(item.cat)}">${escapeHtml(item.cat)}</span>
-                    <div class="item-name">${escapeHtml(item.name)}</div>
-                </div>
-                <div style="text-align: right;">
-                    <div class="item-price">${Number(item.price).toLocaleString()} K</div>
-                    ${canEdit ? `<button class="btn-edit-item" onclick="openEditItemModal(${idx})">ပြင်မည်</button>` : ''}
-                </div>
-            </div>`;
-    });
-    listEl.innerHTML = html;
-}
-
-let searchTimer = null;
-function handleSearchDebounced() {
-    clearTimeout(searchTimer);
-    searchTimer = setTimeout(() => handleSearch(), 150);
-}
-
-function handleSearch() {
-    const query = document.getElementById('searchInput').value.trim().toLowerCase();
-    document.getElementById('clearBtn').style.display = query.length > 0 ? 'block' : 'none';
-
-    const filteredWithIdx = itemsData
-        .map((item, idx) => ({ item, idx }))
-        .filter(({ item }) => {
-            const matchShop = (item.shop || "Kyaw Mobile") === currentSelectedShop;
-            const matchCat = (selectedCategory === 'ALL' || item.cat === selectedCategory);
-            const matchName = item.name.toLowerCase().includes(query) || item.cat.toLowerCase().includes(query);
-            return matchShop && matchCat && matchName;
-        });
-
-    renderItems(filteredWithIdx);
-}
-
-function clearSearch() {
-    document.getElementById('searchInput').value = '';
-    handleSearch();
-    document.getElementById('searchInput').focus();
-}
-
-function setCategory(cat, el) {
-    selectedCategory = cat;
-    document.querySelectorAll('.cat-btn').forEach(t => t.classList.remove('active'));
-    el.classList.add('active');
-    handleSearch();
-}
-
-// ADMIN LOGIN & VALIDATION
-function openAdminLoginModal() {
-    document.getElementById('loginPinInput').value = "";
-    document.getElementById('loginGhToken').value = "";
-    document.getElementById('adminLoginModal').classList.add('active');
-    setTimeout(() => document.getElementById('loginPinInput').focus(), 150);
-}
-
-async function verifyAdminLogin() {
-    const enteredPin = document.getElementById('loginPinInput').value;
-    const enteredToken = document.getElementById('loginGhToken').value.trim();
-    const btn = document.getElementById('btnLoginSubmit');
-
-    let authorizedShop = null;
-    if (enteredPin === MASTER_PIN) {
-        authorizedShop = "ALL";
-    } else if (enteredPin === SHOP_PINS["Kyaw Mobile"]) {
-        authorizedShop = "Kyaw Mobile";
-    } else if (enteredPin === SHOP_PINS["ချမ်းသာစည်"]) {
-        authorizedShop = "ချမ်းသာစည်";
-    } else {
-        alert("PIN နံပါတ် မှားယွင်းနေပါသည်။ (အင်္ဂလိပ်စာလုံး အကြီး/အသေး ဂရုပြုပါ)");
-        document.getElementById('loginPinInput').value = "";
-        return;
-    }
-
-    const isTokenFormatValid = (enteredToken.startsWith("ghp_") && enteredToken.length >= 30) ||
-                               (enteredToken.startsWith("github_pat_") && enteredToken.length >= 40);
-
-    if (!isTokenFormatValid) {
-        alert("GitHub Personal Access Token မမှန်ကန်ပါ!\nToken သည် 'ghp_' သို့မဟုတ် 'github_pat_' ဖြင့် စတင်ရပါမည်။");
-        document.getElementById('loginGhToken').focus();
-        return;
-    }
-
-    btn.innerText = "စစ်ဆေးနေပါသည်...";
-    btn.disabled = true;
-
-    try {
-        const testRes = await fetch("https://api.github.com/user", {
-            headers: { 'Authorization': `Bearer ${enteredToken}` }
-        });
-        if (!testRes.ok) throw new Error("GitHub Token မမှန်ကန်ပါ (သို့မဟုတ် သက်တမ်းကုန်ဆုံးပါပြီ)");
-
-        adminAuthorizedShop = authorizedShop;
-        sessionGhToken = enteredToken;
-        closeModal('adminLoginModal');
-
-        if (adminAuthorizedShop !== "ALL") {
-            selectShop(adminAuthorizedShop);
-            document.getElementById('btnShop1').style.display = (adminAuthorizedShop === 'Kyaw Mobile') ? 'block' : 'none';
-            document.getElementById('btnShop2').style.display = (adminAuthorizedShop === 'ချမ်းသာစည်') ? 'block' : 'none';
-        }
-
-        document.getElementById('btnAdminTrigger').style.display = 'none';
-        document.getElementById('adminControlPanel').classList.add('active');
-        handleSearch();
-        alert(`${adminAuthorizedShop === "ALL" ? "Master Admin" : adminAuthorizedShop} အဖြစ် ဝင်ရောက်ပြီးပါပြီ။`);
-    } catch (err) {
-        alert("Login မအောင်မြင်ပါ: " + err.message);
-        document.getElementById('loginGhToken').value = "";
-    } finally {
-        btn.innerText = "Login";
-        btn.disabled = false;
-    }
-}
-
-function adminLogout() {
-    adminAuthorizedShop = null;
-    sessionGhToken = "";
-    document.getElementById('btnShop1').style.display = 'block';
-    document.getElementById('btnShop2').style.display = 'block';
-    document.getElementById('btnAdminTrigger').style.display = 'block';
-    document.getElementById('adminControlPanel').classList.remove('active');
-    handleSearch();
-    alert("Admin အကောင့်မှ ထွက်လိုက်ပါပြီ။");
-}
-
-function openForgotPinModal() {
-    closeModal('adminLoginModal');
-    document.getElementById('forgotGhToken').value = "";
-    document.getElementById('forgotNewPin').value = "";
-    document.getElementById('forgotPinModal').classList.add('active');
-}
-
-async function submitForgotPin() {
-    const shop = document.getElementById('forgotShopSelect').value;
-    const token = document.getElementById('forgotGhToken').value.trim();
-    const newPin = document.getElementById('forgotNewPin').value;
-    const btn = document.getElementById('btnForgotSubmit');
-
-    if (!isValidPinFormat(newPin)) {
-        alert("PIN အသစ်သည် ၄ လုံးမှ ၆ လုံးအတွင်း (ဂဏန်း သို့မဟုတ် အက္ခရာ a-z, A-Z) ဖြစ်ရပါမည်။");
-        return;
-    }
-
-    const isTokenFormatValid = (token.startsWith("ghp_") && token.length >= 30) ||
-                               (token.startsWith("github_pat_") && token.length >= 40);
-    if (!isTokenFormatValid) {
-        alert("တရားဝင် GitHub Token ထည့်သွင်းပေးပါ။");
-        return;
-    }
-
-    btn.innerText = "စစ်ဆေးနေပါသည်...";
-    btn.disabled = true;
-
-    try {
-        const testRes = await fetch("https://api.github.com/user", {
-            headers: { 'Authorization': `Bearer ${token}` }
-        });
-        if (!testRes.ok) throw new Error("GitHub Token မမှန်ကန်သောကြောင့် PIN reset မပြုလုပ်နိုင်ပါ။");
-
-        if (shop === "ALL") {
-            MASTER_PIN = newPin;
-            localStorage.setItem('cfg_master_pin', newPin);
-        } else {
-            SHOP_PINS[shop] = newPin;
-            localStorage.setItem('cfg_shop_pins', JSON.stringify(SHOP_PINS));
-        }
-
-        alert(`${shop} အတွက် PIN အသစ်ကို (${newPin}) အဖြစ် Reset ချပြီးပါပြီ။`);
-        closeModal('forgotPinModal');
-        openAdminLoginModal();
-    } catch (err) {
-        alert("Reset မအောင်မြင်ပါ: " + err.message);
-    } finally {
-        btn.innerText = "PIN ပြောင်းမည်";
-        btn.disabled = false;
-    }
-}
-
-function openChangePinModal() {
-    document.getElementById('newPinInput').value = "";
-    document.getElementById('confirmPinInput').value = "";
-    document.getElementById('lblChangePinTarget').innerText = `${adminAuthorizedShop === 'ALL' ? 'Master' : adminAuthorizedShop} PIN အသစ် (4-6 လုံး)`;
-    document.getElementById('changePinModal').classList.add('active');
-}
-
-function saveNewPin() {
-    const p1 = document.getElementById('newPinInput').value;
-    const p2 = document.getElementById('confirmPinInput').value;
-    if (!isValidPinFormat(p1)) { alert("PIN သည် ၄ မှ ၆ လုံးအတွင်း (ဂဏန်း/အက္ခရာ a-z, A-Z) ဖြစ်ရပါမည်။"); return; }
-    if (p1 !== p2) { alert("PIN ၂ ကြိမ် ရိုက်ထည့်မှု မကိုက်ညီပါ။"); return; }
-
-    try {
-        if (adminAuthorizedShop === "ALL") {
-            MASTER_PIN = p1;
-            localStorage.setItem('cfg_master_pin', p1);
-        } else {
-            SHOP_PINS[adminAuthorizedShop] = p1;
-            localStorage.setItem('cfg_shop_pins', JSON.stringify(SHOP_PINS));
-        }
-        closeModal('changePinModal');
-        alert(`PIN အသစ်ကို (${p1}) အဖြစ် ပြောင်းလဲသိမ်းဆည်းပြီးပါပြီ။`);
-    } catch (e) { alert(e.message); }
-}
-
-// BULK IMPORT
-function openBulkModal() {
-    document.getElementById('bulkShopTitle').innerText = currentSelectedShop;
-    document.getElementById('bulkInput').value = "";
-    document.getElementById('bulkModal').classList.add('active');
-}
-
-function saveBulkData() {
-    const text = document.getElementById('bulkInput').value.trim();
-    const cat = document.getElementById('bulkCat').value;
-    if (!text) { alert("စာရင်းများ ရိုက်ထည့်ပေးပါ။"); return; }
-    const lines = text.split("\n");
-    let addedCount = 0;
-    for (let i = 0; i < lines.length; i++) {
-        const line = lines[i].trim();
-        if (!line) continue;
-        const match = line.match(/^(.*?)[\s\t]+(\d+)$/);
-        if (match) {
-            itemsData.unshift({ shop: currentSelectedShop, cat, name: match[1].trim(), price: parseInt(match[2], 10) });
-            addedCount++;
-        }
-    }
-    if (addedCount === 0) { alert("စာရင်းပုံစံ မမှန်ကန်ပါ။"); return; }
-    try { localStorage.setItem('htun_mobile_multishop_items', JSON.stringify(itemsData)); } catch (_) {}
-    closeModal('bulkModal');
-    handleSearch();
-    alert(`ပစ္စည်း (${addedCount}) ခု ထည့်သွင်းပြီးပါပြီ။`);
-}
-
-// SINGLE EDIT & ADD
-function openAddItemModal() {
-    document.getElementById('modalTitle').innerText = `${currentSelectedShop} - ပစ္စည်းအသစ်ထည့်မည်`;
-    document.getElementById('modalShop').value = currentSelectedShop;
-    document.getElementById('editIndex').value = "-1";
-    document.getElementById('modalName').value = "";
-    document.getElementById('modalPrice').value = "";
-    document.getElementById('btnDelete').style.display = "none";
-    document.getElementById('itemModal').classList.add('active');
-}
-
-function openEditItemModal(index) {
-    const item = itemsData[index];
-    if (!item) return;
-    document.getElementById('modalTitle').innerText = `${item.shop} - အချက်အလက်ပြင်မည်`;
-    document.getElementById('modalShop').value = item.shop;
-    document.getElementById('editIndex').value = index;
-    document.getElementById('modalCat').value = item.cat;
-    document.getElementById('modalName').value = item.name;
-    document.getElementById('modalPrice').value = item.price;
-    document.getElementById('btnDelete').style.display = "block";
-    document.getElementById('itemModal').classList.add('active');
-}
-
-function closeModal(id) { document.getElementById(id).classList.remove('active'); }
-
-function saveItemData() {
-    const index = parseInt(document.getElementById('editIndex').value, 10);
-    const shop = document.getElementById('modalShop').value;
-    const cat = document.getElementById('modalCat').value;
-    const name = document.getElementById('modalName').value.trim();
-    const price = parseInt(document.getElementById('modalPrice').value, 10);
-    if (!name || isNaN(price)) { alert("မော်ဒယ်အမည်နှင့် ဈေးနှုန်း ဖြည့်ပါ။"); return; }
-    if (index === -1) { itemsData.unshift({ shop, cat, name, price }); }
-    else if (itemsData[index]) { itemsData[index] = { shop, cat, name, price }; }
-    try { localStorage.setItem('htun_mobile_multishop_items', JSON.stringify(itemsData)); } catch (_) {}
-    closeModal('itemModal');
-    handleSearch();
-}
-
-function deleteCurrentItem() {
-    const index = parseInt(document.getElementById('editIndex').value, 10);
-    if (index > -1 && confirm("ဖျက်ပစ်ရန် သေချာပါသလား?")) {
-        itemsData.splice(index, 1);
-        try { localStorage.setItem('htun_mobile_multishop_items', JSON.stringify(itemsData)); } catch (_) {}
-        closeModal('itemModal');
-        handleSearch();
-    }
-}
-
-// EXCEL TABLE EDITOR
-function openExcelEditorModal() {
-    document.getElementById('excelModalTitle').innerText = `📊 ${currentSelectedShop} - Excel Editor`;
-    currentExcelCat = "ALL";
-    document.querySelectorAll('.excel-cat-tab').forEach((t, i) => t.classList.toggle('active', i === 0));
-    loadExcelTable();
-    document.getElementById('excelModal').classList.add('active');
-}
-
-function switchExcelCategory(cat, el) {
-    syncExcelInputsToData();
-    currentExcelCat = cat;
-    document.querySelectorAll('.excel-cat-tab').forEach(t => t.classList.remove('active'));
-    el.classList.add('active');
-    loadExcelTable();
-}
-
-function syncExcelInputsToData() {
-    const rows = document.querySelectorAll('#excelTableBody tr');
-    for (let row of rows) {
-        const origIdx = parseInt(row.dataset.index, 10);
-        const catSelect = row.querySelector('.excel-select');
-        const nameInput = row.querySelector('.excel-name');
-        const priceInput = row.querySelector('.excel-price');
-        if (!catSelect || !nameInput || !priceInput) continue;
-        const cat = catSelect.value;
-        const name = nameInput.value.trim();
-        const price = parseInt(priceInput.value, 10);
-        if (origIdx >= 0 && itemsData[origIdx]) {
-            if (name && !isNaN(price)) {
-                itemsData[origIdx].cat = cat;
-                itemsData[origIdx].name = name;
-                itemsData[origIdx].price = price;
-            }
-        }
-    }
-}
-
-function loadExcelTable() {
-    const tbody = document.getElementById('excelTableBody');
-    let html = '';
-    const filteredWithIdx = itemsData
-        .map((item, origIdx) => ({ item, origIdx }))
-        .filter(({ item }) => {
-            const matchShop = (item.shop || "Kyaw Mobile") === currentSelectedShop;
-            const matchCat = (currentExcelCat === 'ALL' || item.cat === currentExcelCat);
-            return matchShop && matchCat;
-        });
-
-    filteredWithIdx.forEach(({ item, origIdx }, i) => {
-        html += `
-            <tr data-index="${origIdx}">
-                <td style="text-align: center; color: var(--text-sub);">${i + 1}</td>
-                <td>
-                    <select class="excel-select">
-                        <option value="LCD" ${item.cat === 'LCD' ? 'selected' : ''}>LCD</option>
-                        <option value="Battery" ${item.cat === 'Battery' ? 'selected' : ''}>Battery</option>
-                        <option value="Body Cover" ${item.cat === 'Body Cover' ? 'selected' : ''}>Body Cover</option>
-                        <option value="Back Glass" ${item.cat === 'Back Glass' ? 'selected' : ''}>Back Glass</option>
-                    </select>
-                </td>
-                <td><input type="text" class="excel-input excel-name" value="${escapeAttribute(item.name)}"></td>
-                <td><input type="number" class="excel-input excel-price" value="${item.price}" style="text-align: right;"></td>
-                <td style="text-align: center;"><button class="btn-row-del" onclick="deleteExcelRow(this, ${origIdx})">✕</button></td>
-            </tr>`;
-    });
-    tbody.innerHTML = html;
-}
-
-function addExcelRow() {
-    const tbody = document.getElementById('excelTableBody');
-    const tr = document.createElement('tr');
-    tr.dataset.index = "-1";
-    const defaultCat = currentExcelCat === 'ALL' ? 'LCD' : currentExcelCat;
-    tr.innerHTML = `
-        <td style="text-align: center; color: var(--text-sub);">*</td>
-        <td>
-            <select class="excel-select">
-                <option value="LCD" ${defaultCat === 'LCD' ? 'selected' : ''}>LCD</option>
-                <option value="Battery" ${defaultCat === 'Battery' ? 'selected' : ''}>Battery</option>
-                <option value="Body Cover" ${defaultCat === 'Body Cover' ? 'selected' : ''}>Body Cover</option>
-                <option value="Back Glass" ${defaultCat === 'Back Glass' ? 'selected' : ''}>Back Glass</option>
-            </select>
-        </td>
-        <td><input type="text" class="excel-input excel-name" placeholder="မော်ဒယ်အမည်"></td>
-        <td><input type="number" class="excel-input excel-price" placeholder="30000" style="text-align: right;"></td>
-        <td style="text-align: center;"><button class="btn-row-del" onclick="this.closest('tr').remove()">✕</button></td>
-    `;
-    tbody.insertBefore(tr, tbody.firstChild);
-}
-
-function deleteExcelRow(btn, origIdx) {
-    if (confirm("ဖျက်ပစ်ရန် သေချာပါသလား?")) {
-        if (origIdx >= 0 && itemsData[origIdx]) {
-            itemsData.splice(origIdx, 1);
-            try { localStorage.setItem('htun_mobile_multishop_items', JSON.stringify(itemsData)); } catch (_) {}
-        }
-        btn.closest('tr').remove();
-    }
-}
-
-function saveExcelData() {
-    syncExcelInputsToData();
-    const rows = document.querySelectorAll('#excelTableBody tr');
-    for (let row of rows) {
-        const origIdx = parseInt(row.dataset.index, 10);
-        const catSelect = row.querySelector('.excel-select');
-        const nameInput = row.querySelector('.excel-name');
-        const priceInput = row.querySelector('.excel-price');
-        if (!catSelect || !nameInput || !priceInput) continue;
-        const cat = catSelect.value;
-        const name = nameInput.value.trim();
-        const price = parseInt(priceInput.value, 10);
-        if (name && !isNaN(price) && origIdx === -1) {
-            itemsData.unshift({ shop: currentSelectedShop, cat, name, price });
-        }
-    }
-    try { localStorage.setItem('htun_mobile_multishop_items', JSON.stringify(itemsData)); } catch (_) {}
-    handleSearch();
-    closeModal('excelModal');
-    alert("စာရင်းများ သိမ်းဆည်းပြီးပါပြီ။");
-}
-
-// GITHUB SYNC
-const GITHUB_REPO = "HtunHtun01/Service";
-const FILE_PATH = "index.html";
-
-async function pushToGitHub() {
-    const token = sessionGhToken;
-    if (!token) {
-        alert("GitHub Token မရှိပါ။ ကျေးဇူးပြု၍ Admin Login ပြန်လည်ဝင်ရောက်ပေးပါ။");
-        openAdminLoginModal();
-        return;
-    }
-
-    if (!confirm("အချက်အလက်များကို GitHub သို့ အပြီးသတ် Save လုပ်ရန် သေချာပါသလား?")) return;
-
-    try {
-        const getFileUrl = `https://api.github.com/repos/${GITHUB_REPO}/contents/${FILE_PATH}`;
-        const res = await fetch(getFileUrl, { headers: { 'Authorization': `Bearer ${token}` } });
-        if (!res.ok) throw new Error("GitHub Token မှားယွင်းနေပါသည် သို့မဟုတ် File မတွေ့ပါ။");
-        const fileData = await res.json();
-        const decodedContent = decodeURIComponent(escape(atob(fileData.content)));
-        const newItemsJson = JSON.stringify(itemsData, null, 4);
-        const replacement = `/*DATA_START*/\nlet itemsData = ${newItemsJson};\n/*DATA_END*/`;
-        const updatedFileContent = decodedContent.replace(/\/\*DATA_START\*\/[\s\S]*?\/\*DATA_END\*\//, replacement);
-        const encodedUpdatedContent = btoa(unescape(encodeURIComponent(updatedFileContent)));
-
-        const putRes = await fetch(getFileUrl, {
-            method: 'PUT',
-            headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: "Update multi-shop items data", content: encodedUpdatedContent, sha: fileData.sha })
-        });
-        if (!putRes.ok) throw new Error("GitHub ပေါ်သို့ သိမ်းဆည်းမအောင်မြင်ပါ။");
-        alert("GitHub ပေါ်သို့ အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီ။ ၁ မိနစ်အတွင်း Update ဖြစ်ပါမည်။");
-    } catch (err) {
-        alert("Error: " + err.message);
-    }
-}
-
-// TAB 3: CEIR DUAL IMEI & PAYTAX LOGIC
-async function fetchImeiData(imei) {
-    let regData = null, devData = null;
-    try {
-        const regRes = await fetch("https://ceir.gov.mm/openapi/API/IMEI/RegistrationStatus", {
-            method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ imei })
-        });
-        if (regRes.ok) regData = await regRes.json();
-    } catch (_) {}
-
-    try {
-        const devRes = await fetch("https://ceir.gov.mm/openapi/API/Device/personal-device-info", {
-            method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ imei })
-        });
-        if (devRes.ok) devData = await devRes.json();
-    } catch (_) {}
-
-    return { regData, devData };
-}
-
-async function runCeirCheck() {
-    const imei1 = document.getElementById('ceirImei1').value.trim();
-    const imei2 = document.getElementById('ceirImei2').value.trim();
-    const btn = document.getElementById('btnCheckCeir');
-    const loading = document.getElementById('ceirLoading');
-    const resultArea = document.getElementById('ceirResultArea');
-
-    if (!/^\d{15}$/.test(imei1)) {
-        alert("IMEI 1 (SIM 1) သည် ဂဏန်း ၁၅ လုံး တိတိကျကျ ဖြစ်ရပါမည်။");
-        return;
-    }
-    if (imei2 && !/^\d{15}$/.test(imei2)) {
-        alert("IMEI 2 (SIM 2) ထည့်သွင်းပါက ဂဏန်း ၁၅ လုံး တိတိကျကျ ဖြစ်ရပါမည်။");
-        return;
-    }
-
-    btn.disabled = true;
-    loading.style.display = 'block';
-    resultArea.style.display = 'none';
-
-    try {
-        const res1 = await fetchImeiData(imei1);
-        renderImeiResult(1, imei1, res1.regData, res1.devData);
-
-        if (imei2) {
-            document.getElementById('boxImei2').style.display = 'block';
-            const res2 = await fetchImeiData(imei2);
-            renderImeiResult(2, imei2, res2.regData, res2.devData);
-        } else {
-            document.getElementById('boxImei2').style.display = 'none';
-        }
-
-        resultArea.style.display = 'block';
-    } catch (err) {
-        alert("CEIR စစ်ဆေးရာတွင် အမှားဖြစ်ပေါ်ပါသည်: " + err.message);
-    } finally {
-        btn.disabled = false;
-        loading.style.display = 'none';
-    }
-}
-
-function renderImeiResult(slotNum, imei, regData, devData) {
-    document.getElementById(`resImei${slotNum}Text`).innerText = imei;
-    const vBadge = document.getElementById(`resVerify${slotNum}Badge`);
-    const tBadge = document.getElementById(`resTax${slotNum}Badge`);
-    const modelEl = document.getElementById(`resDevice${slotNum}Model`);
-    const taxBox = document.getElementById(`taxDetails${slotNum}Box`);
-
-    let isWhiteListOrFree = false, isPaid = false, isUnpaid = false;
-    let modelName = (devData && devData.brand) ? `${devData.brand} ${devData.model || ''}` : "စံချိန်မီ မိုဘိုင်းဖုန်း";
-    modelEl.innerText = modelName;
-
-    if (regData) {
-        const statusStr = String(regData.status || regData.taxStatus || '').toUpperCase();
-        isWhiteListOrFree = regData.isWhitelist || regData.whitelist || statusStr.includes("FREE") || statusStr.includes("WHITELIST");
-        isPaid = statusStr.includes("PAID") || regData.isPaid || regData.registered;
-        isUnpaid = statusStr.includes("UNPAID") || (!isWhiteListOrFree && !isPaid);
-    } else {
-        // API response fallback check
-        isUnpaid = true;
-    }
-
-    vBadge.innerText = "တရားဝင် IMEI (Valid)";
-    vBadge.className = "badge-status badge-paid";
-
-    if (isWhiteListOrFree) {
-        tBadge.innerText = "🌟 Free Pass (ကင်းလွတ်ခွင့်ရ)";
-        tBadge.className = "badge-status badge-free";
-        taxBox.style.display = 'block';
-        taxBox.style.background = "#eff6ff";
-        taxBox.style.borderColor = "#bfdbfe";
-        taxBox.innerHTML = `✅ ဤ IMEI သည် CEIR Whitelist တွင် ပါဝင်ပြီးဖြစ်သဖြင့် <strong>အခွန်ပေးဆောင်ရန် မလိုပါ (Free Pass)</strong>။ ပုံမှန်အတိုင်း လွတ်လပ်စွာ ဆက်လက်သုံးစွဲနိုင်ပါသည်။`;
-    } else if (isPaid) {
-        tBadge.innerText = "✅ အခွန်ဆောင်ပြီး (Paid)";
-        tBadge.className = "badge-status badge-paid";
-        taxBox.style.display = 'block';
-        taxBox.style.background = "#f0fdf4";
-        taxBox.style.borderColor = "#bbf7d0";
-        taxBox.innerHTML = `✅ ဤ IMEI သည် အကောက်ခွန်နှင့် မှတ်ပုံတင်ကြေး <strong>ပေးဆောင်ပြီးဖြစ်ပါသည် (Paid)</strong>။ မည်သည့်လိုင်းပိတ်မှုမျှ ဖြစ်ပေါ်မည်မဟုတ်ပါ။`;
-    } else {
-        tBadge.innerText = "⚠️ အခွန်မဆောင်ရသေး (Unpaid)";
-        tBadge.className = "badge-status badge-unpaid";
-        
-        // Calculate estimated customs tax based on phone category
-        let estTax = "၅၀,၀၀၀ ကျပ် မှ ၁၅၀,၀၀၀ ကျပ်ခန့်";
-        if (modelName.toLowerCase().includes("iphone") || modelName.toLowerCase().includes("pro max") || modelName.toLowerCase().includes("ultra")) {
-            estTax = "၂၅၀,၀၀၀ ကျပ် မှ ၄၀၀,၀၀၀ ကျပ်ခန့် (CIF တန်ဖိုးပေါ်မူတည်)";
-        }
-
-        taxBox.style.display = 'block';
-        taxBox.style.background = "#fffbeb";
-        taxBox.style.borderColor = "#fde68a";
-        taxBox.innerHTML = `
-            <div style="color: #b45309; font-weight: 700; margin-bottom: 4px;">⚠️ အခွန်မဆောင်ရသေးပါ (Tax Payment Required)</div>
-            <div>💰 <strong>ခန့်မှန်း အခွန်ကျသင့်ငွေ:</strong> ${estTax}</div>
-            <div style="font-size: 11px; color: var(--text-sub); margin-top: 3px;">* ဖုန်းတန်ဖိုး (CIF Value) ၏ သတ်မှတ်ရာခိုင်နှုန်းအတိုင်း CEIR သို့ ပေးဆောင်ရပါမည်။</div>
-            <a href="https://ceir.gov.mm" target="_blank" class="btn-pay-tax">💳 CEIR တွင် တိုက်ရိုက် Pay Tax ပြုလုပ်မည်</a>
-        `;
-    }
-}
-
-// Initial run
-handleSearch();
 </script>
 </body>
 </html>
